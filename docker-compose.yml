@@ -1,0 +1,48 @@
+services:
+  django:
+    container_name: django
+    image: django:1
+    build: ./srcs/django/
+    ports:
+      - '8000:8000'
+    # volumes:
+    #   - django_volume:/app/data
+    env_file:
+      - .env
+    networks:
+      - transcendance
+    # restart: always
+
+  postgresql:
+    container_name: postgresql
+    image: postgresql:1
+    build: ./srcs/postgresql/
+    volumes:
+      - postgressql_volume:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    env_file:
+      - .env
+    networks:
+      - transcendance
+    # restart: always
+
+volumes:
+#   django_volume:
+#     name: django_volume
+#     driver: local
+#     driver_opts:
+#       type : none
+#       device: /home/user/ecole_42/transcendance/data/django_volume
+#       o : bind
+  postgressql_volume:
+    name: postgressql_volume
+    driver: local
+    driver_opts:
+      type : none
+      device: /home/user/ecole_42/transcendance/data/postgressql_volume
+      o : bind
+
+networks:
+  transcendance:
+    driver: bridge
