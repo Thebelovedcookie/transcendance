@@ -1,4 +1,5 @@
 import { injectNavbar } from "./nav_bar.js";
+// import { loop } from "./main.js";
 
 const style = document.createElement('style');
 style.textContent = `
@@ -36,6 +37,12 @@ function gamePage()
 gamePage();
 
 
+function resetCanvas() {
+    const canvas = document.getElementById('pongGame');
+    const context = canvas.getContext('2d');
+    context.clearRect(0, 0, canvas.width, canvas.height); // Efface le canvas
+}
+
 function initGamePage()
 {
     const content = document.getElementById('pageDynamic');
@@ -51,25 +58,35 @@ function initGamePage()
     });
 }
 
+let test = false;
+
 function initGame() {
     const content = document.getElementById('pageDynamic');
-    content.innerHTML = `
-        <canvas id="pongGame"></canvas>
-        <script type="module" src="class_object.js"></script>
+    content.innerHTML = `<canvas id="pongGame"></canvas>
         <script type="module" src="key_movement.js"></script>
-        <script type="module" src="style.js"></script>
-        <script src="./main.js" type="module"></script>
+        <script type="module" src="main.js?cachebuster=${Date.now()}"></script>
     `;
 
-    // Importer le module de jeu et démarrer la boucle d'animation
-    import("./main.js").then(module => {
+    resetCanvas();
+
+    if (test == true)
+    {
+        
         window.requestAnimationFrame(module.loop);
-    });
-    
+    }
+    else {
+    import("./main.js").then(module => {
+        test = true;
+        module.resetGame(); // Réinitialise le jeu si la fonction existe
+        window.requestAnimationFrame(module.loop);
+    });}
+
     document.getElementById('homeLink').addEventListener('click', function(event) {
         event.preventDefault();
+        
         showHome();
     });
+    // window.requestAnimationFrame(loop);
 }
 
 // Fonction pour afficher la page d'accueil

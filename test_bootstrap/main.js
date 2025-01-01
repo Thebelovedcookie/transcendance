@@ -158,17 +158,4 @@ export function loop(currentTime){
 	animationId = requestAnimationFrame(loop);
 }
 
-export function stopGame() {
-	gameover = false;
-	scoreOne = 0;
-	scoreTwo = 0;
-    if (animationId) {
-        cancelAnimationFrame(animationId); // Stoppe la boucle d'animation
-        animationId = null;
-    }
-	const canvas = document.getElementById('pongGame');
-	window.removeEventListener("resize", resizeCanvas);
-	window.removeEventListener("keypress", keyPressListener, false);
-}
-
 loop();
