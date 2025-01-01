@@ -11,7 +11,10 @@ let scoreMax = 1;
 
 //----------------------------KEY MOVEMENT--------------------------------//
 
-window.addEventListener("keypress", (e) => handleKeyPress(e, playerOne, playerTwo, canvas), false);
+const keyPressListener = (e) => handleKeyPress(e, playerOne, playerTwo, canvas);
+
+// Ajouter l'écouteur
+window.addEventListener("keypress", keyPressListener, false);
 
 //----------------------------METHOD--------------------------------//
 
@@ -19,7 +22,7 @@ function resizeCanvas() {
 	const ratioWidth = window.innerWidth / canvas.width;
 	const ratioHeight = window.innerHeight / canvas.height;
 	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight;
+	canvas.height = window.innerHeight * 0.94;
 	middle.update({
 		x: canvas.width / 2,
 		height: canvas.height,
@@ -95,7 +98,6 @@ function resetBall() {
 
 function drawElements(){
 	context.clearRect(0, 0, canvas.width, canvas.height);
-	// drawElement(playerOne);
 	firstPaddle(context, playerOne);
 	secondPaddle(context, playerTwo);
 	ballStyle(context, ball);
@@ -129,10 +131,11 @@ function displayWinner()
 }
 
 let lastTime = performance.now();
+let animationId; // Identifiant de la boucle d'animation
 
-function loop(currentTime){
+export function loop(currentTime){
 
-	if (gameover == true)
+	if (gameover === true)
 	{
 		displayWinner();
 		return;
@@ -152,8 +155,20 @@ function loop(currentTime){
 	lastTime = currentTime;
 
 	ballBounce();
+	animationId = requestAnimationFrame(loop);
+}
 
-	window.requestAnimationFrame(loop);
+export function stopGame() {
+	gameover = false;
+	scoreOne = 0;
+	scoreTwo = 0;
+    if (animationId) {
+        cancelAnimationFrame(animationId); // Stoppe la boucle d'animation
+        animationId = null;
+    }
+	const canvas = document.getElementById('pongGame');
+	window.removeEventListener("resize", resizeCanvas);
+	window.removeEventListener("keypress", keyPressListener, false);
 }
 
 loop();
