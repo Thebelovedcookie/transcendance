@@ -1,11 +1,64 @@
 import { handleKeyPress } from './key_movement.js';
 
-const canvas = document.getElementById("pongGame");
-const context = canvas.getContext("2d");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-let ratioWidth = window.innerWidth / canvas.width;
-let ratioHeight = window.innerHeight / canvas.height;
+let canvas;
+let context;
+let ratioWidth;
+let ratioHeight;
+let playerOne;
+let playerTwo;
+let ball;
+let middle;
+
+function init_canvas(){
+	canvas = document.getElementById("pongGame");
+	context = canvas.getContext("2d");
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
+	ratioWidth = window.innerWidth / canvas.width;
+	ratioHeight = window.innerHeight / canvas.height;
+
+	//----------------------------OBJET--------------------------------//
+	//first paddle
+	playerOne = new Element({
+	x: 5,
+	y: canvas.height * 0.4,
+	width: canvas.width / 80,
+	height: canvas.height / 6,
+	color: "#3B2077",
+	gravity: 2,
+	})
+	
+	//second paddle
+	playerTwo = new Element({
+		x: canvas.width - 20,
+		y: canvas.height * 0.4,
+		width: canvas.width / 80,
+		height: canvas.height / 6,
+		color: "#3B2077",
+		gravity: 2,
+	})
+
+	//ball
+	ball = new Element({
+		x: canvas.width / 2,
+		y: canvas.height / 2,
+		width: 15 * ratioWidth,
+		height: 15 * ratioHeight,
+		color: "#c480da",
+		speed: 3,
+		gravity: 2,
+	})
+
+	//bar au milieu
+	middle = new Element({
+		x: canvas.width/2,
+		y: 0,
+		width: 1,
+		height: canvas.height,
+		color: "#fff",
+		gravity: 1,
+	})
+}
 
 //----------------------------CLASS --------------------------------//
 
@@ -29,47 +82,6 @@ class Element{
 	}
 }
 
-//----------------------------OBJET--------------------------------//
-//first paddle
-const playerOne = new Element({
-	x: 5,
-	y: canvas.height * 0.4,
-	width: canvas.width / 80,
-	height: canvas.height / 6,
-	color: "#3B2077",
-	gravity: 2,
-})
-
-//second paddle
-const playerTwo = new Element({
-	x: canvas.width - 20,
-	y: canvas.height * 0.4,
-	width: canvas.width / 80,
-	height: canvas.height / 6,
-	color: "#3B2077",
-	gravity: 2,
-})
-
-//ball
-const ball = new Element({
-	x: canvas.width / 2,
-	y: canvas.height / 2,
-	width: 15 * ratioWidth,
-	height: 15 * ratioHeight,
-	color: "#c480da",
-	speed: 3,
-	gravity: 2,
-})
-
-//bar au milieu
-const middle = new Element({
-	x: canvas.width/2,
-	y: 0,
-	width: 1,
-	height: canvas.height,
-	color: "#fff",
-	gravity: 1,
-})
 
 
 window.addEventListener('resize', resizeCanvas);
@@ -122,7 +134,6 @@ function drawElement(element){
 
 //make ball bounce
 function ballBounce(){
-	console.log("ballbounce");
 	if(ball.y + ball.gravity <= 0 || ball.y + ball.gravity >= canvas.height){
 		ball.gravity = ball.gravity * (-1);
 		ball.y += ball.gravity;
@@ -135,7 +146,6 @@ function ballBounce(){
 }
 
 function ballWallCollision(){
-	console.log("ballWallCollision");
 	if ((ball.y + ball.gravity <= playerTwo.y + playerTwo.height
 			&& ball.x + ball.width + ball.speed >= playerTwo.x
 			&& ball.y + ball.gravity > playerTwo.y) ||
@@ -147,12 +157,10 @@ function ballWallCollision(){
 	} else if (ball.x + ball.speed < playerOne.x)
 	{
 		scoreTwo++;
-		// endOfGame();
 		resetBall();
 	} else if (ball.x + ball.speed > playerTwo.x + playerTwo.width)
 	{
 		scoreOne++;
-		// endOfGame();
 		resetBall();
 	}
 
@@ -183,7 +191,6 @@ function displayScoreTwo(scoreTwo){
 }
 
 function drawElements(){
-	console.log("drawElements");
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	drawElement(playerOne);
 	drawElement(playerTwo);
@@ -196,41 +203,48 @@ function drawElements(){
 export function resetGame()
 {
 	playerOne.x = 5;
-	playerOne.y= canvas.height * 0.4;
-	playerOne.width= canvas.width / 80;
-	playerOne.height= canvas.height / 6;
-	playerOne.gravity= 2;
+	playerOne.y = canvas.height * 0.4;
+	playerOne.width = canvas.width / 80;
+	playerOne.height = canvas.height / 6;
+	playerOne.gravity = 2;
 
 
-	playerTwo.x= canvas.width - 20;
-	playerTwo.y= canvas.height * 0.4;
-	playerTwo.width= canvas.width / 80;
-	playerTwo.height= canvas.height / 6;
-	playerTwo.gravity= 2;
+	playerTwo.x = canvas.width - 20;
+	playerTwo.y = canvas.height * 0.4;
+	playerTwo.width = canvas.width / 80;
+	playerTwo.height = canvas.height / 6;
+	playerTwo.gravity = 2;
 
-	ball.x= canvas.width / 2;
-	ball.y= canvas.height / 2;
-	ball.width= 15 * ratioWidth;
-	ball.height= 15 * ratioHeight;
-	ball.speed= 3;
-	ball.gravity= 2;
+	ball.x = canvas.width / 2;
+	ball.y = canvas.height / 2;
+	ball.width = 15 * ratioWidth;
+	ball.height = 15 * ratioHeight;
+	ball.speed = 3;
+	ball.gravity = 2;
 
 	scoreOne = 0;
 	scoreTwo = 0;
 
-	// canvas = document.getElementById("pongGame");
-	// context = canvas.getContext("2d");
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
 	ratioWidth = window.innerWidth / canvas.width;
 	ratioHeight = window.innerHeight / canvas.height;
 }
 
-export function loop(){
+let animationId = null;
 
-	console.log("canvas = ", canvas.width, canvas.height);
+function loop(){
 	ballBounce();
-	window.requestAnimationFrame(loop);
+	animationId = requestAnimationFrame(loop);
 }
 
-loop();
+export function main(){
+	if (animationId)
+	{
+		cancelAnimationFrame(animationId);
+		animationId = null;
+	}
+	init_canvas();
+	resetGame();
+	loop();
+}

@@ -1,5 +1,5 @@
 import { injectNavbar } from "./nav_bar.js";
-// import { loop } from "./main.js";
+import { main } from "./main.js";
 
 const style = document.createElement('style');
 style.textContent = `
@@ -36,13 +36,6 @@ function gamePage()
 }
 gamePage();
 
-
-function resetCanvas() {
-    const canvas = document.getElementById('pongGame');
-    const context = canvas.getContext('2d');
-    context.clearRect(0, 0, canvas.width, canvas.height); // Efface le canvas
-}
-
 function initGamePage()
 {
     const content = document.getElementById('pageDynamic');
@@ -58,35 +51,19 @@ function initGamePage()
     });
 }
 
-let test = false;
 
 function initGame() {
     const content = document.getElementById('pageDynamic');
-    content.innerHTML = `<canvas id="pongGame"></canvas>
+    content.innerHTML = `<canvas class="bla" id="pongGame"></canvas>
         <script type="module" src="key_movement.js"></script>
         <script type="module" src="main.js?cachebuster=${Date.now()}"></script>
     `;
 
-    resetCanvas();
-
-    if (test == true)
-    {
-        
-        window.requestAnimationFrame(module.loop);
-    }
-    else {
-    import("./main.js").then(module => {
-        test = true;
-        module.resetGame(); // Réinitialise le jeu si la fonction existe
-        window.requestAnimationFrame(module.loop);
-    });}
-
+    main();
     document.getElementById('homeLink').addEventListener('click', function(event) {
         event.preventDefault();
-        
         showHome();
     });
-    // window.requestAnimationFrame(loop);
 }
 
 // Fonction pour afficher la page d'accueil
