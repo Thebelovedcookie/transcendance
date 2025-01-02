@@ -1,5 +1,8 @@
 import { handleKeyPress } from './key_movement.js';
+import { firstPaddle, secondPaddle, ballStyle, displayScoreOne, displayScoreTwo } from './style.js';
 
+
+//----------------------GLOBAL GAME ELEMENT----------------------------//
 let canvas;
 let context;
 let ratioWidth;
@@ -8,12 +11,14 @@ let playerOne;
 let playerTwo;
 let ball;
 let middle;
+let scoreOne = 0;
+let scoreTwo = 0;
 
 function init_canvas(){
 	canvas = document.getElementById("pongGame");
 	context = canvas.getContext("2d");
 	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight;
+	canvas.height = window.innerHeight * 0.94;
 	ratioWidth = window.innerWidth / canvas.width;
 	ratioHeight = window.innerHeight / canvas.height;
 
@@ -84,10 +89,6 @@ class Element{
 
 
 
-window.addEventListener('resize', resizeCanvas);
-
-let scoreOne = 0;
-let scoreTwo = 0;
 
 //----------------------------KEY MOVEMENT--------------------------------//
 
@@ -97,6 +98,9 @@ const keyPressListener = (e) => handleKeyPress(e, playerOne, playerTwo, canvas);
 window.addEventListener("keypress", keyPressListener, false);
 
 //----------------------------METHOD--------------------------------//
+
+//if we move the window, we resize object on the canvas
+window.addEventListener('resize', resizeCanvas);
 
 function resizeCanvas() {
 	const ratioWidth = window.innerWidth / canvas.width;
@@ -174,30 +178,14 @@ function resetBall() {
     ball.gravity = Math.abs(ball.gravity) * (Math.random() > 0.5 ? 1 : -1);
 }
 
-//PlayerOne score Text
-function displayScoreOne(scoreOne) {
-
-  context.font = "30px 'Arial', sans-serif";
-  context.fillStyle = "#9f53ec";
-  context.fillText(scoreOne, 50, 50);
-}
-
-//PlayerTwo score Text
-function displayScoreTwo(scoreTwo){
-	
-	context.font = "30px 'Arial', sans-serif";
-	context.fillStyle = "#9f53ec";
-	context.fillText(scoreTwo, 50, 50);
-}
-
 function drawElements(){
 	context.clearRect(0, 0, canvas.width, canvas.height);
-	drawElement(playerOne);
-	drawElement(playerTwo);
-	drawElement(ball);
+	firstPaddle(context, playerOne);
+	secondPaddle(context, playerTwo);
+	ballStyle(context, ball);
 	drawElement(middle);
-	displayScoreOne(scoreOne);
-	displayScoreTwo(scoreTwo);
+	displayScoreOne(context, scoreOne, canvas);
+	displayScoreTwo(context, scoreTwo, canvas);
 }
 
 export function resetGame()
@@ -226,7 +214,7 @@ export function resetGame()
 	scoreTwo = 0;
 
 	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight;
+	canvas.height = window.innerHeight * 0.94;
 	ratioWidth = window.innerWidth / canvas.width;
 	ratioHeight = window.innerHeight / canvas.height;
 }
