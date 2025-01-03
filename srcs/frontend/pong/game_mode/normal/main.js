@@ -1,4 +1,4 @@
-import { handleKeyPress } from './key_movement.js';
+import { keyPressListenerPlayerOne, keyPressListenerPlayerTwo } from './key_movement.js';
 import { firstPaddle, secondPaddle, ballStyle, displayScoreOne, displayScoreTwo } from './style.js';
 
 
@@ -50,7 +50,7 @@ function init_canvas(){
 		width: 15 * ratioWidth,
 		height: 15 * ratioHeight,
 		color: "#c480da",
-		speed: 3,
+		speed: 30,
 		gravity: 2,
 	})
 
@@ -92,10 +92,11 @@ class Element{
 
 //----------------------------KEY MOVEMENT--------------------------------//
 
-const keyPressListener = (e) => handleKeyPress(e, playerOne, playerTwo, canvas);
+const keyPressListenerOne = (e) => keyPressListenerPlayerOne(e, playerOne, canvas);
+const keyPressListenerTwo = (e) => keyPressListenerPlayerTwo(e, playerTwo, canvas);
 
-// Ajouter l'écouteur
-window.addEventListener("keypress", keyPressListener, false);
+window.addEventListener("keypress", keyPressListenerOne, false);
+window.addEventListener("keypress", keyPressListenerTwo, false);
 
 //----------------------------METHOD--------------------------------//
 
@@ -207,8 +208,8 @@ export function resetGame()
 	ball.y = canvas.height / 2;
 	ball.width = 15 * ratioWidth;
 	ball.height = 15 * ratioHeight;
-	ball.speed = 3;
-	ball.gravity = 2;
+	ball.speed = 8;
+	ball.gravity = 3;
 
 	scoreOne = 0;
 	scoreTwo = 0;
@@ -226,7 +227,7 @@ function loop(){
 	animationId = requestAnimationFrame(loop);
 }
 
-export function main(){
+export function normalMode(){
 	if (animationId)
 	{
 		cancelAnimationFrame(animationId);
@@ -235,4 +236,10 @@ export function main(){
 	init_canvas();
 	resetGame();
 	loop();
+}
+
+export function stopGameNormal() {
+	window.removeListener("keypress", keyPressListenerOne, false);
+	window.removeListener("keypress", keyPressListenerTwo, false);
+	window.removeEventListener('resize', resizeCanvas);
 }

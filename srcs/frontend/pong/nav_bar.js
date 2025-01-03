@@ -1,7 +1,7 @@
 // Fonction pour injecter la navbar
 export function injectNavbar() {
 	return `
-	<nav class="navbar navbar-expand-lg bg-primary-subtle bg-body-tertiary fixed-top w-100">
+	<nav class="navbar navbar-expand-lg bg-secondary fixed-top w-100">
 		<div class="container-fluid">
 			<a class="navbar-brand" href="#">
 				<img src="./img/logo.png" alt="Bootstrap" width="110" height="25">
@@ -31,5 +31,8 @@ export function injectNavbar() {
 				</ul>
 			</div>
 		</div>
-	</nav>`;
+	</nav>
+	<footer class="bg-secondary text-black text-center py-3 fixed-bottom">
+    	&copy; 2025 PongSite - All Rights Reserved
+	</footer>`;
 }[]

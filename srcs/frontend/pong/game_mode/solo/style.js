@@ -5,19 +5,6 @@ export function firstPaddle(context, element)
 {
 	context.fillStyle = element.color;
 	context.shadowColor = "rgba(0, 125, 255, 0.7)";
-	context.shadowOffsetX = 3;
-	context.shadowOffsetY = 1;
-	context.shadowBlur = 6;
-
-	context.fillRect(element.x, element.y, element.width, element.height);
-	resetStyle(context);
-}
-
-//raquette playerTwo
-export function secondPaddle(context, element)
-{
-	context.fillStyle = element.color;
-	context.shadowColor = "rgba(0, 125, 255, 0.7)";
 	context.shadowOffsetX = -3;
 	context.shadowOffsetY = 1;
 	context.shadowBlur = 6;
@@ -39,7 +26,7 @@ export function ballStyle(context, element)
     context.arc(
         element.x + element.width / 2, // Centre X
         element.y + element.height / 2, // Centre Y
-        element.width / 2, // Rayon
+        element.width / 1.5, // Rayon
         0, // Début de l'angle
         Math.PI * 2 // Fin de l'angle (cercle complet)
     );
