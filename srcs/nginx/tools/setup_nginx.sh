@@ -1,5 +1,9 @@
 #!/bin/bash
-
+cleanup() {
+    echo "Cleaning up..."
+    exit 0
+}
+trap cleanup SIGINT SIGTERM
 
 echo -e "Starting Nginx setup..."
 
@@ -20,4 +24,7 @@ fi
 
 echo -e "Starting Nginx..."
 
-nginx -g 'daemon off;'
+nginx -g 'daemon off;' &
+NGINX_PID=$!
+
+wait ${NGINX_PID}

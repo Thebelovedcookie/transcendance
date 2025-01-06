@@ -78,10 +78,10 @@ DATABASES = {
     'default': {
         # 'ENGINE': 'django.db.backends.sqlite3',
 		'ENGINE': 'django.db.backends.postgresql',
-		"OPTIONS": {
-            "service": "my_service",
-            "passfile": ".my_pgpass",
-        },
+		# "OPTIONS": {
+        #     "service": "my_service",
+        #     "passfile": ".my_pgpass",
+        # },
         'NAME': os.getenv('POSTGRES_DB'),
         'USER': os.getenv('POSTGRES_USER'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD'),

@@ -1,6 +1,6 @@
 DC = docker-compose.yml
 
-all: destroy creat_v build up
+all: clean creat_v build up
 
 network:
 	@docker compose -f $(DC) up -d $(c)
@@ -41,6 +41,10 @@ ps:
 
 login:
 	@docker compose -f $(DC) exec $(c) /bin/bash
+
+clean: destroy
+	@rm -rf $(HOME)/ecole_42/transcendence/data/postgressql_volume
+	@rm -rf $(HOME)/ecole_42/transcendence/data/django_volume
 
 help:
 	@echo    "build  : Services are built once and then tagged, by default as project-service."
