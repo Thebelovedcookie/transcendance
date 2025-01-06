@@ -37,6 +37,7 @@ RUN cd /project && python3.11 manage.py startapp tran_app
 COPY ./confApp/urls.py /project/tran_app/urls.py
 COPY ./confApp/views.py /project/tran_app/views.py
 COPY ./confDjango/urls.py /project/tran_project/urls.py
+COPY ./confDjango/settings.py /project/tran_project/confDjango/settings.py
 
 COPY /tools/setups_backend.sh /setups_backend.sh
 RUN chmod +x /setups_backend.sh
