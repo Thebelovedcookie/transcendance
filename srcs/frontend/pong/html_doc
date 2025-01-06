@@ -1,0 +1,59 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <title>Ma Page</title>
+</head>
+<body>
+    <h1>Bienvenue</h1>
+    <p>Ceci est un paragraphe.</p>
+</body>
+</html> -->
+
+Les balises HTML de base
+
+    Balises de structure :
+        <html> : Conteneur principal de tout le document HTML.
+        <head> : Contient les métadonnées, le titre, et les liens vers des fichiers externes (CSS, JavaScript).
+        <body> : Contient le contenu visible de la page.
+
+    Balises de texte :
+        <h1> à <h6> : Titres, de plus grand (<h1>) à plus petit (<h6>).
+        <p> : Paragraphe.
+        <br> : Saut de ligne.
+        <strong> : Texte en gras (sémantique).
+        <em> : Texte en italique (sémantique).
+        <span> : Conteneur inline pour styliser ou manipuler une partie du texte.
+
+    Balises pour les liens et images :
+        <a href="URL">Texte du lien</a> : Crée un lien hypertexte.
+        <img src="URL" alt="Description"> : Affiche une image.
+
+    Balises pour les listes :
+        <ul> : Liste à puces.
+        <ol> : Liste numérotée.
+        <li> : Élément de liste (utilisé dans <ul> et <ol>).
+
+    Balises de conteneur :
+        <div> : Conteneur block pour organiser ou styliser des sections.
+        <span> : Conteneur inline.
+
+    Balises multimédias :
+        <audio> : Intégration audio.
+        <video> : Intégration vidéo.
+
+    Balises de formulaire :
+        <form> : Formulaire HTML.
+        <input> : Champ de saisie (texte, mot de passe, email, etc.).
+        <button> : Bouton.
+        <label> : Étiquette pour un champ.
+
+Règles importantes :
+
+    Les balises ouvrantes : <balise>.
+    Les balises fermantes : </balise>.
+    Certaines balises sont auto-fermantes : <img>, <br>, etc.
+
+Avec HTML, on peut facilement structurer une page et l’enrichir avec CSS et JavaScript pour ajouter du style et de l’interactivité.
+
+
+<strong><em>Texte en gras et italique</em></strong>
