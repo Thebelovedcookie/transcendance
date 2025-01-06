@@ -12,7 +12,7 @@ services:
     env_file:
       - .env
     networks:
-      - transcendance
+      - transcendence
     # restart: always
 
   postgresql:
@@ -26,7 +26,7 @@ services:
     env_file:
       - .env
     networks:
-      - transcendance
+      - transcendence
     # restart: always
 
   nginx:
@@ -42,7 +42,7 @@ services:
     depends_on:
       - postgresql
     networks:
-      - transcendance
+      - transcendence
     # restart: always
 
 volumes:
@@ -58,9 +58,9 @@ volumes:
     driver: local
     driver_opts:
       type : none
-      device: /home/user/ecole_42/transcendance/data/postgressql_volume
+      device: /home/user/ecole_42/transcendence/data/postgressql_volume
       o : bind
 
 networks:
-  transcendance:
+  transcendence:
     driver: bridge
