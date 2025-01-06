@@ -7,8 +7,8 @@ services:
       - postgresql
     ports:
       - '8000:8000'
-    # volumes:
-    #   - django_volume:/app/data
+    volumes:
+      - django_volume:/project
     env_file:
       - .env
     networks:
@@ -20,7 +20,7 @@ services:
     image: postgresql:1
     build: ./srcs/postgresql/
     volumes:
-      - postgressql_volume:/var/lib/postgresql/data
+      - postgresql_volume:/var/lib/postgresql/data
     ports:
       - '5432:5432'
     env_file:
@@ -35,8 +35,8 @@ services:
     build: ./srcs/nginx/
     ports:
       - '443:443'
-    volumes:
-      - postgressql_volume:/var/lib/postgresql/data
+    # volumes:
+    #   - postgresql_volume:/var/lib/postgresql/data
     env_file:
       - .env
     depends_on:
@@ -46,19 +46,21 @@ services:
     # restart: always
 
 volumes:
-#   django_volume:
-#     name: django_volume
-#     driver: local
-#     driver_opts:
-#       type : none
-#       device: /home/user/ecole_42/transcendance/data/django_volume
-#       o : bind
-  postgressql_volume:
-    name: postgressql_volume
+  django_volume:
+    name: django_volume
     driver: local
     driver_opts:
       type : none
-      device: /home/user/ecole_42/transcendence/data/postgressql_volume
+      device: /home/user/ecole_42/transcendence/data/django_volume
+      # device: /Users/yuuuuki/ecole_42/transcendence/data/django_volume
+      o : bind
+  postgresql_volume:
+    name: postgresql_volume
+    driver: local
+    driver_opts:
+      type : none
+      device: /home/user/ecole_42/transcendence/data/postgresql_volume
+      # device: /Users/yuuuuki/ecole_42/transcendence/data/postgresql_volume
       o : bind
 
 networks:
