@@ -43,10 +43,9 @@ ps:
 login:
 	@docker compose -f $(DC) exec $(c) /bin/bash
 
-clean: down
+clean: destroy
 	@sudo rm -rf $(HOME)/ecole_42/transcendence/data/postgresql_volume
 	@sudo rm -rf $(HOME)/ecole_42/transcendence/data/django_volume
-	@docker volume prune -f
 
 help:
 	@echo    "build  : Services are built once and then tagged, by default as project-service."
