@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 	<!-- head: contient les metadonnes, le titre sur l'onglet,
@@ -20,7 +21,7 @@
 	</head>
 	<body>
 		<div id="dynamicPage">
-			<script src="./index.js" type="module"></script>
+			<script src="{% static 'js/index.js' %}" type="module"></script>
 		</div>
 	</body>
 </html>

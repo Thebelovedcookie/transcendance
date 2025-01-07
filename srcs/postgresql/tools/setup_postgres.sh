@@ -15,7 +15,12 @@ chmod 0700 /var/lib/postgresql/data/*
 postgres -D /var/lib/postgresql/data &
 POSTGRES_PID=$!
 
-psql -U postgres << EOF
+until pg_isready -h localhost -p 5432; do
+    echo "Waiting for PostgreSQL to start..."
+    sleep 1
+done
+
+psql -U postgres <<EOF
     CREATE DATABASE ${POSTGRES_DB};
 
     CREATE USER ${POSTGRES_USER} WITH PASSWORD '${POSTGRES_PASSWORD}';

@@ -22,9 +22,10 @@ COPY ./conf/postgresql.conf /etc/postgresql/17/main/postgresql.conf
 COPY ./tools/setup_postgres.sh /setup_postgres.sh
 RUN chmod +x /setup_postgres.sh
 
-COPY ./conf/.my_pgpass /var/lib/postgresql/.pgpass
-COPY ./conf/.pg_service.conf /var/lib/postgresql/.pg_service.conf
-RUN chmod 0600 /var/lib/postgresql/.pgpass
+COPY ./conf/pg_hba.conf /etc/postgresql/17/main/pg_hba.conf
+# COPY ./conf/.my_pgpass /var/lib/postgresql/.pgpass
+# COPY ./conf/.pg_service.conf /var/lib/postgresql/.pg_service.conf
+# RUN chmod 0600 /var/lib/postgresql/.pgpass
 
 # Switch to postgres user to initialize the database
 USER postgres
@@ -36,6 +37,5 @@ ENV PATH="/usr/lib/postgresql/17/bin:$PATH"
 RUN /usr/lib/postgresql/17/bin/initdb -D /var/lib/postgresql/data
 
 EXPOSE 5432
-
 
 ENTRYPOINT [ "/setup_postgres.sh" ]

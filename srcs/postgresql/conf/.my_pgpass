@@ -1,1 +1,1 @@
-*:5432:postgredb:user:PASSWORD
+*:5432:postgresql:tranuser:transcendence
