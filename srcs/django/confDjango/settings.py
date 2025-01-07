@@ -56,7 +56,9 @@ ROOT_URLCONF = 'tran_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            "/var/www/html"
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

@@ -8,9 +8,11 @@ network:
 creat_v:
 	@sudo mkdir -p $(HOME)/ecole_42/transcendence/data/postgresql_volume
 	@sudo mkdir -p $(HOME)/ecole_42/transcendence/data/django_volume
+	@sudo mkdir -p $(HOME)/ecole_42/transcendence/data/frontend_volume
 	@sudo chown -R $(USER) $(HOME)/ecole_42/transcendence/data
 	@sudo chmod -R 777 $(HOME)/ecole_42/transcendence/data/postgresql_volume
 	@sudo chmod -R 755 $(HOME)/ecole_42/transcendence/data/django_volume
+	@sudo chmod -R 755 $(HOME)/ecole_42/transcendence/data/frontend_volume
 
 build:
 	@docker compose -f $(DC) build $(c)
@@ -46,7 +48,7 @@ login:
 clean: destroy
 	@sudo rm -rf $(HOME)/ecole_42/transcendence/data/postgresql_volume
 	@sudo rm -rf $(HOME)/ecole_42/transcendence/data/django_volume
-
+	@sudo rm -rf $(HOME)/ecole_42/transcendence/data/frontend_volume
 help:
 	@echo    "build  : Services are built once and then tagged, by default as project-service."
 	@echo    "up     : Builds, (re)creates, starts, and attaches to containers for a service."
