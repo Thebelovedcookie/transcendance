@@ -1,5 +1,12 @@
 FROM debian:11
 
-RUN mkdir -p /var/www/html/pong
-RUN chmod -R 755 /var/www/html/pong
-COPY pong/ /var/www/html/pong/
+RUN mkdir -p /project/templates/
+RUN mkdir -p /project/static/
+
+COPY ./templates/ /tmp/templates/
+COPY ./static/ /tmp/static/
+COPY ./entrypoint.sh /entrypoint.sh
+
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]

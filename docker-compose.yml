@@ -9,7 +9,7 @@ services:
       - '8000:8000'
     volumes:
       - django_volume:/project
-      - frontend_volume:/var/www/html
+      # - frontend_volume:/var/www/html
     env_file:
       - .env
     networks:
@@ -53,7 +53,9 @@ services:
     networks:
       - transcendence
     volumes:
-      - frontend_volume:/var/www/html
+      - django_volume:/project
+    depends_on:
+      - django
     # restart: always
 
 volumes:
@@ -74,14 +76,14 @@ volumes:
       device: /Users/yuuuuki/ecole_42/transcendence/data/postgresql_volume
       o : bind
 
-  frontend_volume:
-    name: frontend_volume
-    driver: local
-    driver_opts:
-      type : none
-      # device: /home/user/ecole_42/transcendence/data/frontend_volume
-      device: /Users/yuuuuki/ecole_42/transcendence/data/frontend_volume
-      o : bind
+  # frontend_volume:
+  #   name: frontend_volume
+  #   driver: local
+  #   driver_opts:
+  #     type : none
+  #     # device: /home/user/ecole_42/transcendence/data/frontend_volume
+  #     device: /Users/yuuuuki/ecole_42/transcendence/data/frontend_volume
+  #     o : bind
 
 networks:
   transcendence:
