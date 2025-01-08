@@ -4,7 +4,8 @@ services:
     image: django:1
     build: ./srcs/django/
     depends_on:
-      - postgresql
+      postgresql:
+        condition: service_healthy
     ports:
       - '8000:8000'
     volumes:
@@ -28,6 +29,12 @@ services:
       - .env
     networks:
       - transcendence
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     # restart: always
 
   nginx:
