@@ -1,0 +1,16 @@
+{% extends 'tran_app/component/base.html' %}
+
+{% load static %}
+
+{% block title %}
+<title>PONG / Home</title>
+{% endblock %}
+
+{% block main %}
+<div id="dynamicPage"></div>
+{% endblock %}
+
+{% block javascript %}
+{# <script src="{% static 'js/index.js' %}" type="module"></script> #}
+<script src="{% static 'js/rooter.js' %}" type="module"></script>
+{% endblock %}
