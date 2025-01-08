@@ -1,57 +1,62 @@
-import { handleKeyPress } from './key_movement_solo.js';
-import { firstPaddle, ballStyle, displayScoreOne, displayScoreTwo } from './style.js';
+import { firstPaddleSolo, ballSoloStyle } from './style.js';
 
 
 //----------------------GLOBAL GAME ELEMENT----------------------------//
-let canvas;
-let context;
-let ratioWidth;
-let ratioHeight;
-// let playerOne;
-let playerOne;
-let ball;
-let middle;
+let canvasSolo;
+let contextSolo;
+let ratioWidthSolo;
+let ratioHeightSolo;
+// let playerOneSolo;
+let playerOneSolo;
+let ballSolo;
+let middleSolo;
+let controllerSolo;
 
-function init_canvas(){
-	canvas = document.getElementById("pongGame");
-	context = canvas.getContext("2d");
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight * 0.94;
-	ratioWidth = window.innerWidth / canvas.width;
-	ratioHeight = window.innerHeight / canvas.height;
+function init_canvasSolo(){
+	canvasSolo = document.getElementById("pongGame");
+	contextSolo = canvasSolo.getContext("2d");
+	canvasSolo.width = window.innerWidth;
+	canvasSolo.height = window.innerHeight * 0.94;
+	ratioWidthSolo = window.innerWidth / canvasSolo.width;
+	ratioHeightSolo = window.innerHeight / canvasSolo.height;
 
 	//----------------------------OBJET--------------------------------//
 	
 	//first paddle right side
-	playerOne = new Element({
-		x: canvas.width - 20,
-		y: canvas.height * 0.4,
-		width: canvas.width / 80,
-		height: canvas.height / 6,
+	playerOneSolo = new Element({
+		x: canvasSolo.width - 20,
+		y: canvasSolo.height * 0.4,
+		width: canvasSolo.width / 80,
+		height: canvasSolo.height / 6,
 		color: "#3B2077",
 		gravity: 2,
 	})
 
-	//ball
-	ball = new Element({
-		x: canvas.width / 2,
-		y: canvas.height / 2,
-		width: 15 * ratioWidth,
-		height: 15 * ratioHeight,
+	//ballSolo
+	ballSolo = new Element({
+		x: canvasSolo.width / 2,
+		y: canvasSolo.height / 2,
+		width: 15 * ratioWidthSolo,
+		height: 15 * ratioHeightSolo,
 		color: "#c480da",
 		speed: 30,
 		gravity: 2,
 	})
 
 	//bar au milieu
-	middle = new Element({
-		x: canvas.width/2,
+	middleSolo = new Element({
+		x: canvasSolo.width/2,
 		y: 0,
 		width: 1,
-		height: canvas.height,
+		height: canvasSolo.height,
 		color: "#fff",
 		gravity: 1,
 	})
+
+	controllerSolo = {
+		"o": {pressed: false, func: movePaddleUpP2Solo},
+		"l": {pressed: false, func: movePaddleDownP2Solo},
+		}
 }
 
 //----------------------------CLASS--------------------------------//
@@ -76,126 +81,154 @@ class Element{
 	}
 }
 
-
-
-
 //----------------------------KEY MOVEMENT--------------------------------//
 
-const keyPressListener = (e) => handleKeyPress(e, playerOne, canvas);
+const keyDownHandlerSolo = (e) => {
+	if (controllerSolo[e.key]) {
+		controllerSolo[e.key].pressed = true;  
+	}
+}
 
-// Ajouter l'écouteur
-window.addEventListener("keypress", keyPressListener, false);
+const keyUpHandlerSolo = (e) => {
+	if (controllerSolo[e.key]) {
+		controllerSolo[e.key].pressed = false; 
+	}
+}
+
+document.addEventListener("keydown", keyDownHandlerSolo);
+document.addEventListener("keyup", keyUpHandlerSolo);
+
+const executeMovesSolo = () => {
+	Object.keys(controllerSolo).forEach(key=> {
+		controllerSolo[key].pressed && controllerSolo[key].func()
+	})}
+
+function movePaddleUpP2Solo() {
+	if (controllerSolo["o"].pressed == true && playerOneSolo.y - playerOneSolo.gravity > 0)
+		playerOneSolo.y -= playerOneSolo.gravity * 7;
+}
+
+function movePaddleDownP2Solo() {
+	if (controllerSolo["l"].pressed == true && playerOneSolo.y + playerOneSolo.height + playerOneSolo.gravity < canvasSolo.height)
+		playerOneSolo.y += playerOneSolo.gravity * 7;
+}
+
 
 //----------------------------METHOD--------------------------------//
 
-//if we move the window, we resize object on the canvas
-window.addEventListener('resize', resizeCanvas);
+//if we move the window, we resize object on the canvasSolo
+window.addEventListener('resize', resizeCanvasSolo);
 
-function resizeCanvas() {
-	const ratioWidth = window.innerWidth / canvas.width;
-	const ratioHeight = window.innerHeight / canvas.height;
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight * 0.94;
-	middle.update({
-		x: canvas.width / 2,
-		height: canvas.height,
+function resizeCanvasSolo() {
+	const ratioWidthSolo = window.innerWidth / canvasSolo.width;
+	const ratioHeightSolo = window.innerHeight / canvasSolo.height;
+	canvasSolo.width = window.innerWidth;
+	canvasSolo.height = window.innerHeight * 0.94;
+	middleSolo.update({
+		x: canvasSolo.width / 2,
+		height: canvasSolo.height,
 	});
-	playerOne.update({
-		x: canvas.width - 20,
-		y: canvas.height * 0.4,
-		width: canvas.width / 80,
-		height: canvas.height / 6,
+	playerOneSolo.update({
+		x: canvasSolo.width - 20,
+		y: canvasSolo.height * 0.4,
+		width: canvasSolo.width / 80,
+		height: canvasSolo.height / 6,
 	})
-	ball.update({
-		width: 15 * ratioWidth,
-		height: 15 * ratioHeight,
+	ballSolo.update({
+		width: 15 * ratioWidthSolo,
+		height: 15 * ratioHeightSolo,
 	})
 
-	ballBounce();
+	ballSoloBounce();
 }
 
 //draw elements
 function drawElement(element){
-	context.fillStyle = element.color;
-	context.fillRect(element.x, element.y, element.width, element.height);
+	contextSolo.fillStyle = element.color;
+	contextSolo.fillRect(element.x, element.y, element.width, element.height);
 }
 
-//make ball bounce
-function ballBounce(){
-	if(ball.y + ball.gravity <= 0 || ball.y + ball.gravity >= canvas.height){
-		ball.gravity = ball.gravity * (-1);
-		ball.y += ball.gravity;
-		ball.x += ball.speed;
-	} else if (ball.x <= 0) { 
-		ball.speed = ball.speed * (-1);
-		ball.y += ball.gravity;
-    	ball.x += ball.speed;
+//make ballSolo bounce
+function ballSoloBounce(){
+	if(ballSolo.y + ballSolo.gravity <= 0 || ballSolo.y + ballSolo.gravity >= canvasSolo.height){
+		ballSolo.gravity = ballSolo.gravity * (-1);
+		ballSolo.y += ballSolo.gravity;
+		ballSolo.x += ballSolo.speed;
+	} else if (ballSolo.x <= 0) { 
+		ballSolo.speed = ballSolo.speed * (-1);
+		ballSolo.y += ballSolo.gravity;
+    	ballSolo.x += ballSolo.speed;
 	}
 	else
 	{
-		ball.y += ball.gravity;
-		ball.x += ball.speed;
+		ballSolo.y += ballSolo.gravity;
+		ballSolo.x += ballSolo.speed;
 	}
-	ballWallCollision();
+	ballSoloWallCollision();
 }
 
-function ballWallCollision(){
-	if ((ball.y + ball.gravity <= playerOne.y + playerOne.height
-			&& ball.x + ball.width + ball.speed >= playerOne.x
-			&& ball.y + ball.gravity > playerOne.y))
+function ballSoloWallCollision(){
+	if ((ballSolo.y + ballSolo.gravity <= playerOneSolo.y + playerOneSolo.height
+			&& ballSolo.x + ballSolo.width + ballSolo.speed >= playerOneSolo.x
+			&& ballSolo.y + ballSolo.gravity > playerOneSolo.y))
 	{
-		ball.speed = ball.speed * (-1);
+		ballSolo.speed = ballSolo.speed * (-1);
 	} 
-	if (ball.x + ball.speed > playerOne.x + playerOne.width)
+	if (ballSolo.x + ballSolo.speed > playerOneSolo.x + playerOneSolo.width)
 	{
-		// scoreOne++;
-		resetBall();
+		resetBallSolo();
 	}
-	drawElements();
+	drawElementsSolo();
 }
 
-function resetBall() {
-    ball.x = canvas.width / 2;
-    ball.y = canvas.height / 2;
-    ball.speed = Math.abs(ball.speed) * (Math.random() > 0.5 ? 1 : -1); // Changer la direction aléatoirement
-    ball.gravity = Math.abs(ball.gravity) * (Math.random() > 0.5 ? 1 : -1);
+function resetBallSolo() {
+    ballSolo.x = canvasSolo.width / 2;
+    ballSolo.y = canvasSolo.height / 2;
+    ballSolo.speed = Math.abs(ballSolo.speed) * (Math.random() > 0.5 ? 1 : -1); // Changer la direction aléatoirement
+    ballSolo.gravity = Math.abs(ballSolo.gravity) * (Math.random() > 0.5 ? 1 : -1);
 }
 
-function drawElements(){
-	context.clearRect(0, 0, canvas.width, canvas.height);
-	firstPaddle(context, playerOne);
-	ballStyle(context, ball);
-	drawElement(middle);
-	// displayScoreOne(context, scoreOne, canvas);
-	// displayScoreTwo(context, scoreTwo, canvas);
+function drawElementsSolo(){
+	contextSolo.clearRect(0, 0, canvasSolo.width, canvasSolo.height);
+	firstPaddleSolo(contextSolo, playerOneSolo);
+	ballSoloStyle(contextSolo, ballSolo);
+	drawElement(middleSolo);
+	// displayScoreOne(contextSolo, scoreOne, canvasSolo);
+	// displayScoreTwo(contextSolo, scoreTwo, canvasSolo);
 }
 
-export function resetGame()
+export function resetGameSolo()
 {
-	playerOne.x = canvas.width - 20;
-	playerOne.y = canvas.height * 0.4;
-	playerOne.width = canvas.width / 80;
-	playerOne.height = canvas.height / 6;
-	playerOne.gravity = 2;
+	playerOneSolo.x = canvasSolo.width - 20;
+	playerOneSolo.y = canvasSolo.height * 0.4;
+	playerOneSolo.width = canvasSolo.width / 80;
+	playerOneSolo.height = canvasSolo.height / 6;
+	playerOneSolo.gravity = 2;
 
-	ball.x = canvas.width / 2;
-	ball.y = canvas.height / 2;
-	ball.width = 15 * ratioWidth;
-	ball.height = 15 * ratioHeight;
-	ball.speed = 8;
-	ball.gravity = 3;
+	ballSolo.x = canvasSolo.width / 2;
+	ballSolo.y = canvasSolo.height / 2;
+	ballSolo.width = 15 * ratioWidthSolo;
+	ballSolo.height = 15 * ratioHeightSolo;
+	ballSolo.speed = 8;
+	ballSolo.gravity = 3;
 
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight * 0.94;
-	ratioWidth = window.innerWidth / canvas.width;
-	ratioHeight = window.innerHeight / canvas.height;
+	canvasSolo.width = window.innerWidth;
+	canvasSolo.height = window.innerHeight * 0.94;
+	ratioWidthSolo = window.innerWidth / canvasSolo.width;
+	ratioHeightSolo = window.innerHeight / canvasSolo.height;
+
+	controllerSolo = {
+		"o": {pressed: false, func: movePaddleUpP2Solo},
+		"l": {pressed: false, func: movePaddleDownP2Solo},
+		}
 }
 
 let animationId = null;
 
-function loop(){
-	ballBounce();
-	animationId = requestAnimationFrame(loop);
+function loopSolo(){
+	ballSoloBounce();
+	executeMovesSolo();
+	animationId = requestAnimationFrame(loopSolo);
 }
 
 export function soloMode(){
@@ -204,12 +237,13 @@ export function soloMode(){
 		cancelAnimationFrame(animationId);
 		animationId = null;
 	}
-	init_canvas();
-	resetGame();
-	loop();
+	init_canvasSolo();
+	resetGameSolo();
+	loopSolo();
 }
 
 export function stopGameSolo() {
-	window.removeEventListener("keypress", keyPressListener, false);
-	window.removeEventListener('resize', resizeCanvas);
+	document.removeEventListener("keydown", keyDownHandlerSolo);
+	document.removeEventListener("keyup", keyUpHandlerSolo);
+	window.removeEventListener('resize', resizeCanvasSolo);
 }
