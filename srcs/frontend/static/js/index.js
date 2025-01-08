@@ -73,7 +73,6 @@ function initGamePage()
 function initSoloGame() {
     const content = document.getElementById('pageDynamic');
     content.innerHTML = `<canvas class="bla" id="pongGame"></canvas>
-        <script type="module" src="./game_mode/solo/key_movement_solo.js"></script>
         <script type="module" src="./game_mode/solo/main_solo.js?cachebuster=${Date.now()}"></script>
     `;
 
@@ -89,7 +88,6 @@ function initSoloGame() {
 function initNormalGame() {
     const content = document.getElementById('pageDynamic');
     content.innerHTML = `<canvas class="bla" id="pongGame"></canvas>
-        <script type="module" src="./game_mode/normal/key_movement.js"></script>
         <script type="module" src="./game_mode/normal/main.js?cachebuster=${Date.now()}"></script>
     `;
 

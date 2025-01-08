@@ -1,91 +1,91 @@
 //----------------------------COLOR/STYLE--------------------------------//
 
 //raquette playerOne
-export function firstPaddle(context, element)
+export function firstPaddleSolo(contextSolo, elementSolo)
 {
-	context.fillStyle = element.color;
-	context.shadowColor = "rgba(0, 125, 255, 0.7)";
-	context.shadowOffsetX = -3;
-	context.shadowOffsetY = 1;
-	context.shadowBlur = 6;
+	contextSolo.fillStyle = elementSolo.color;
+	contextSolo.shadowColor = "rgba(0, 125, 255, 0.7)";
+	contextSolo.shadowOffsetX = -3;
+	contextSolo.shadowOffsetY = 1;
+	contextSolo.shadowBlur = 6;
 
-	context.fillRect(element.x, element.y, element.width, element.height);
-	resetStyle(context);
+	contextSolo.fillRect(elementSolo.x, elementSolo.y, elementSolo.width, elementSolo.height);
+	resetStyleSolo(contextSolo);
 }
 
-//ball -> ronde + couleur + ombre
-export function ballStyle(context, element)
+//ballSolo -> ronde + couleur + ombre
+export function ballSoloStyle(contextSolo, elementSolo)
 {
-	context.fillStyle = element.color;
-	context.shadowColor = "rgba(0, 125, 255, 0.7)";
-	context.shadowOffsetX = 0;
-	context.shadowOffsetY = 0;
-	context.shadowBlur = 6;
+	contextSolo.fillStyle = elementSolo.color;
+	contextSolo.shadowColor = "rgba(0, 125, 255, 0.7)";
+	contextSolo.shadowOffsetX = 0;
+	contextSolo.shadowOffsetY = 0;
+	contextSolo.shadowBlur = 6;
 
-	context.beginPath();
-    context.arc(
-        element.x + element.width / 2, // Centre X
-        element.y + element.height / 2, // Centre Y
-        element.width / 1.5, // Rayon
+	contextSolo.beginPath();
+    contextSolo.arc(
+        elementSolo.x + elementSolo.width / 2, // Centre X
+        elementSolo.y + elementSolo.height / 2, // Centre Y
+        elementSolo.width / 1.5, // Rayon
         0, // Début de l'angle
         Math.PI * 2 // Fin de l'angle (cercle complet)
     );
-    context.fill();
-	resetStyle(context);
+    contextSolo.fill();
+	resetStyleSolo(contextSolo);
 }
 
 
 //----------------------------TEXTE--------------------------------//
 
-let scaleFactor = 1;
-let scalingUp = true;
+// let scaleFactorSolo = 1;
+// let scalingUpSolo = true;
 
-//PlayerOne score Text
-export function displayScoreOne(context, scoreOne, canvas) {
-	if (scalingUp) {
-		scaleFactor += 0.001; // Augmente la taille
-		if (scaleFactor >= 1.1) scalingUp = false; // Arrête l'agrandissement
-	} else {
-		scaleFactor -= 0.01; // Diminue la taille
-    if (scaleFactor <= 1) scalingUp = true; // Arrête la réduction
-  }
+// //PlayerOne score Text
+// export function displayScoreOne(contextSolo, scoreOne, canvasSolo) {
+// 	if (scalingUpSolo) {
+// 		scaleFactorSolo += 0.001; // Augmente la taille
+// 		if (scaleFactorSolo >= 1.1) scalingUpSolo = false; // Arrête l'agrandissement
+// 	} else {
+// 		scaleFactorSolo -= 0.01; // Diminue la taille
+//     if (scaleFactorSolo <= 1) scalingUpSolo = true; // Arrête la réduction
+//   }
 
-  context.font = `${30 * scaleFactor}px 'Arial', sans-serif`;
-  context.fillStyle = "#9f53ec";
-  context.textBaseline = "top";
-  context.shadowColor = "rgba(0, 125, 255, 255)";
-  context.shadowOffsetX = 1;
-  context.shadowOffsetY = 0;
-  context.shadowBlur = 3;
-  context.fillText(scoreOne, canvas.width / 2 - 60, 30);
-  resetStyle(context);
-}
+//   contextSolo.font = `${30 * scaleFactorSolo}px 'Arial', sans-serif`;
+//   contextSolo.fillStyle = "#9f53ec";
+//   contextSolo.textBaseline = "top";
+//   contextSolo.shadowColor = "rgba(0, 125, 255, 255)";
+//   contextSolo.shadowOffsetX = 1;
+//   contextSolo.shadowOffsetY = 0;
+//   contextSolo.shadowBlur = 3;
+//   contextSolo.fillText(scoreOne, canvasSolo.width / 2 - 60, 30);
+//   resetStyleSolo(contextSolo);
+// }
 
-//PlayerTwo score Text
-export function displayScoreTwo(context, scoreTwo, canvas){
-	if (scalingUp) {
-		scaleFactor += 0.001; // Augmente la taille
-	if (scaleFactor >= 1.1) scalingUp = false; // Arrête l'agrandissement
-	} else {
-		scaleFactor -= 0.01; // Diminue la taille
-		if (scaleFactor <= 1) scalingUp = true; // Arrête la réduction
-	}
+// //PlayerTwo score Text
+// export function displayScoreTwo(contextSolo, scoreTwo, canvasSolo){
+// 	if (scalingUpSolo) {
+// 		scaleFactorSolo += 0.001; // Augmente la taille
+// 	if (scaleFactorSolo >= 1.1) scalingUpSolo = false; // Arrête l'agrandissement
+// 	} else {
+// 		scaleFactorSolo -= 0.01; // Diminue la taille
+// 		if (scaleFactorSolo <= 1) scalingUpSolo = true; // Arrête la réduction
+// 	}
 	
-	context.font = `${30 * scaleFactor}px 'Arial', sans-serif`;
-	context.fillStyle = "#9f53ec";
-	context.textBaseline = "top";
-	context.shadowColor = "rgba(0, 125, 255, 255)";
-	context.shadowOffsetX = -1;
-	context.shadowOffsetY = 0;
-	context.shadowBlur = 3;
-	context.fillText(scoreTwo, canvas.width / 2 + 45, 30);
-	resetStyle(context);
-}
+// 	contextSolo.font = `${30 * scaleFactorSolo}px 'Arial', sans-serif`;
+// 	contextSolo.fillStyle = "#9f53ec";
+// 	contextSolo.textBaseline = "top";
+// 	contextSolo.shadowColor = "rgba(0, 125, 255, 255)";
+// 	contextSolo.shadowOffsetX = -1;
+// 	contextSolo.shadowOffsetY = 0;
+// 	contextSolo.shadowBlur = 3;
+// 	contextSolo.fillText(scoreTwo, canvasSolo.width / 2 + 45, 30);
+// 	resetStyleSolo(contextSolo);
+// }
 	
-function resetStyle(context)
+function resetStyleSolo(contextSolo)
 {
-	context.shadowColor = "transparent";
-	context.shadowOffsetX = 0;
-	context.shadowOffsetY = 0;
-	context.shadowBlur = 0;
+	contextSolo.shadowColor = "transparent";
+	contextSolo.shadowOffsetX = 0;
+	contextSolo.shadowOffsetY = 0;
+	contextSolo.shadowBlur = 0;
 }

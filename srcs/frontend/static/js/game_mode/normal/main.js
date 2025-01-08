@@ -1,4 +1,4 @@
-import { keyPressListenerPlayerOne, keyPressListenerPlayerTwo } from './key_movement.js';
+// import { executeMoves} from './key_movement.js';
 import { firstPaddle, secondPaddle, ballStyle, displayScoreOne, displayScoreTwo } from './style.js';
 
 
@@ -13,6 +13,7 @@ let ball;
 let middle;
 let scoreOne = 0;
 let scoreTwo = 0;
+let controller;
 
 function init_canvas(){
 	canvas = document.getElementById("pongGame");
@@ -63,6 +64,13 @@ function init_canvas(){
 		color: "#fff",
 		gravity: 1,
 	})
+
+	controller = {
+		"w": {pressed: false, func: movePaddleUpP1},
+		"s": {pressed: false, func: movePaddleDowP1},
+		"o": {pressed: false, func: movePaddleUpP2},
+		"l": {pressed: false, func: movePaddleDownP2},
+		}
 }
 
 //----------------------------CLASS --------------------------------//
@@ -92,11 +100,46 @@ class Element{
 
 //----------------------------KEY MOVEMENT--------------------------------//
 
-const keyPressListenerOne = (e) => keyPressListenerPlayerOne(e, playerOne, canvas);
-const keyPressListenerTwo = (e) => keyPressListenerPlayerTwo(e, playerTwo, canvas);
 
-window.addEventListener("keypress", keyPressListenerOne, false);
-window.addEventListener("keypress", keyPressListenerTwo, false);
+const keyDownHandler = (e) => {
+	if (controller[e.key]) {
+		controller[e.key].pressed = true;  
+	}
+}
+
+const keyUpHandler = (e) => {
+	if (controller[e.key]) {
+		controller[e.key].pressed = false; 
+	}
+}
+
+window.addEventListener("keydown", keyDownHandler);
+window.addEventListener("keyup", keyUpHandler);
+
+const executeMoves = () => {
+	Object.keys(controller).forEach(key=> {
+		controller[key].pressed && controller[key].func()
+	})}
+
+function movePaddleUpP1() {
+	if (controller["w"].pressed == true && playerOne.y-playerOne.gravity > 0)
+		playerOne.y -= playerOne.gravity * 7;
+}
+
+function movePaddleDowP1() {
+	if (controller["s"].pressed == true && playerOne.y + playerOne.height + playerOne.gravity < canvas.height)
+		playerOne.y += playerOne.gravity * 7;
+}
+
+function movePaddleUpP2() {
+	if (controller["o"].pressed == true && playerTwo.y - playerTwo.gravity > 0)
+		playerTwo.y -= playerTwo.gravity * 7;
+}
+
+function movePaddleDownP2() {
+	if (controller["l"].pressed == true && playerTwo.y + playerTwo.height + playerTwo.gravity < canvas.height)
+		playerTwo.y += playerTwo.gravity * 7;
+}
 
 //----------------------------METHOD--------------------------------//
 
@@ -224,6 +267,8 @@ let animationId = null;
 
 function loop(){
 	ballBounce();
+
+	executeMoves();
 	animationId = requestAnimationFrame(loop);
 }
 
@@ -239,7 +284,7 @@ export function normalMode(){
 }
 
 export function stopGameNormal() {
-	window.removeListener("keypress", keyPressListenerOne, false);
-	window.removeListener("keypress", keyPressListenerTwo, false);
+	window.removeEventListener("keydown", keyDownHandler);
+	window.removeEventListener("keyup", keyUpHandler);
 	window.removeEventListener('resize', resizeCanvas);
 }
