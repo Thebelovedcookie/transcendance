@@ -1,34 +1,5 @@
-import { injectNavbar } from "./nav_bar.js";
 import { normalMode, stopGameNormal } from "./game_mode/normal/main.js";
 import { soloMode, stopGameSolo } from "./game_mode/solo/main_solo.js";
-
-const style = document.createElement('style');
-style.textContent = `
-    body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-        background-color: #D3D3D333;
-    }
-    
-    canvas {
-        display: block;
-        background-color: black;
-    }
-`;
-document.head.appendChild(style);
-
-//ajout de la navbar
-function navBar()
-{
-    const content = document.getElementById('dynamicPage');
-    content.innerHTML = `<div id="navbar"></div>`;
-    const contentnavbar = document.getElementById('navbar');
-    contentnavbar.innerHTML = injectNavbar(); 
-}
-navBar();
 
 //ajout de la page Dynamic
 function gamePage()
@@ -106,9 +77,9 @@ function showHome() {
     const content = document.getElementById('pageDynamic');
     content.innerHTML = `
         <h1 style="color: gray;">Welcome to PongSite</h1>
-            
+
     `;
-    
+
     document.getElementById('gameLink').addEventListener('click', function(event) {
         event.preventDefault();
         initGamePage();
@@ -120,5 +91,5 @@ function showHome() {
     });
 };
 
-    
+
 showHome(); // Appel initial pour afficher la page d'accueil
