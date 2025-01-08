@@ -47,6 +47,35 @@ export function ballStyle(context, element)
 	resetStyle(context);
 }
 
+export function drawDashedLine(context, canvas) {
+    const dashLength = 20;  // Longueur des segments de la ligne pointillée
+    const spaceLength = 10; // Longueur des espaces entre les segments
+    const centerX = canvas.width / 2;  // X du centre de la ligne
+    const startY = 0;  // Début de la ligne (haut de l'écran)
+    const endY = canvas.height;  // Fin de la ligne (bas de l'écran)
+
+    // Configuration de la couleur et de la largeur de la ligne
+    context.strokeStyle = "#fff";  // Blanc
+    context.lineWidth = 2;  // Largeur de la ligne
+
+    // Calculer le nombre de segments nécessaires
+    let currentY = startY;
+
+    // Commencer à dessiner la ligne
+    context.beginPath();
+
+    while (currentY < endY) {
+        // Dessiner un segment
+        context.moveTo(centerX, currentY);
+        context.lineTo(centerX, currentY + dashLength);
+
+        // Avancer à la position suivante (pour le prochain segment)
+        currentY += dashLength + spaceLength;  // Ajouter un segment + un espace
+    }
+
+    // Appliquer le tracé
+    context.stroke();
+}
 
 //----------------------------TEXTE--------------------------------//
 

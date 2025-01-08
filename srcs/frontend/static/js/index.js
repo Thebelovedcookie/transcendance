@@ -42,6 +42,7 @@ function initGamePage()
 
 //mode de jeux solo
 function initSoloGame() {
+    stopGameNormal();
     const content = document.getElementById('pageDynamic');
     content.innerHTML = `<canvas class="bla" id="pongGame"></canvas>
         <script type="module" src="./game_mode/solo/main_solo.js?cachebuster=${Date.now()}"></script>
@@ -53,10 +54,17 @@ function initSoloGame() {
         stopGameSolo();
         showHome();
     });
+
+    document.getElementById('gameLink').addEventListener('click', function(event) {
+        event.preventDefault();
+        stopGameSolo();
+        initGamePage();
+    });
 }
 
 //mode de jeu normal
 function initNormalGame() {
+    stopGameSolo();
     const content = document.getElementById('pageDynamic');
     content.innerHTML = `<canvas class="bla" id="pongGame"></canvas>
         <script type="module" src="./game_mode/normal/main.js?cachebuster=${Date.now()}"></script>
@@ -67,6 +75,12 @@ function initNormalGame() {
         event.preventDefault();
         stopGameNormal();
         showHome();
+    });
+
+    document.getElementById('gameLink').addEventListener('click', function(event) {
+        event.preventDefault();
+        stopGameNormal();
+        initGamePage();
     });
 }
 
