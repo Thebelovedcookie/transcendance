@@ -1,5 +1,5 @@
 // import { executeMoves} from './key_movement.js';
-import { firstPaddle, secondPaddle, ballStyle, displayScoreOne, displayScoreTwo } from './style.js';
+import { firstPaddle, secondPaddle, ballStyle, drawDashedLine, displayScoreOne, displayScoreTwo } from './style.js';
 
 
 //----------------------GLOBAL GAME ELEMENT----------------------------//
@@ -10,7 +10,6 @@ let ratioHeight;
 let playerOne;
 let playerTwo;
 let ball;
-let middle;
 let scoreOne = 0;
 let scoreTwo = 0;
 let controller;
@@ -55,16 +54,6 @@ function init_canvas(){
 		gravity: 2,
 	})
 
-	//bar au milieu
-	middle = new Element({
-		x: canvas.width/2,
-		y: 0,
-		width: 1,
-		height: canvas.height,
-		color: "#fff",
-		gravity: 1,
-	})
-
 	controller = {
 		"w": {pressed: false, func: movePaddleUpP1},
 		"s": {pressed: false, func: movePaddleDowP1},
@@ -93,10 +82,9 @@ class Element{
 		this.height = height !== undefined ? height : this.height;
 		this.speed = speed !== undefined ? speed : this.speed;
 	}
+
+	
 }
-
-
-
 
 //----------------------------KEY MOVEMENT--------------------------------//
 
@@ -112,9 +100,6 @@ const keyUpHandler = (e) => {
 		controller[e.key].pressed = false; 
 	}
 }
-
-window.addEventListener("keydown", keyDownHandler);
-window.addEventListener("keyup", keyUpHandler);
 
 const executeMoves = () => {
 	Object.keys(controller).forEach(key=> {
@@ -151,10 +136,7 @@ function resizeCanvas() {
 	const ratioHeight = window.innerHeight / canvas.height;
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight * 0.94;
-	middle.update({
-		x: canvas.width / 2,
-		height: canvas.height,
-	});
+
 	playerTwo.update({
 		x: canvas.width - 20,
 		y: canvas.height * 0.4,
@@ -172,12 +154,6 @@ function resizeCanvas() {
 	})
 
 	ballBounce();
-}
-
-//draw elements
-function drawElement(element){
-	context.fillStyle = element.color;
-	context.fillRect(element.x, element.y, element.width, element.height);
 }
 
 //make ball bounce
@@ -211,7 +187,6 @@ function ballWallCollision(){
 		scoreOne++;
 		resetBall();
 	}
-
 	drawElements();
 }
 
@@ -227,7 +202,7 @@ function drawElements(){
 	firstPaddle(context, playerOne);
 	secondPaddle(context, playerTwo);
 	ballStyle(context, ball);
-	drawElement(middle);
+	drawDashedLine(context, canvas);
 	displayScoreOne(context, scoreOne, canvas);
 	displayScoreTwo(context, scoreTwo, canvas);
 }
@@ -261,6 +236,16 @@ export function resetGame()
 	canvas.height = window.innerHeight * 0.94;
 	ratioWidth = window.innerWidth / canvas.width;
 	ratioHeight = window.innerHeight / canvas.height;
+
+	controller = {
+		"w": {pressed: false, func: movePaddleUpP1},
+		"s": {pressed: false, func: movePaddleDowP1},
+		"o": {pressed: false, func: movePaddleUpP2},
+		"l": {pressed: false, func: movePaddleDownP2},
+	}
+
+	window.addEventListener("keydown", keyDownHandler);
+	window.addEventListener("keyup", keyUpHandler);
 }
 
 let animationId = null;

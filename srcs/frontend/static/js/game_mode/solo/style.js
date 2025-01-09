@@ -34,54 +34,37 @@ export function ballSoloStyle(contextSolo, elementSolo)
 	resetStyleSolo(contextSolo);
 }
 
+export function drawDashedLineSolo(contextSolo, canvasSolo) {
+    const dashLength = 20;  // Longueur des segments de la ligne pointillée
+    const spaceLength = 10; // Longueur des espaces entre les segments
+    const centerX = canvasSolo.width / 2;  // X du centre de la ligne
+    const startY = 0;  // Début de la ligne (haut de l'écran)
+    const endY = canvasSolo.height;  // Fin de la ligne (bas de l'écran)
 
-//----------------------------TEXTE--------------------------------//
+    // Configuration de la couleur et de la largeur de la ligne
+    contextSolo.strokeStyle = "#fff";  // Blanc
+    contextSolo.lineWidth = 2;  // Largeur de la ligne
 
-// let scaleFactorSolo = 1;
-// let scalingUpSolo = true;
+    // Calculer le nombre de segments nécessaires
+    let currentY = startY;
 
-// //PlayerOne score Text
-// export function displayScoreOne(contextSolo, scoreOne, canvasSolo) {
-// 	if (scalingUpSolo) {
-// 		scaleFactorSolo += 0.001; // Augmente la taille
-// 		if (scaleFactorSolo >= 1.1) scalingUpSolo = false; // Arrête l'agrandissement
-// 	} else {
-// 		scaleFactorSolo -= 0.01; // Diminue la taille
-//     if (scaleFactorSolo <= 1) scalingUpSolo = true; // Arrête la réduction
-//   }
+    // Commencer à dessiner la ligne
+    contextSolo.beginPath();
 
-//   contextSolo.font = `${30 * scaleFactorSolo}px 'Arial', sans-serif`;
-//   contextSolo.fillStyle = "#9f53ec";
-//   contextSolo.textBaseline = "top";
-//   contextSolo.shadowColor = "rgba(0, 125, 255, 255)";
-//   contextSolo.shadowOffsetX = 1;
-//   contextSolo.shadowOffsetY = 0;
-//   contextSolo.shadowBlur = 3;
-//   contextSolo.fillText(scoreOne, canvasSolo.width / 2 - 60, 30);
-//   resetStyleSolo(contextSolo);
-// }
+    while (currentY < endY) {
+        // Dessiner un segment
+        contextSolo.moveTo(centerX, currentY);
+        contextSolo.lineTo(centerX, currentY + dashLength);
 
-// //PlayerTwo score Text
-// export function displayScoreTwo(contextSolo, scoreTwo, canvasSolo){
-// 	if (scalingUpSolo) {
-// 		scaleFactorSolo += 0.001; // Augmente la taille
-// 	if (scaleFactorSolo >= 1.1) scalingUpSolo = false; // Arrête l'agrandissement
-// 	} else {
-// 		scaleFactorSolo -= 0.01; // Diminue la taille
-// 		if (scaleFactorSolo <= 1) scalingUpSolo = true; // Arrête la réduction
-// 	}
-	
-// 	contextSolo.font = `${30 * scaleFactorSolo}px 'Arial', sans-serif`;
-// 	contextSolo.fillStyle = "#9f53ec";
-// 	contextSolo.textBaseline = "top";
-// 	contextSolo.shadowColor = "rgba(0, 125, 255, 255)";
-// 	contextSolo.shadowOffsetX = -1;
-// 	contextSolo.shadowOffsetY = 0;
-// 	contextSolo.shadowBlur = 3;
-// 	contextSolo.fillText(scoreTwo, canvasSolo.width / 2 + 45, 30);
-// 	resetStyleSolo(contextSolo);
-// }
-	
+        // Avancer à la position suivante (pour le prochain segment)
+        currentY += dashLength + spaceLength;  // Ajouter un segment + un espace
+    }
+
+    // Appliquer le tracé
+    contextSolo.stroke();
+}
+
+
 function resetStyleSolo(contextSolo)
 {
 	contextSolo.shadowColor = "transparent";

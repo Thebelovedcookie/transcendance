@@ -7,7 +7,10 @@
 {% endblock %}
 
 {% block main %}
-<div id="dynamicPage">
-    <script src="{% static 'js/index.js' %}" type="module"></script>
-</div>
+<div id="dynamicPage"></div>
+{% endblock %}
+
+{% block javascript %}
+{# <script src="{% static 'js/index.js' %}" type="module"></script> #}
+<script src="{% static 'js/rooter.js' %}" type="module"></script>
 {% endblock %}
