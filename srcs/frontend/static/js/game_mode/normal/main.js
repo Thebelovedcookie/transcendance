@@ -29,7 +29,7 @@ function init_canvas(){
 	y: canvas.height * 0.4,
 	width: canvas.width / 80,
 	height: canvas.height / 6,
-	color: "#3B2077",
+	color: "#FFFFFF",
 	gravity: 2,
 	})
 	
@@ -39,7 +39,7 @@ function init_canvas(){
 		y: canvas.height * 0.4,
 		width: canvas.width / 80,
 		height: canvas.height / 6,
-		color: "#3B2077",
+		color: "#FFFFFF",
 		gravity: 2,
 	})
 
@@ -49,7 +49,7 @@ function init_canvas(){
 		y: canvas.height / 2,
 		width: 15 * ratioWidth,
 		height: 15 * ratioHeight,
-		color: "#c480da",
+		color: "#FFFFFF",
 		speed: 30,
 		gravity: 2,
 	})
@@ -85,6 +85,13 @@ class Element{
 
 	
 }
+
+//----------------------------SOUND EFFECT--------------------------------//
+
+let myAudio = null;
+let BipWall = null;
+
+
 
 //----------------------------KEY MOVEMENT--------------------------------//
 
@@ -162,21 +169,24 @@ function ballBounce(){
 		ball.gravity = ball.gravity * (-1);
 		ball.y += ball.gravity;
 		ball.x += ball.speed;
+		BipWall.play();
 	} else {
 		ball.y += ball.gravity;
 		ball.x += ball.speed;
+		
 	}
 	ballWallCollision();
 }
 
 function ballWallCollision(){
 	if ((ball.y + ball.gravity <= playerTwo.y + playerTwo.height
-			&& ball.x + ball.width + ball.speed >= playerTwo.x
-			&& ball.y + ball.gravity > playerTwo.y) ||
-			(ball.y + ball.gravity >= playerOne.y &&
+		&& ball.x + ball.width + ball.speed >= playerTwo.x
+		&& ball.y + ball.gravity > playerTwo.y) ||
+		(ball.y + ball.gravity >= playerOne.y &&
 			ball.y + ball.gravity <= playerOne.y + playerOne.height &&
 			ball.x + ball.speed <= playerOne.x + playerOne.width))
 	{
+		myAudio.play();
 		ball.speed = ball.speed * (-1);
 	} else if (ball.x + ball.speed < playerOne.x)
 	{
@@ -211,15 +221,15 @@ export function resetGame()
 {
 	playerOne.x = 5;
 	playerOne.y = canvas.height * 0.4;
-	playerOne.width = canvas.width / 80;
-	playerOne.height = canvas.height / 6;
+	playerOne.width = canvas.width / 90;
+	playerOne.height = canvas.height / 10;
 	playerOne.gravity = 2;
 
 
 	playerTwo.x = canvas.width - 20;
 	playerTwo.y = canvas.height * 0.4;
-	playerTwo.width = canvas.width / 80;
-	playerTwo.height = canvas.height / 6;
+	playerTwo.width = canvas.width / 90;
+	playerTwo.height = canvas.height / 10;
 	playerTwo.gravity = 2;
 
 	ball.x = canvas.width / 2;
@@ -246,6 +256,8 @@ export function resetGame()
 
 	window.addEventListener("keydown", keyDownHandler);
 	window.addEventListener("keyup", keyUpHandler);
+	myAudio = new Audio('/static/js/game_mode/normal/bipPaddle.mp3');
+	BipWall = new Audio('/static/js/game_mode/normal/bipWall.mp3');
 }
 
 let animationId = null;
