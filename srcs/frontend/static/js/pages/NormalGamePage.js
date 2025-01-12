@@ -22,3 +22,11 @@ export class NormalGamePage {
         normalMode();
     }
 }
+
+/* 
+
+    This is exactly the same thing than the HomePage
+
+    but this time we are adding the run of the normalMode() game:
+
+*/

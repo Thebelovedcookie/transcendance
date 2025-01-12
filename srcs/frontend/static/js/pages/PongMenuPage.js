@@ -23,3 +23,11 @@ export class PongMenuPage {
         this.container.appendChild(menuContent);
     }
 }
+
+/* 
+
+    This is exactly the same thing than the HomePage
+
+    but this time we are sending the PongMenuPage
+
+*/

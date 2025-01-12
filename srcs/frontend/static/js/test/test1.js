@@ -274,17 +274,12 @@ function loop(){
 	ballBounce();
 
 	executeMoves();
-	animationId = requestAnimationFrame(loop);
+	// animationId = requestAnimationFrame(loop);
 }
 
 //stopping the last animationID if he exist; Initialisation of the canvas; 
 //reset the game entirely; Starting the game;
-export function normalMode(){
-	if (animationId)
-	{
-		cancelAnimationFrame(animationId);
-		animationId = null;
-	}
+function normalMode(){
 	init_canvas();
 	resetGame();
 	loop();
@@ -295,4 +290,22 @@ export function stopGameNormal() {
 	window.removeEventListener("keydown", keyDownHandler);
 	window.removeEventListener("keyup", keyUpHandler);
 	window.removeEventListener('resize', resizeCanvas);
+}
+
+export function test27() {
+	fetch('http://localhost/api/')  // Assurez-vous que l'URL correspond à celle définie dans Django
+	.then(response => {
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+		return response.json()
+	})
+	.then(data2 => {
+		console.log('Réponse1 reçue du backend:', JSON.stringify(data2));
+		console.log('Position de playerOne:', data2.playerOne);
+	})
+	.catch(error => {
+		console.error('Erreur lors de la requête:', error);
+	});
+	normalMode();
 }

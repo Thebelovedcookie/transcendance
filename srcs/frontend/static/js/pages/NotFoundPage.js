@@ -25,3 +25,11 @@ export class NotFoundPage {
         this.container.appendChild(notFoundContent);
     }
 }
+
+/* 
+
+    This is exactly the same thing than the HomePage
+
+    but this time we didn't find the page we were asking for.
+
+*/

@@ -29,15 +29,15 @@ RUN pip3.11 install django && pip install python-decouple
 
 RUN mkdir project
 
-RUN django-admin startproject tran_project project
+RUN django-admin startproject backend_project project
 
-RUN cd /project && python3.11 manage.py startapp tran_app
+RUN cd /project && python3.11 manage.py startapp backend_app
 
 #config des urls
-COPY ./confApp/urls.py /project/tran_app/urls.py
-COPY ./confApp/views.py /project/tran_app/views.py
-COPY ./confDjango/urls.py /project/tran_project/urls.py
-COPY ./confDjango/settings.py /project/tran_project/settings.py
+COPY ./confApp/urls.py /project/backend_app/urls.py
+COPY ./confApp/views.py /project/backend_app/views.py
+COPY ./confDjango/urls.py /project/backend_project/urls.py
+COPY ./confDjango/settings.py /project/backend_project/settings.py
 
 COPY /tools/setups_backend.sh /setups_backend.sh
 RUN chmod +x /setups_backend.sh
