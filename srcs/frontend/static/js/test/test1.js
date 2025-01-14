@@ -55,10 +55,10 @@ function init_canvas(){
 	})
 
 	controller = {
-		"w": {pressed: false, func: movePaddleUpP1},
-		"s": {pressed: false, func: movePaddleDowP1},
-		"o": {pressed: false, func: movePaddleUpP2},
-		"l": {pressed: false, func: movePaddleDownP2},
+		"w": {pressed: false},
+		"s": {pressed: false},
+		"o": {pressed: false},
+		"l": {pressed: false},
 		}
 }
 
@@ -109,31 +109,6 @@ const keyUpHandler = (e) => {
 	}
 }
 
-const executeMoves = () => {
-	Object.keys(controller).forEach(key=> {
-		controller[key].pressed && controller[key].func()
-	})}
-
-function movePaddleUpP1() {
-	if (controller["w"].pressed == true && playerOne.y-playerOne.gravity > 0)
-		playerOne.y -= playerOne.gravity * 7;
-}
-
-function movePaddleDowP1() {
-	if (controller["s"].pressed == true && playerOne.y + playerOne.height + playerOne.gravity < canvas.height)
-		playerOne.y += playerOne.gravity * 7;
-}
-
-function movePaddleUpP2() {
-	if (controller["o"].pressed == true && playerTwo.y - playerTwo.gravity > 0)
-		playerTwo.y -= playerTwo.gravity * 7;
-}
-
-function movePaddleDownP2() {
-	if (controller["l"].pressed == true && playerTwo.y + playerTwo.height + playerTwo.gravity < canvas.height)
-		playerTwo.y += playerTwo.gravity * 7;
-}
-
 //----------------------------METHOD--------------------------------//
 
 //if we move the window, we resize object on the canvas
@@ -160,56 +135,7 @@ function resizeCanvas() {
 		width: 15 * ratioWidth,
 		height: 15 * ratioHeight,
 	})
-
-	ballBounce();
 }
-
-//make ball bounce against down and up wall
-function ballBounce(){
-	if(ball.y + ball.gravity <= 0 || ball.y + ball.gravity >= canvas.height){
-		ball.gravity = ball.gravity * (-1);
-		ball.y += ball.gravity;
-		ball.x += ball.speed;
-		BipWall.play();
-	} else {
-		ball.y += ball.gravity;
-		ball.x += ball.speed;
-		
-	}
-	ballWallCollision();
-}
-
-//make ball bounce against paddle1 or paddle2
-//adding one to the score if not bouncing
-function ballWallCollision(){
-	if ((ball.y + ball.gravity <= playerTwo.y + playerTwo.height
-		&& ball.x + ball.width + ball.speed >= playerTwo.x
-		&& ball.y + ball.gravity > playerTwo.y) ||
-		(ball.y + ball.gravity >= playerOne.y &&
-			ball.y + ball.gravity <= playerOne.y + playerOne.height &&
-			ball.x + ball.speed <= playerOne.x + playerOne.width))
-	{
-		myAudio.play();
-		ball.speed = ball.speed * (-1);
-	} else if (ball.x + ball.speed < playerOne.x)
-	{
-		scoreTwo++;
-		resetBall();
-	} else if (ball.x + ball.speed > playerTwo.x + playerTwo.width)
-	{
-		scoreOne++;
-		resetBall();
-	}
-	drawElements();
-}
-
-function resetBall() {
-    ball.x = canvas.width / 2;
-    ball.y = canvas.height / 2;
-    ball.speed = Math.abs(ball.speed) * (Math.random() > 0.5 ? 1 : -1); // Changer la direction aléatoirement
-    ball.gravity = Math.abs(ball.gravity) * (Math.random() > 0.5 ? 1 : -1);
-}
-
 
 //draw all element(paddle1/2, ball, score)
 function drawElements(){
@@ -256,10 +182,10 @@ export function resetGame()
 	ratioHeight = window.innerHeight / canvas.height;
 
 	controller = {
-		"w": {pressed: false, func: movePaddleUpP1},
-		"s": {pressed: false, func: movePaddleDowP1},
-		"o": {pressed: false, func: movePaddleUpP2},
-		"l": {pressed: false, func: movePaddleDownP2},
+		"w": {pressed: false},
+		"s": {pressed: false},
+		"o": {pressed: false},
+		"l": {pressed: false},
 	}
 
 	window.addEventListener("keydown", keyDownHandler);
@@ -268,44 +194,166 @@ export function resetGame()
 	BipWall = new Audio('/static/js/game_mode/normal/bipWall.mp3');
 }
 
-let animationId = null;
-
-function loop(){
-	ballBounce();
-
-	executeMoves();
-	// animationId = requestAnimationFrame(loop);
-}
 
 //stopping the last animationID if he exist; Initialisation of the canvas; 
 //reset the game entirely; Starting the game;
 function normalMode(){
-	init_canvas();
-	resetGame();
-	loop();
+	drawElements();
 }
+
+let gameState;
+function initGameState() {
+	gameState = {
+		player1: {
+			x: playerOne.x,
+			y: playerOne.y,
+			width: playerOne.width,
+			height: playerOne.height,
+			color: "white",
+			gravity: playerOne.gravity,
+		},
+		player2: {
+			x: playerTwo.x,
+			y: playerTwo.y,
+			width: playerTwo.width,
+			height: playerTwo.height,
+			color: "white",
+			gravity: playerTwo.gravity,
+		},
+		ball1: {
+			x: ball.x,
+			y: ball.y,
+			width: ball.width,
+			height: ball.height,
+			color: "white", // Par exemple
+			speed: ball.speed,
+			gravity: ball.gravity,
+		},
+		canvas1: {
+			height: canvas.height,
+			width: canvas.width,
+		},
+		scores1: {
+			playerOne: 0,
+			playerTwo: 0,
+		},
+		p1up: controller["w"].pressed,
+		p1down: controller["s"].pressed,
+		p2up: controller["o"].pressed,
+		p2down: controller["l"].pressed,
+	};
+}
+
+function update(gameState)
+{
+	playerOne.x = gameState.player1.x;
+	playerOne.y = gameState.player1.y;
+	playerOne.height = gameState.player1.height;
+	playerOne.width = gameState.player1.width;
+	playerOne.gravity = gameState.player1.gravity;
+
+	playerTwo.x = gameState.player2.x;
+	playerTwo.y = gameState.player2.y;
+	playerTwo.height = gameState.player2.height;
+	playerTwo.width = gameState.player2.width;
+	playerTwo.gravity = gameState.player2.gravity;
+
+	ball.x = gameState.ball1.x;
+	ball.y = gameState.ball1.y;
+	ball.height = gameState.ball1.height;
+	ball.width = gameState.ball1.width;
+	ball.gravity = gameState.ball1.gravity;
+	ball.speed = gameState.ball1.speed;
+}
+
+var exampleSocket = new WebSocket("ws://django:8000/api/");
+  
+export function startGame() {
+
+	exampleSocket.onopen = function (event) {
+		console.log("Connexion WebSocket établie !");
+		
+		// Préparer les données à envoyer
+		const message = {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(gameState),
+		};
+	
+		// Envoyer les données sous forme de chaîne JSON
+		exampleSocket.send(JSON.stringify(message));
+	};
+	
+	// Gestionnaire pour les messages reçus
+	exampleSocket.onmessage = function (event) {
+		console.log("Message reçu du serveur :", event.data);
+	};
+	
+	// Gestionnaire pour les erreurs
+	exampleSocket.onerror = function (event) {
+		console.error("Erreur WebSocket :", event);
+	};
+	
+	// Gestionnaire pour la fermeture de la connexion
+	exampleSocket.onclose = function (event) {
+		console.warn("Connexion WebSocket fermée :", event);
+	};
+}
+
+
+// export function startGame() {
+//     init_canvas();
+//     resetGame();
+//     initGameState();
+
+//     console.log(playerOne.x);
+
+//     const updateGame = () => {
+//         // Envoyer la requête à l'API
+//         fetch('http://localhost/api/', {
+//             method: 'POST',
+//             headers: { 'Content-Type': 'application/json' },
+//             body: JSON.stringify(gameState),
+//             timeout: 1000,
+//         })
+//             .then((response) => {
+//                 if (!response.ok) {
+//                     throw new Error(`HTTP error! status: ${response.status}`);
+//                 }
+//                 return response.json();
+//             })
+//             .then((data) => {
+
+// 				console.log(data.player1);
+// 				console.log(data.player2);
+//                 // Mettre à jour l'état du jeu avec les nouvelles données reçues
+//                 gameState.player1 = data.player1;
+//                 gameState.player2 = data.player2;
+//                 gameState.ball1 = data.ball1;
+//                 gameState.scores1 = data.scores1;
+
+//                 // Mettre à jour le rendu du jeu
+//                 update();
+//                 normalMode();
+
+//                 // Demander à ce que la fonction updateGame soit appelée à la prochaine frame
+//                 requestAnimationFrame(updateGame);
+//             })
+//             .catch((error) => {
+//                 console.error('Erreur lors de la requête:', error);
+
+//                 // Replanifier l'appel à updateGame même en cas d'erreur pour ne pas bloquer le jeu
+//             });
+//     };
+
+//     // Démarrer la boucle de mise à jour
+//     updateGame();
+// }
+
 
 //Stopping the listener of the playerPaddle and the Resize canvas
 export function stopGameNormal() {
 	window.removeEventListener("keydown", keyDownHandler);
 	window.removeEventListener("keyup", keyUpHandler);
 	window.removeEventListener('resize', resizeCanvas);
-}
-
-export function test27() {
-	fetch('http://localhost/api/')  // Assurez-vous que l'URL correspond à celle définie dans Django
-	.then(response => {
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
-		}
-		return response.json()
-	})
-	.then(data2 => {
-		console.log('Réponse1 reçue du backend:', JSON.stringify(data2));
-		console.log('Position de playerOne:', data2.playerOne);
-	})
-	.catch(error => {
-		console.error('Erreur lors de la requête:', error);
-	});
-	normalMode();
 }

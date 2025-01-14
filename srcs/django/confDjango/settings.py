@@ -71,6 +71,14 @@ TEMPLATES = [
     },
 ]
 
+#test
+CORS_ALLOWED_ORIGINS = [
+    "http://django:8000",
+]
+
+ASGI_APPLICATION = "backend_project.asgi.application"
+#test
+
 WSGI_APPLICATION = 'backend_project.wsgi.application'
 
 

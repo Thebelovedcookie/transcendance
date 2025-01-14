@@ -34,10 +34,8 @@ RUN django-admin startproject backend_project project
 RUN cd /project && python3.11 manage.py startapp backend_app
 
 #config des urls
-COPY ./confApp/urls.py /project/backend_app/urls.py
-COPY ./confApp/views.py /project/backend_app/views.py
-COPY ./confDjango/urls.py /project/backend_project/urls.py
-COPY ./confDjango/settings.py /project/backend_project/settings.py
+COPY ./confApp/* /project/backend_app/
+COPY ./confDjango/* /project/backend_project/
 
 COPY /tools/setups_backend.sh /setups_backend.sh
 RUN chmod +x /setups_backend.sh
@@ -45,6 +43,8 @@ RUN chmod +x /setups_backend.sh
 EXPOSE 8000
 RUN apt update && apt install -y postgresql-client
 RUN pip install psycopg[binary]
+
+
 
 
 ENTRYPOINT [ "/setups_backend.sh" ]

@@ -1,4 +1,4 @@
-import { test27 } from '../test/test1.js';
+import { startGame } from '../test/test1.js';
 
 
 export class Test {
@@ -19,6 +19,6 @@ export class Test {
         this.container.innerHTML = '';
         this.container.appendChild(homeContent);
 		
-		test27();
+		startGame();
     }
 }
