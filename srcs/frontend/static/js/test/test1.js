@@ -1,30 +1,39 @@
 import { firstPaddle, secondPaddle, ballStyle, drawDashedLine, displayScoreOne, displayScoreTwo } from './style.js';
 
+let canvas = null;
+let context = null;
+
 class GameWebSocket {
-	constructor() {
+    constructor() {
+        canvas = document.getElementById("pongGame");
+        context = canvas.getContext("2d");
+        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth;
+		context.clearRect(0, 0, canvas.width, canvas.height);
+
 		this.socket = null;
 		this.isConnected = false;
 		this.gameLoopInterval = null;
 		this.gameState = {
 			player1: {
 				x: 5,
-				y: window.innerHeight * 0.4,
-				width: window.innerWidth / 80,
-				height: window.innerHeight / 6,
+				y: canvas.height * 0.4,
+				width: canvas.width / 80,
+				height: canvas.height / 6,
 				color: "white",
 				gravity: 2,
 			},
 			player2: {
-				x: window.innerWidth - 20,
-				y: window.innerHeight * 0.4,
-				width: window.innerWidth / 80,
-				height: window.innerHeight / 6,
+				x: canvas.width - 20,
+				y: canvas.height * 0.4,
+				width: canvas.width / 80,
+				height: canvas.height / 6,
 				color: "white",
 				gravity: 2,
 			},
 			ball: {
-				x: window.innerWidth / 2,
-				y: window.innerHeight / 2,
+				x: canvas.width / 2,
+				y: canvas.height / 2,
 				width: 15,
 				height: 15,
 				color: "white",
@@ -132,7 +141,7 @@ class GameWebSocket {
 			this.updatePlayerPositions();
 
 			// Draw every frame (60 FPS)
-			this.drawGame();
+			this.ballBounce();
 
 			// Send state only every N frames
 			this.frameCount++;
@@ -213,16 +222,56 @@ class GameWebSocket {
 			}
 		}
 
-		this.drawGame();
+		this.ballBounce();
 	}
 
+    ballBounce(){
+        if(this.gameState.ball.y + this.gameState.ball.gravity <= 0 || this.gameState.ball.y + this.gameState.ball.gravity >= canvas.height){
+            this.gameState.ball.gravity = this.gameState.ball.gravity * (-1);
+            this.gameState.ball.y += this.gameState.ball.gravity;
+            this.gameState.ball.x += this.gameState.ball.speed;
+            // BipWall.play();
+        } else {
+            this.gameState.ball.y += this.gameState.ball.gravity;
+            this.gameState.ball.x += this.gameState.ball.speed;
+
+        }
+        this.ballWallCollision();
+    }
+
+    //make ball bounce against paddle1 or paddle2
+    //adding one to the score if not bouncing
+    ballWallCollision(){
+        if ((this.gameState.ball.y + this.gameState.ball.gravity <= this.gameState.player2.y + this.gameState.player2.height
+            && this.gameState.ball.x + this.gameState.ball.width + this.gameState.ball.speed >= this.gameState.player2.x
+            && this.gameState.ball.y + this.gameState.ball.gravity > this.gameState.player2.y) ||
+            (this.gameState.ball.y + this.gameState.ball.gravity >= this.gameState.player1.y &&
+                this.gameState.ball.y + this.gameState.ball.gravity <= this.gameState.player1.y + this.gameState.player1.height &&
+                this.gameState.ball.x + this.gameState.ball.speed <= this.gameState.player1.x + this.gameState.player1.width))
+        {
+            // myAudio.play();
+            this.gameState.ball.speed = this.gameState.ball.speed * (-1);
+        } else if (this.gameState.ball.x + this.gameState.ball.speed < this.gameState.player1.x)
+        {
+            this.gameState.scores.playerTwo++;
+            this.resetBall();
+        } else if (this.gameState.ball.x + this.gameState.ball.speed > this.gameState.player2.x + this.gameState.player2.width)
+        {
+            this.gameState.scores.playerOne++;
+            this.resetBall();
+        }
+        this.drawGame();
+    }
+
+    resetBall() {
+        this.gameState.ball.x = canvas.width / 2;
+        this.gameState.ball.y = canvas.height / 2;
+        this.gameState.ball.speed = Math.abs(this.gameState.ball.speed) * (Math.random() > 0.5 ? 1 : -1); // Changer la direction aléatoirement
+        this.gameState.ball.gravity = Math.abs(this.gameState.ball.gravity) * (Math.random() > 0.5 ? 1 : -1);
+    }
+
 	drawGame() {
-		const canvas = document.getElementById("pongGame");
-		if (!canvas) return;
-
-		const context = canvas.getContext("2d");
-		context.clearRect(0, 0, canvas.width, canvas.height);
-
+        context.clearRect(0, 0, canvas.width, canvas.height);
 		firstPaddle(context, this.gameState.player1);
 		secondPaddle(context, this.gameState.player2);
 		ballStyle(context, this.gameState.ball);

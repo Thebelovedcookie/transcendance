@@ -13,17 +13,22 @@ export function secondPaddle(context, element)
 }
 
 //ball -> ronde + couleur + ombre
-export function ballStyle(context, element)
-{
-	context.beginPath();
-    context.arc(
-        element.x + element.width / 2, // Centre X
-        element.y + element.height / 2, // Centre Y
-        element.width / 1.50, // Rayon
-        0, // Début de l'angle
-        Math.PI * 2 // Fin de l'angle (cercle complet)
-    );
-    context.fill();
+export function ballStyle(context, ball) {
+    const ctx	= context;
+    const x		= ball.x;
+    const y		= ball.y;
+    const size	= ball.width;
+
+    // Start new drawing path
+    ctx.beginPath();
+
+    // Draw ball as white circle
+    ctx.fillStyle = "white";
+    ctx.arc(x, y, size / 2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Close the path
+    ctx.closePath();
 }
 
 export function drawDashedLine(context, canvas) {
