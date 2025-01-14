@@ -39,9 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'backend_app',
+    'channels',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -73,13 +76,21 @@ TEMPLATES = [
 
 #test
 CORS_ALLOWED_ORIGINS = [
+    "https://localhost",
+    "https://django",
+    "http://localhost:8000",
     "http://django:8000",
 ]
 
-ASGI_APPLICATION = "backend_project.asgi.application"
-#test
+CORS_ALLOW_CREDENTIALS = True
 
-WSGI_APPLICATION = 'backend_project.wsgi.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer'
+    }
+}
+
+ASGI_APPLICATION = "backend_project.asgi.application"
 
 
 # Database
@@ -146,3 +157,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
+USE_X_FORWARDED_PORT = True

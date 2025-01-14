@@ -42,9 +42,9 @@ RUN chmod +x /setups_backend.sh
 
 EXPOSE 8000
 RUN apt update && apt install -y postgresql-client
-RUN pip install psycopg[binary]
+RUN pip install psycopg[binary] channels[daphne] django-cors-headers
 
-
+WORKDIR /project
 
 
 ENTRYPOINT [ "/setups_backend.sh" ]

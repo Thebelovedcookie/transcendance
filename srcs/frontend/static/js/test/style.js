@@ -3,7 +3,6 @@
 //raquette playerOne
 export function firstPaddle(context, element)
 {
-	console.log("j'affiche");
 	context.fillRect(element.x, element.y, element.width, element.height);
 }
 
@@ -71,11 +70,11 @@ export function displayScoreOne(context, scoreOne, canvas) {
 
 //PlayerTwo score Text
 export function displayScoreTwo(context, scoreTwo, canvas){
-	
+
 	context.font = "90px 'Press Start 2P'";
 	context.fillStyle = "#FFFFFF";
 	context.textBaseline = "top";
-	
+
 	context.fillText(scoreTwo, canvas.width / 2 + 60, 30);
 }
-	
+
