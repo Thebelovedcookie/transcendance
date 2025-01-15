@@ -14,37 +14,7 @@ class GameWebSocket {
 		this.socket = null;
 		this.isConnected = false;
 		this.gameLoopInterval = null;
-		this.gameState = {
-			player1: {
-				x: 5,
-				y: canvas.height * 0.4,
-				width: canvas.width / 80,
-				height: canvas.height / 6,
-				color: "white",
-				gravity: 2,
-			},
-			player2: {
-				x: canvas.width - 20,
-				y: canvas.height * 0.4,
-				width: canvas.width / 80,
-				height: canvas.height / 6,
-				color: "white",
-				gravity: 2,
-			},
-			ball: {
-				x: canvas.width / 2,
-				y: canvas.height / 2,
-				width: 15,
-				height: 15,
-				color: "white",
-				speed: 8,
-				gravity: 3,
-			},
-			scores: {
-				playerOne: 0,
-				playerTwo: 0,
-			}
-		};
+		this.gamestate = null;
 		this.keys = {
 			w: false,
 			s: false,
@@ -92,7 +62,7 @@ class GameWebSocket {
 			this.gameState.player2.y += moveSpeed;
 		}
 	}
-
+	
 	connect() {
 		try {
 			const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -105,7 +75,7 @@ class GameWebSocket {
 			this.socket.onopen = () => {
 				console.log("WebSocket connection established");
 				this.isConnected = true;
-				this.startGameLoop();
+				this.sendInfoStarting();
 			};
 
 			this.socket.onmessage = (event) => {
@@ -143,10 +113,8 @@ class GameWebSocket {
 			// Draw every frame (60 FPS)
 			this.ballBounce();
 
-			// Send state only every N frames
 			this.frameCount++;
 			if (this.frameCount >= (60 / this.sendRate)) {
-				this.sendGameState();
 				this.frameCount = 0;
 			}
 		}, 1000 / 60);  // Still run at 60 FPS locally
@@ -159,30 +127,41 @@ class GameWebSocket {
 		}
 	}
 
-	sendGameState() {
+	sendInfoStarting()
+	{
+		const data = {
+			type: "game.starting",
+			timestamp: Date.now(),
+			start: {
+				"windowHeight": window.innerHeight,
+				"windowWidth": window.innerWidth,
+			}
+		};
+	
+		if (this.isConnected && this.socket) {
+			this.socket.send(JSON.stringify(data));
+		} else {
+			console.warn("WebSocket not connected");
+		}
+	}
+
+	sendBallState() {
 		if (!this.isConnected) return;
 
 		const updates = {
-			type: "game.update",
+			type: "game.ballBounce",
 			timestamp: Date.now(),
-			changes: {}
+			start: {
+				"ball": {
+					"x": this.gameState.ball.x,
+					"y": this.gameState.ball.y,
+					"gravity": this.gameState.ball.gravity,
+					"speed": this.gameState.ball.speed,
+				},
+			}
 		};
 
-		if (this.keys.w || this.keys.s) {
-			updates.changes.player1 = {
-				y: this.gameState.player1.y
-			};
-		}
-
-		if (this.keys.ArrowUp || this.keys.ArrowDown) {
-			updates.changes.player2 = {
-				y: this.gameState.player2.y
-			};
-		}
-
-		if (Object.keys(updates.changes).length > 0) {
-			this.sendMessage(updates);
-		}
+		this.sendMessage(updates);
 	}
 
 	sendMessage(data) {
@@ -195,10 +174,15 @@ class GameWebSocket {
 
 	handleMessage(data) {
 		switch (data.type) {
-			case "game.update":
-				this.updateGameState(data);
+			case "game.starting":
+				this.getInfoFromBackend(data);
+				this.startGameLoop();
+				break;
+			case "game.ballBounce":
+				this.updateBall(data);
 				break;
 			case "error":
+				console.log(data.type);
 				console.error("Server error:", data.message);
 				break;
 			default:
@@ -206,30 +190,52 @@ class GameWebSocket {
 		}
 	}
 
-	updateGameState(data) {
-		if (data.changes) {
-			if (data.changes.player1) {
-				this.gameState.player1 = { ...this.gameState.player1, ...data.changes.player1 };
-			}
-			if (data.changes.player2) {
-				this.gameState.player2 = { ...this.gameState.player2, ...data.changes.player2 };
-			}
-			if (data.changes.ball) {
-				this.gameState.ball = { ...this.gameState.ball, ...data.changes.ball };
-			}
-			if (data.changes.scores) {
-				this.gameState.scores = { ...this.gameState.scores, ...data.changes.scores };
-			}
-		}
+	updateBall(data) {
+		this.gameState.ball.y = data.ball.y;
+		this.gameState.ball.x = data.ball.x;
+		this.gameState.ball.gravity = data.ball.gravity;
+	}
 
-		this.ballBounce();
+	getInfoFromBackend(data)
+	{
+
+		// console.log(data.scores.playerOne, data.scores.playerTwo);
+		this.gameState = {
+			player1: {
+				x: data.player1.x,
+				y: data.player1.y,
+				width: data.player1.width,
+				height: data.player1.height,
+				color: data.player1.color,
+				gravity: data.player1.gravity,
+			},
+			player2: {
+				x: data.player2.x,
+				y: data.player2.y,
+				width: data.player2.width,
+				height: data.player2.height,
+				color: data.player2.color,
+				gravity: data.player2.gravity,
+			},
+			ball: {
+				x: data.ball.x,
+				y: data.ball.y,
+				width: data.ball.width,
+				height: data.ball.height,
+				color: data.ball.color,
+				gravity: data.ball.gravity,
+				speed: data.ball.speed,
+			},
+			scores: {
+				playerOne: data.scores.playerOne,
+				playerTwo: data.scores.playerTwo,
+			}
+		};
 	}
 
     ballBounce(){
         if(this.gameState.ball.y + this.gameState.ball.gravity <= 0 || this.gameState.ball.y + this.gameState.ball.gravity >= canvas.height){
-            this.gameState.ball.gravity = this.gameState.ball.gravity * (-1);
-            this.gameState.ball.y += this.gameState.ball.gravity;
-            this.gameState.ball.x += this.gameState.ball.speed;
+			this.sendBallState();
             // BipWall.play();
         } else {
             this.gameState.ball.y += this.gameState.ball.gravity;
