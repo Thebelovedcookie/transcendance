@@ -5,10 +5,13 @@ body {
 }
 
 /* Center content styles */
+#dynamicPage {
+    height: calc(100vh - 96px);
+}
 .home-container {
     position: relative;
     width: 100%;
-    height: calc(100vh - 96px);
+    height: 100%;
 }
 #ballAnimation {
     position: absolute;
@@ -50,20 +53,18 @@ body {
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
 }
 
-/* Animation class */
-.float {
-    animation: float 2s ease-in-out infinite;
+/* Login card styles */
+.gradient-custom {
+    height: 100%;
 }
-
-@keyframes float {
-    0% {
-        transform: translateY(0px);
-    }
-    50% {
-        transform: translateY(-20px);
-    }
-    100% {
-        transform: translateY(0px);
-    }
+.card {
+    border: none;
+}
+.card .mb-md-5 {
+    border: none !important;
+}
+.card-body {
+    background-color: #2d2d2d;
+    border: none;
 }
 
