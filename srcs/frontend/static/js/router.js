@@ -7,6 +7,11 @@ import { PongMenuPage } from './pages/PongMenuPage.js';
 import { NormalGamePage } from './pages/NormalGamePage.js';
 import { SoloGamePage } from './pages/SoloGamePage.js';
 import { NotFoundPage } from './pages/NotFoundPage.js';
+import { LoginPage } from './pages/LoginPage.js';
+import { RegisterPage } from './pages/RegisterPage.js';
+import { ProfilePage } from './pages/ProfilePage.js';
+import { SettingPage } from './pages/SettingPage.js';
+import { LogoutPage } from './pages/LogoutPage.js';
 import { Test } from './pages/Test.js';
 
 
@@ -28,6 +33,11 @@ class Router {
         this.routes.set('/pong', new PongMenuPage());
         this.routes.set('/pong/normal', new NormalGamePage());
         this.routes.set('/pong/solo', new SoloGamePage());
+        this.routes.set('/login', new LoginPage());
+        this.routes.set('/register', new RegisterPage());
+        this.routes.set('/profile', new ProfilePage());
+        this.routes.set('/settings', new SettingPage());
+        this.routes.set('/logout', new LogoutPage());
         //TEST
         this.routes.set('/test', new Test());
         this.routes.set('/testbackend', new Test());
@@ -60,16 +70,16 @@ class Router {
                 this.navigateTo(path);
             }
         });
-        
+
     }
-    
+
     //how does it work ?
     async handleLocation() {
         const path = window.location.pathname;
         const page = this.routes.get(path) || new NotFoundPage();
         await page.handle();
     }
-    
+
     //add the history
     navigateTo(path) {
         window.history.pushState({}, '', path);

@@ -1,13 +1,59 @@
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     margin: 0;
     background-color: #D3D3D333;
 }
 
-canvas {
-    display: block;
-    background-color: black;
+/* Add padding-top to main content to prevent overlap with fixed header */
+/* main {
+    padding-top: 60px;
+    padding-bottom: 60px;
+} */
+
+/* Center content styles */
+.home-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 120px); /* Subtract header and footer height */
+    padding: 20px;
 }
+
+/* Play button styles */
+.play-btn {
+    background-color: #6c757d;
+    color: white;
+    padding: 20px 60px;
+    font-size: 24px;
+    border-radius: 50px;
+    border: 2px solid white;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    position: relative;
+}
+
+.play-btn:hover {
+    background-color: #343a40;
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+/* Animation class */
+.float {
+    animation: float 2s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
