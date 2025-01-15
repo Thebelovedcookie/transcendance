@@ -15,15 +15,17 @@ export class LoginPage {
 
               <div data-mdb-input-init class="form-outline form-white mb-4">
                 <input type="email" id="typeEmailX" class="form-control form-control-lg" placeholder="Email" />
+                <div id="emailError" class="text-danger small mt-1" style="display: none;">Please enter your email</div>
               </div>
 
               <div data-mdb-input-init class="form-outline form-white mb-4">
                 <input type="password" id="typePasswordX" class="form-control form-control-lg" placeholder="Password" />
+                <div id="passwordError" class="text-danger small mt-1" style="display: none;">Please enter your password</div>
               </div>
 
               <p class="small mb-5 pb-lg-2"><a class="text-white-50" href="#!">Forgot password?</a></p>
 
-              <button data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-light btn-lg px-5" type="submit">Login</button>
+              <button data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-light btn-lg px-5" type="submit" id="loginButton">Login</button>
 
               <div class="d-flex justify-content-center text-center mt-4 pt-1">
                 <a href="#!" class="text-white"><i class="fab fa-facebook-f fa-lg"></i></a>
@@ -47,5 +49,37 @@ export class LoginPage {
         `;
 
         document.getElementById('dynamicPage').innerHTML = loginHTML;
+
+        // Add event listener for form validation
+        document.getElementById('loginButton').addEventListener('click', this.validateForm);
+    }
+
+    validateForm(e) {
+        const email		= document.getElementById('typeEmailX');
+        const password	= document.getElementById('typePasswordX');
+        const emailError	= document.getElementById('emailError');
+        const passwordError	= document.getElementById('passwordError');
+
+        let isValid		= true;
+
+        // Reset error messages
+        emailError.style.display = 'none';
+        passwordError.style.display = 'none';
+
+        // Validate email
+        if (!email.value.trim()) {
+            emailError.style.display = 'block';
+            isValid = false;
+        }
+
+        // Validate password
+        if (!password.value.trim()) {
+            passwordError.style.display = 'block';
+            isValid = false;
+        }
+
+        if (!isValid) {
+            e.preventDefault();
+        }
     }
 }
