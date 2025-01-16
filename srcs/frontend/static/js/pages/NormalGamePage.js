@@ -1,7 +1,8 @@
 import { normalMode } from '../game_mode/normal/main.js';
 
 export class NormalGamePage {
-    constructor() {
+    constructor(themeReceived) {
+        this.theme = themeReceived
         this.container = document.getElementById('dynamicPage');
     }
 
@@ -19,7 +20,7 @@ export class NormalGamePage {
         this.container.innerHTML = '';
         this.container.appendChild(gameContent);
 
-        normalMode();
+        normalMode(this.theme);
     }
 }
 

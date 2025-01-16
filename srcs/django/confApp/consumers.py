@@ -64,7 +64,7 @@ class GameConsumer(WebsocketConsumer):
                 "y": window_height * 0.4,
                 "width": window_width / 80,
                 "height": window_height / 6,
-                "color": "white",
+                "color": "black",
                 "gravity": 2,
             },
             "player2": {
@@ -72,7 +72,7 @@ class GameConsumer(WebsocketConsumer):
                 "y": window_height * 0.4,
                 "width": window_width / 80,
                 "height": window_height / 6,
-                "color": "white",
+                "color": "black",
                 "gravity": 2,
             },
             "ball": {
@@ -80,7 +80,7 @@ class GameConsumer(WebsocketConsumer):
                 "y": window_height / 2,
                 "width": 15,
                 "height": 15,
-                "color": "white",
+                "color": "black",
                 "speed": 8,
                 "gravity": 3,
             },

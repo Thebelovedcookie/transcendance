@@ -1,11 +1,23 @@
 export class SettingPage {
+    constructor() {
+        this.container = document.getElementById('dynamicPage');
+    }
+
     async handle() {
-        const content = `
-            <div class="settings-container">
-                <h1>Settings</h1>
-            </div>
+        this.render();
+    }
+
+    render() {
+        const gameContent = document.createElement('div');
+        gameContent.className = 'game-container';
+        gameContent.innerHTML = `
+            <div class="setting-menu">
+            <h2>Select theme</h2>
+        </div>
         `;
 
-        document.getElementById('dynamicPage').innerHTML = content;
+        this.container.innerHTML = '';
+        this.container.appendChild(gameContent);
+
     }
 }

@@ -1,298 +1,349 @@
 import { firstPaddle, secondPaddle, ballStyle, drawDashedLine, displayScoreOne, displayScoreTwo } from './style.js';
+import { firstPaddleBlue, secondPaddleBlue, ballStyleBlue, drawDashedLineBlue, displayScoreOneBlue, displayScoreTwoBlue } from './themeBlue.js';
+import { firstPaddleRed, secondPaddleRed, ballStyleRed, drawDashedLineRed, displayScoreOneRed, displayScoreTwoRed } from './themeRed.js';
+let canvas = null;
+let context = null;
+let theme = "base";
 
-//----------------------GLOBAL GAME ELEMENT----------------------------//
-let canvas;
-let context;
-let ratioWidth;
-let ratioHeight;
-let playerOne;
-let playerTwo;
-let ball;
-let scoreOne = 0;
-let scoreTwo = 0;
-let controller;
-let myAudio = null;
-let BipWall = null;
+class GameWebSocket {
+	constructor() {
+		canvas = document.getElementById("pongGame");
+		context = canvas.getContext("2d");
+		canvas.height = window.innerHeight * 0.8;
+		canvas.width = window.innerWidth;
+		context.clearRect(0, 0, canvas.width, canvas.height);
 
-function init_canvas(){
-	canvas = document.getElementById("pongGame");
-	context = canvas.getContext("2d");
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight * 0.94;
-	ratioWidth = window.innerWidth / canvas.width;
-	ratioHeight = window.innerHeight / canvas.height;
+		this.socket = null;
+		this.isConnected = false;
+		this.gameLoopInterval = null;
+		this.gamestate = null;
+		this.keys = {
+			w: false,
+			s: false,
+			ArrowUp: false,
+			ArrowDown: false
+		};
+		this.setupKeyboardControls();
+		this.connect();
+		this.frameCount = 0;
+		this.sendRate = 20;
+	}
 
-	//----------------------------OBJET--------------------------------//
-	//first paddle
-	playerOne = new Element({
-	x: 5,
-	y: canvas.height * 0.4,
-	width: canvas.width / 80,
-	height: canvas.height / 6,
-	color: "#FFFFFF",
-	gravity: 2,
-	})
-	
-	//second paddle
-	playerTwo = new Element({
-		x: canvas.width - 20,
-		y: canvas.height * 0.4,
-		width: canvas.width / 80,
-		height: canvas.height / 6,
-		color: "#FFFFFF",
-		gravity: 2,
-	})
+	setupKeyboardControls() {
+		window.addEventListener('keydown', (e) => {
+			if (this.keys.hasOwnProperty(e.key)) {
+				this.keys[e.key] = true;
+				e.preventDefault();
+			}
+		});
 
-	//ball
-	ball = new Element({
-		x: canvas.width / 2,
-		y: canvas.height / 2,
-		width: 15 * ratioWidth,
-		height: 15 * ratioHeight,
-		color: "#FFFFFF",
-		speed: 30,
-		gravity: 2,
-	})
+		window.addEventListener('keyup', (e) => {
+			if (this.keys.hasOwnProperty(e.key)) {
+				this.keys[e.key] = false;
+				e.preventDefault();
+			}
+		});
+	}
 
-	controller = {
-		"w": {pressed: false, func: movePaddleUpP1},
-		"s": {pressed: false, func: movePaddleDowP1},
-		"o": {pressed: false, func: movePaddleUpP2},
-		"l": {pressed: false, func: movePaddleDownP2},
+	updatePlayerPositions() {
+		const moveSpeed = 10;
+
+		// Player 1 movement (W and S keys)
+		if (this.keys.w && this.gameState.player1.y > 0) {
+			this.gameState.player1.y -= moveSpeed;
 		}
-}
+		if (this.keys.s && this.gameState.player1.y < canvas.height - this.gameState.player1.height) {
+			this.gameState.player1.y += moveSpeed;
+		}
 
-//----------------------------CLASS --------------------------------//
-
-//creating the classx element
-//so paddle 1/2 and ball will be element type
-//the function update allows us to update the size according to the window size
-class Element{
-	constructor(options){
-		this.x = options.x;
-		this.y = options.y;
-		this.width = options.width;
-		this.height = options.height;
-		this.color = options.color;
-		this.speed = options.speed || 2;
-		this.gravity = options.gravity;
+		// Player 2 movement (Arrow keys)
+		if (this.keys.ArrowUp && this.gameState.player2.y > 0) {
+			this.gameState.player2.y -= moveSpeed;
+		}
+		if (this.keys.ArrowDown && this.gameState.player2.y < canvas.height - this.gameState.player2.height) {
+			this.gameState.player2.y += moveSpeed;
+		}
 	}
-
-	update({ x, y, width, height, speed }) {
-		this.x = x !== undefined ? x : this.x;
-		this.y = y !== undefined ? y : this.y;
-		this.width = width !== undefined ? width : this.width;
-		this.height = height !== undefined ? height : this.height;
-		this.speed = speed !== undefined ? speed : this.speed;
-	}
-
 	
-}
+	connect() {
+		try {
+			const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+			const host = window.location.host;
+			const wsUrl = `${protocol}//${host}/ws/game/`;
 
-//----------------------------KEY MOVEMENT--------------------------------//
+			console.log("Attempting to connect:", wsUrl);
+			this.socket = new WebSocket(wsUrl);
 
-//Our buttin have two state
-//pressed or unpressed 
-//so we have a booleen -> pressed=false or true
+			this.socket.onopen = () => {
+				console.log("WebSocket connection established");
+				this.isConnected = true;
+				this.sendInfoStarting();
+			};
 
-//if true is pressed, the the paddle will moove until pressed goes back to false
+			this.socket.onmessage = (event) => {
+				try {
+					const data = JSON.parse(event.data);
+					this.handleMessage(data);
+				} catch (e) {
+					console.error("Failed to parse message:", e);
+				}
+			};
 
-const keyDownHandler = (e) => {
-	if (controller[e.key]) {
-		controller[e.key].pressed = true;  
+			this.socket.onerror = (error) => {
+				console.error("WebSocket error:", error);
+			};
+
+			this.socket.onclose = (event) => {
+				console.log("WebSocket connection closed:", event.code, event.reason);
+				this.isConnected = false;
+				this.stopGameLoop();
+				setTimeout(() => this.connect(), 3000);
+			};
+
+		} catch (error) {
+			console.error("WebSocket connection error:", error);
+		}
 	}
-}
 
-const keyUpHandler = (e) => {
-	if (controller[e.key]) {
-		controller[e.key].pressed = false; 
+	startGameLoop() {
+		if (this.gameLoopInterval) return;
+
+		this.gameLoopInterval = setInterval(() => {
+			// Update player positions based on key states
+			this.updatePlayerPositions();
+
+			// Draw every frame (60 FPS)
+			this.ballBounce();
+
+			this.frameCount++;
+			if (this.frameCount >= (60 / this.sendRate)) {
+				this.frameCount = 0;
+			}
+		}, 1000 / 60);  // Still run at 60 FPS locally
 	}
-}
 
-const executeMoves = () => {
-	Object.keys(controller).forEach(key=> {
-		controller[key].pressed && controller[key].func()
-	})}
-
-function movePaddleUpP1() {
-	if (controller["w"].pressed == true && playerOne.y-playerOne.gravity > 0)
-		playerOne.y -= playerOne.gravity * 7;
-}
-
-function movePaddleDowP1() {
-	if (controller["s"].pressed == true && playerOne.y + playerOne.height + playerOne.gravity < canvas.height)
-		playerOne.y += playerOne.gravity * 7;
-}
-
-function movePaddleUpP2() {
-	if (controller["o"].pressed == true && playerTwo.y - playerTwo.gravity > 0)
-		playerTwo.y -= playerTwo.gravity * 7;
-}
-
-function movePaddleDownP2() {
-	if (controller["l"].pressed == true && playerTwo.y + playerTwo.height + playerTwo.gravity < canvas.height)
-		playerTwo.y += playerTwo.gravity * 7;
-}
-
-//----------------------------METHOD--------------------------------//
-
-//if we move the window, we resize object on the canvas
-window.addEventListener('resize', resizeCanvas);
-
-function resizeCanvas() {
-	const ratioWidth = window.innerWidth / canvas.width;
-	const ratioHeight = window.innerHeight / canvas.height;
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight * 0.94;
-
-	playerTwo.update({
-		x: canvas.width - 20,
-		y: canvas.height * 0.4,
-		width: canvas.width / 80,
-		height: canvas.height / 6,
-	})
-	playerOne.update({
-		y: canvas.height * 0.4,
-		width: canvas.width / 80,
-		height: canvas.height / 6,
-	})
-	ball.update({
-		width: 15 * ratioWidth,
-		height: 15 * ratioHeight,
-	})
-
-	ballBounce();
-}
-
-//make ball bounce against down and up wall
-function ballBounce(){
-	if(ball.y + ball.gravity <= 0 || ball.y + ball.gravity >= canvas.height){
-		ball.gravity = ball.gravity * (-1);
-		ball.y += ball.gravity;
-		ball.x += ball.speed;
-		BipWall.play();
-	} else {
-		ball.y += ball.gravity;
-		ball.x += ball.speed;
-		
+	stopGameLoop() {
+		if (this.gameLoopInterval) {
+			clearInterval(this.gameLoopInterval);
+			this.gameLoopInterval = null;
+		}
 	}
-	ballWallCollision();
-}
 
-//make ball bounce against paddle1 or paddle2
-//adding one to the score if not bouncing
-function ballWallCollision(){
-	if ((ball.y + ball.gravity <= playerTwo.y + playerTwo.height
-		&& ball.x + ball.width + ball.speed >= playerTwo.x
-		&& ball.y + ball.gravity > playerTwo.y) ||
-		(ball.y + ball.gravity >= playerOne.y &&
-			ball.y + ball.gravity <= playerOne.y + playerOne.height &&
-			ball.x + ball.speed <= playerOne.x + playerOne.width))
+	sendInfoStarting()
 	{
-		myAudio.play();
-		ball.speed = ball.speed * (-1);
-	} else if (ball.x + ball.speed < playerOne.x)
-	{
-		scoreTwo++;
-		resetBall();
-	} else if (ball.x + ball.speed > playerTwo.x + playerTwo.width)
-	{
-		scoreOne++;
-		resetBall();
-	}
-	drawElements();
-}
-
-function resetBall() {
-    ball.x = canvas.width / 2;
-    ball.y = canvas.height / 2;
-    ball.speed = Math.abs(ball.speed) * (Math.random() > 0.5 ? 1 : -1); // Changer la direction aléatoirement
-    ball.gravity = Math.abs(ball.gravity) * (Math.random() > 0.5 ? 1 : -1);
-}
-
-
-//draw all element(paddle1/2, ball, score)
-function drawElements(){
-	context.clearRect(0, 0, canvas.width, canvas.height);
-	firstPaddle(context, playerOne);
-	secondPaddle(context, playerTwo);
-	ballStyle(context, ball);
-	drawDashedLine(context, canvas);
-	displayScoreOne(context, scoreOne, canvas);
-	displayScoreTwo(context, scoreTwo, canvas);
-}
-
-// everything goes back as his first position
-// starting the listener of both paddle movement
-// adding the sound played for bouncing moment
-export function resetGame()
-{
-	playerOne.x = 5;
-	playerOne.y = canvas.height * 0.4;
-	playerOne.width = canvas.width / 90;
-	playerOne.height = canvas.height / 10;
-	playerOne.gravity = 2;
-
-
-	playerTwo.x = canvas.width - 20;
-	playerTwo.y = canvas.height * 0.4;
-	playerTwo.width = canvas.width / 90;
-	playerTwo.height = canvas.height / 10;
-	playerTwo.gravity = 2;
-
-	ball.x = canvas.width / 2;
-	ball.y = canvas.height / 2;
-	ball.width = 15 * ratioWidth;
-	ball.height = 15 * ratioHeight;
-	ball.speed = 8;
-	ball.gravity = 3;
-
-	scoreOne = 0;
-	scoreTwo = 0;
-
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight * 0.94;
-	ratioWidth = window.innerWidth / canvas.width;
-	ratioHeight = window.innerHeight / canvas.height;
-
-	controller = {
-		"w": {pressed: false, func: movePaddleUpP1},
-		"s": {pressed: false, func: movePaddleDowP1},
-		"o": {pressed: false, func: movePaddleUpP2},
-		"l": {pressed: false, func: movePaddleDownP2},
+		const data = {
+			type: "game.starting",
+			timestamp: Date.now(),
+			start: {
+				"windowHeight": window.innerHeight * 0.8,
+				"windowWidth": window.innerWidth,
+			}
+		};
+	
+		if (this.isConnected && this.socket) {
+			this.socket.send(JSON.stringify(data));
+		} else {
+			console.warn("WebSocket not connected");
+		}
 	}
 
-	window.addEventListener("keydown", keyDownHandler);
-	window.addEventListener("keyup", keyUpHandler);
-	myAudio = new Audio('/static/js/game_mode/normal/bipPaddle.mp3');
-	BipWall = new Audio('/static/js/game_mode/normal/bipWall.mp3');
-}
+	sendBallState() {
+		if (!this.isConnected) return;
 
-let animationId = null;
+		const updates = {
+			type: "game.ballBounce",
+			timestamp: Date.now(),
+			start: {
+				"ball": {
+					"x": this.gameState.ball.x,
+					"y": this.gameState.ball.y,
+					"gravity": this.gameState.ball.gravity,
+					"speed": this.gameState.ball.speed,
+				},
+			}
+		};
 
-function loop(){
-	ballBounce();
-
-	executeMoves();
-	animationId = requestAnimationFrame(loop);
-}
-
-//stopping the last animationID if he exist; Initialisation of the canvas; 
-//reset the game entirely; Starting the game;
-export function normalMode(){
-	if (animationId)
-	{
-		cancelAnimationFrame(animationId);
-		animationId = null;
+		this.sendMessage(updates);
 	}
-	init_canvas();
-	resetGame();
-	loop();
+
+	sendMessage(data) {
+		if (this.isConnected && this.socket) {
+			this.socket.send(JSON.stringify(data));
+		} else {
+			console.warn("WebSocket not connected");
+		}
+	}
+
+	handleMessage(data) {
+		switch (data.type) {
+			case "game.starting":
+				this.getInfoFromBackend(data);
+				this.startGameLoop();
+				break;
+			case "game.ballBounce":
+				this.updateBall(data);
+				break;
+			case "error":
+				console.log(data.type);
+				console.error("Server error:", data.message);
+				break;
+			default:
+				console.log("Unhandled message type:", data.type);
+		}
+	}
+
+	updateBall(data) {
+		this.gameState.ball.y = data.ball.y;
+		this.gameState.ball.x = data.ball.x;
+		this.gameState.ball.gravity = data.ball.gravity;
+	}
+
+	getInfoFromBackend(data)
+	{
+
+		// console.log(data.scores.playerOne, data.scores.playerTwo);
+		this.gameState = {
+			player1: {
+				x: data.player1.x,
+				y: data.player1.y,
+				width: data.player1.width,
+				height: data.player1.height,
+				color: data.player1.color,
+				gravity: data.player1.gravity,
+			},
+			player2: {
+				x: data.player2.x,
+				y: data.player2.y,
+				width: data.player2.width,
+				height: data.player2.height,
+				color: data.player2.color,
+				gravity: data.player2.gravity,
+			},
+			ball: {
+				x: data.ball.x,
+				y: data.ball.y,
+				width: data.ball.width,
+				height: data.ball.height,
+				color: data.ball.color,
+				gravity: data.ball.gravity,
+				speed: data.ball.speed,
+			},
+			scores: {
+				playerOne: data.scores.playerOne,
+				playerTwo: data.scores.playerTwo,
+			}
+		};
+	}
+
+	ballBounce(){
+		if(this.gameState.ball.y + this.gameState.ball.gravity <= 0 || this.gameState.ball.y + this.gameState.ball.gravity >= canvas.height){
+			this.sendBallState();
+		} else {
+			this.gameState.ball.y += this.gameState.ball.gravity;
+			this.gameState.ball.x += this.gameState.ball.speed;
+
+		}
+		this.ballWallCollision();
+	}
+
+	//make ball bounce against paddle1 or paddle2
+	//adding one to the score if not bouncing
+	ballWallCollision(){
+		if ((this.gameState.ball.y + this.gameState.ball.gravity <= this.gameState.player2.y + this.gameState.player2.height
+			&& this.gameState.ball.x + this.gameState.ball.width + this.gameState.ball.speed >= this.gameState.player2.x
+			&& this.gameState.ball.y + this.gameState.ball.gravity > this.gameState.player2.y) ||
+			(this.gameState.ball.y + this.gameState.ball.gravity >= this.gameState.player1.y &&
+				this.gameState.ball.y + this.gameState.ball.gravity <= this.gameState.player1.y + this.gameState.player1.height &&
+				this.gameState.ball.x + this.gameState.ball.speed <= this.gameState.player1.x + this.gameState.player1.width))
+		{
+			// myAudio.play();
+			this.gameState.ball.speed = this.gameState.ball.speed * (-1);
+		} else if (this.gameState.ball.x + this.gameState.ball.speed < this.gameState.player1.x)
+		{
+			this.gameState.scores.playerTwo++;
+			this.resetBall();
+		} else if (this.gameState.ball.x + this.gameState.ball.speed > this.gameState.player2.x + this.gameState.player2.width)
+		{
+			this.gameState.scores.playerOne++;
+			this.resetBall();
+		}
+		if (theme == "base")
+			this.drawGame();
+		else if (theme == "red")
+			this.drawGameRed();
+		else if (theme == "blue")
+			this.drawGameBlue();
+	}
+
+	resetBall() {
+		this.gameState.ball.x = canvas.width / 2;
+		this.gameState.ball.y = canvas.height / 2;
+		this.gameState.ball.speed = Math.abs(this.gameState.ball.speed) * (Math.random() > 0.5 ? 1 : -1); // Changer la direction aléatoirement
+		this.gameState.ball.gravity = Math.abs(this.gameState.ball.gravity) * (Math.random() > 0.5 ? 1 : -1);
+	}
+
+	drawGame() {
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		firstPaddle(context, this.gameState.player1);
+		secondPaddle(context, this.gameState.player2);
+		ballStyle(context, this.gameState.ball);
+		drawDashedLine(context, canvas);
+
+		const scoreOne = this.gameState.scores.playerOne ?? 0;
+		const scoreTwo = this.gameState.scores.playerTwo ?? 0;
+
+		displayScoreOne(context, scoreOne, canvas);
+		displayScoreTwo(context, scoreTwo, canvas);
+	}
+
+	drawGameBlue() {
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		firstPaddleBlue(context, this.gameState.player1);
+		secondPaddleBlue(context, this.gameState.player2);
+		ballStyleBlue(context, this.gameState.ball);
+		drawDashedLineBlue(context, canvas);
+
+		const scoreOne = this.gameState.scores.playerOne ?? 0;
+		const scoreTwo = this.gameState.scores.playerTwo ?? 0;
+
+		displayScoreOneBlue(context, scoreOne, canvas);
+		displayScoreTwoBlue(context, scoreTwo, canvas);
+	}
+
+	drawGameRed() {
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		firstPaddleRed(context, this.gameState.player1);
+		secondPaddleRed(context, this.gameState.player2);
+		ballStyleRed(context, this.gameState.ball);
+		drawDashedLineRed(context, canvas);
+
+		const scoreOne = this.gameState.scores.playerOne ?? 0;
+		const scoreTwo = this.gameState.scores.playerTwo ?? 0;
+
+		displayScoreOneRed(context, scoreOne, canvas);
+		displayScoreTwoRed(context, scoreTwo, canvas);
+	}
+
+	cleanup() {
+		window.removeEventListener('keydown');
+		window.removeEventListener('keyup');
+	}
 }
 
-//Stopping the listener of the playerPaddle and the Resize canvas
-export function stopGameNormal() {
-	window.removeEventListener("keydown", keyDownHandler);
-	window.removeEventListener("keyup", keyUpHandler);
-	window.removeEventListener('resize', resizeCanvas);
+let gameSocket = null;
+
+export function normalMode(themeReceived) {
+	if (!gameSocket) {
+		theme = themeReceived;
+		gameSocket = new GameWebSocket();
+	}
+}
+
+export function stopGame() {
+	if (gameSocket) {
+		gameSocket.cleanup();  // Clean up event listeners
+		gameSocket.stopGameLoop();
+		gameSocket.socket.close();
+		gameSocket = null;
+	}
 }
