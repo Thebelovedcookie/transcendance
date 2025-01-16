@@ -1,8 +1,7 @@
 #!/bin/bash
 
 # Copy files after volume mount
-mkdir -p /project/templates/
-mkdir -p /project/static/
+mkdir -p /var/www/html/static/
 
-cp -r /tmp/templates/* /project/templates/
-cp -r /tmp/static/* /project/static/
+cp -r /tmp/templates/* /var/www/html/
+cp -r /tmp/static/* /var/www/html/static/

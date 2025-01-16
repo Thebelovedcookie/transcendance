@@ -4,36 +4,17 @@ FROM debian:11
 RUN apt update && apt install curl nginx -y \
 		&& apt clean && rm -rf /var/lib/apt/lists/*
 
-#define work directories
-WORKDIR /
+RUN mkdir -p /etc/nginx/ssl
 
-#copy our conf on the default conf ?
+RUN openssl req -x509 -nodes -newkey rsa:2048 \
+    -keyout /etc/nginx/ssl/transcendence.key \
+    -out /etc/nginx/ssl/transcendence.crt \
+    -subj "/C=FR/ST=Ile-de-France/L=Paris/O=42/OU=42/CN=mmahfoud.42.fr/UID=mmahfoud"
+
 COPY  ./conf/nginx.conf /etc/nginx/nginx.conf
-COPY  ./tools/setup_nginx.sh /usr/local/bin/setup_nginx.sh
 
-RUN chmod +x /usr/local/bin/setup_nginx.sh
+RUN mkdir -p /run/nginx
 
 EXPOSE 443
 
-CMD ["/usr/local/bin/setup_nginx.sh"]
-
-
-
-FROM debian:11
-
-#install nginx
-RUN apt update && apt install curl nginx -y \
-		&& apt clean && rm -rf /var/lib/apt/lists/*
-
-#define work directories
-WORKDIR /
-
-#copy our conf on the default conf ?
-COPY  ./conf/nginx.conf /etc/nginx/nginx.conf
-COPY  ./tools/setup_nginx.sh /usr/local/bin/setup_nginx.sh
-
-RUN chmod +x /usr/local/bin/setup_nginx.sh
-
-EXPOSE 443
-
-CMD ["/usr/local/bin/setup_nginx.sh"]
+CMD ["nginx", "-g", "daemon off;"]

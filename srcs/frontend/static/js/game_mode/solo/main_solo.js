@@ -20,7 +20,7 @@ function init_canvasSolo(){
 	ratioHeightSolo = window.innerHeight / canvasSolo.height;
 
 	//----------------------------OBJET--------------------------------//
-	
+
 	//first paddle right side
 	playerOneSolo = new Element({
 		x: canvasSolo.width - 20,
@@ -74,18 +74,15 @@ class Element{
 
 const keyDownHandlerSolo = (e) => {
 	if (controllerSolo[e.key]) {
-		controllerSolo[e.key].pressedSolo = true;  
+		controllerSolo[e.key].pressedSolo = true;
 	}
 }
 
 const keyUpHandlerSolo = (e) => {
 	if (controllerSolo[e.key]) {
-		controllerSolo[e.key].pressedSolo = false; 
+		controllerSolo[e.key].pressedSolo = false;
 	}
 }
-
-window.addEventListener("keydown", keyDownHandlerSolo);
-window.addEventListener("keyup", keyUpHandlerSolo);
 
 const executeMovesSolo = () => {
 	Object.keys(controllerSolo).forEach(key=> {
@@ -139,7 +136,7 @@ function ballSoloBounce(){
 		ballSolo.gravity = ballSolo.gravity * (-1);
 		ballSolo.y += ballSolo.gravity;
 		ballSolo.x += ballSolo.speed;
-	} else if (ballSolo.x <= 0) { 
+	} else if (ballSolo.x <= 0) {
 		ballSolo.speed = ballSolo.speed * (-1);
 		ballSolo.y += ballSolo.gravity;
     	ballSolo.x += ballSolo.speed;
@@ -158,7 +155,7 @@ function ballSoloWallCollision(){
 			&& ballSolo.y + ballSolo.gravity > playerOneSolo.y))
 	{
 		ballSolo.speed = ballSolo.speed * (-1);
-	} 
+	}
 	if (ballSolo.x + ballSolo.speed > playerOneSolo.x + playerOneSolo.width)
 	{
 		resetBallSolo();

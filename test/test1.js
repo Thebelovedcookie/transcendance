@@ -1,16 +1,14 @@
 import { firstPaddle, secondPaddle, ballStyle, drawDashedLine, displayScoreOne, displayScoreTwo } from './style.js';
-import { firstPaddleBlue, secondPaddleBlue, ballStyleBlue, drawDashedLineBlue, displayScoreOneBlue, displayScoreTwoBlue } from './themeBlue.js';
-import { firstPaddleRed, secondPaddleRed, ballStyleRed, drawDashedLineRed, displayScoreOneRed, displayScoreTwoRed } from './themeRed.js';
+
 let canvas = null;
 let context = null;
-let theme = "base";
 
 class GameWebSocket {
-	constructor() {
-		canvas = document.getElementById("pongGame");
-		context = canvas.getContext("2d");
-		canvas.height = window.innerHeight * 0.8;
-		canvas.width = window.innerWidth;
+    constructor() {
+        canvas = document.getElementById("pongGame");
+        context = canvas.getContext("2d");
+        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth;
 		context.clearRect(0, 0, canvas.width, canvas.height);
 
 		this.socket = null;
@@ -52,7 +50,7 @@ class GameWebSocket {
 		if (this.keys.w && this.gameState.player1.y > 0) {
 			this.gameState.player1.y -= moveSpeed;
 		}
-		if (this.keys.s && this.gameState.player1.y < canvas.height - this.gameState.player1.height) {
+		if (this.keys.s && this.gameState.player1.y < window.innerHeight - this.gameState.player1.height) {
 			this.gameState.player1.y += moveSpeed;
 		}
 
@@ -60,7 +58,7 @@ class GameWebSocket {
 		if (this.keys.ArrowUp && this.gameState.player2.y > 0) {
 			this.gameState.player2.y -= moveSpeed;
 		}
-		if (this.keys.ArrowDown && this.gameState.player2.y < canvas.height - this.gameState.player2.height) {
+		if (this.keys.ArrowDown && this.gameState.player2.y < window.innerHeight - this.gameState.player2.height) {
 			this.gameState.player2.y += moveSpeed;
 		}
 	}
@@ -135,7 +133,7 @@ class GameWebSocket {
 			type: "game.starting",
 			timestamp: Date.now(),
 			start: {
-				"windowHeight": window.innerHeight * 0.8,
+				"windowHeight": window.innerHeight,
 				"windowWidth": window.innerWidth,
 			}
 		};
@@ -235,55 +233,51 @@ class GameWebSocket {
 		};
 	}
 
-	ballBounce(){
-		if(this.gameState.ball.y + this.gameState.ball.gravity <= 0 || this.gameState.ball.y + this.gameState.ball.gravity >= canvas.height){
+    ballBounce(){
+        if(this.gameState.ball.y + this.gameState.ball.gravity <= 0 || this.gameState.ball.y + this.gameState.ball.gravity >= canvas.height){
 			this.sendBallState();
-		} else {
-			this.gameState.ball.y += this.gameState.ball.gravity;
-			this.gameState.ball.x += this.gameState.ball.speed;
+            // BipWall.play();
+        } else {
+            this.gameState.ball.y += this.gameState.ball.gravity;
+            this.gameState.ball.x += this.gameState.ball.speed;
 
-		}
-		this.ballWallCollision();
-	}
+        }
+        this.ballWallCollision();
+    }
 
-	//make ball bounce against paddle1 or paddle2
-	//adding one to the score if not bouncing
-	ballWallCollision(){
-		if ((this.gameState.ball.y + this.gameState.ball.gravity <= this.gameState.player2.y + this.gameState.player2.height
-			&& this.gameState.ball.x + this.gameState.ball.width + this.gameState.ball.speed >= this.gameState.player2.x
-			&& this.gameState.ball.y + this.gameState.ball.gravity > this.gameState.player2.y) ||
-			(this.gameState.ball.y + this.gameState.ball.gravity >= this.gameState.player1.y &&
-				this.gameState.ball.y + this.gameState.ball.gravity <= this.gameState.player1.y + this.gameState.player1.height &&
-				this.gameState.ball.x + this.gameState.ball.speed <= this.gameState.player1.x + this.gameState.player1.width))
-		{
-			// myAudio.play();
-			this.gameState.ball.speed = this.gameState.ball.speed * (-1);
-		} else if (this.gameState.ball.x + this.gameState.ball.speed < this.gameState.player1.x)
-		{
-			this.gameState.scores.playerTwo++;
-			this.resetBall();
-		} else if (this.gameState.ball.x + this.gameState.ball.speed > this.gameState.player2.x + this.gameState.player2.width)
-		{
-			this.gameState.scores.playerOne++;
-			this.resetBall();
-		}
-		if (theme == "base")
-			this.drawGame();
-		else if (theme == "red")
-			this.drawGameRed();
-		else if (theme == "blue")
-			this.drawGameBlue();
-	}
+    //make ball bounce against paddle1 or paddle2
+    //adding one to the score if not bouncing
+    ballWallCollision(){
+        if ((this.gameState.ball.y + this.gameState.ball.gravity <= this.gameState.player2.y + this.gameState.player2.height
+            && this.gameState.ball.x + this.gameState.ball.width + this.gameState.ball.speed >= this.gameState.player2.x
+            && this.gameState.ball.y + this.gameState.ball.gravity > this.gameState.player2.y) ||
+            (this.gameState.ball.y + this.gameState.ball.gravity >= this.gameState.player1.y &&
+                this.gameState.ball.y + this.gameState.ball.gravity <= this.gameState.player1.y + this.gameState.player1.height &&
+                this.gameState.ball.x + this.gameState.ball.speed <= this.gameState.player1.x + this.gameState.player1.width))
+        {
+            // myAudio.play();
+            this.gameState.ball.speed = this.gameState.ball.speed * (-1);
+        } else if (this.gameState.ball.x + this.gameState.ball.speed < this.gameState.player1.x)
+        {
+            this.gameState.scores.playerTwo++;
+            this.resetBall();
+        } else if (this.gameState.ball.x + this.gameState.ball.speed > this.gameState.player2.x + this.gameState.player2.width)
+        {
+            this.gameState.scores.playerOne++;
+            this.resetBall();
+        }
+        this.drawGame();
+    }
 
-	resetBall() {
-		this.gameState.ball.x = canvas.width / 2;
-		this.gameState.ball.y = canvas.height / 2;
-		this.gameState.ball.speed = Math.abs(this.gameState.ball.speed) * (Math.random() > 0.5 ? 1 : -1); // Changer la direction aléatoirement
-		this.gameState.ball.gravity = Math.abs(this.gameState.ball.gravity) * (Math.random() > 0.5 ? 1 : -1);
-	}
+    resetBall() {
+        this.gameState.ball.x = canvas.width / 2;
+        this.gameState.ball.y = canvas.height / 2;
+        this.gameState.ball.speed = Math.abs(this.gameState.ball.speed) * (Math.random() > 0.5 ? 1 : -1); // Changer la direction aléatoirement
+        this.gameState.ball.gravity = Math.abs(this.gameState.ball.gravity) * (Math.random() > 0.5 ? 1 : -1);
+    }
 
 	drawGame() {
-		context.clearRect(0, 0, canvas.width, canvas.height);
+        context.clearRect(0, 0, canvas.width, canvas.height);
 		firstPaddle(context, this.gameState.player1);
 		secondPaddle(context, this.gameState.player2);
 		ballStyle(context, this.gameState.ball);
@@ -296,34 +290,6 @@ class GameWebSocket {
 		displayScoreTwo(context, scoreTwo, canvas);
 	}
 
-	drawGameBlue() {
-		context.clearRect(0, 0, canvas.width, canvas.height);
-		firstPaddleBlue(context, this.gameState.player1);
-		secondPaddleBlue(context, this.gameState.player2);
-		ballStyleBlue(context, this.gameState.ball);
-		drawDashedLineBlue(context, canvas);
-
-		const scoreOne = this.gameState.scores.playerOne ?? 0;
-		const scoreTwo = this.gameState.scores.playerTwo ?? 0;
-
-		displayScoreOneBlue(context, scoreOne, canvas);
-		displayScoreTwoBlue(context, scoreTwo, canvas);
-	}
-
-	drawGameRed() {
-		context.clearRect(0, 0, canvas.width, canvas.height);
-		firstPaddleRed(context, this.gameState.player1);
-		secondPaddleRed(context, this.gameState.player2);
-		ballStyleRed(context, this.gameState.ball);
-		drawDashedLineRed(context, canvas);
-
-		const scoreOne = this.gameState.scores.playerOne ?? 0;
-		const scoreTwo = this.gameState.scores.playerTwo ?? 0;
-
-		displayScoreOneRed(context, scoreOne, canvas);
-		displayScoreTwoRed(context, scoreTwo, canvas);
-	}
-
 	cleanup() {
 		window.removeEventListener('keydown');
 		window.removeEventListener('keyup');
@@ -332,9 +298,8 @@ class GameWebSocket {
 
 let gameSocket = null;
 
-export function normalMode(themeReceived) {
+export function startGame() {
 	if (!gameSocket) {
-		theme = themeReceived;
 		gameSocket = new GameWebSocket();
 	}
 }

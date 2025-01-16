@@ -3,48 +3,32 @@
 //raquette playerOne
 export function firstPaddle(context, element)
 {
-	context.fillStyle = element.color;
-	context.shadowColor = "rgba(0, 0, 0, 0.7)";
-	context.shadowOffsetX = 3;
-	context.shadowOffsetY = 1;
-	context.shadowBlur = 10;
-
 	context.fillRect(element.x, element.y, element.width, element.height);
-	resetStyle(context);
 }
 
 //raquette playerTwo
 export function secondPaddle(context, element)
 {
-	context.fillStyle = element.color;
-	context.shadowColor = "rgba(6, 7, 7, 0.7)";
-	context.shadowOffsetX = -3;
-	context.shadowOffsetY = 1;
-	context.shadowBlur = 6;
-
 	context.fillRect(element.x, element.y, element.width, element.height);
-	resetStyle(context);
 }
 
 //ball -> ronde + couleur + ombre
-export function ballStyle(context, element)
-{
-	context.fillStyle = element.color;
-	context.shadowColor = "rgba(0, 0, 0, 0.7)";
-	context.shadowOffsetX = 0;
-	context.shadowOffsetY = 0;
-	context.shadowBlur = 6;
+export function ballStyle(context, ball) {
+    const ctx	= context;
+    const x		= ball.x;
+    const y		= ball.y;
+    const size	= ball.width;
 
-	context.beginPath();
-    context.arc(
-        element.x + element.width / 2, // Centre X
-        element.y + element.height / 2, // Centre Y
-        element.width / 1.50, // Rayon
-        0, // Début de l'angle
-        Math.PI * 2 // Fin de l'angle (cercle complet)
-    );
-    context.fill();
-	// resetStyle(context);
+    // Start new drawing path
+    ctx.beginPath();
+
+    // Draw ball as white circle
+    ctx.fillStyle = "white";
+    ctx.arc(x, y, size / 2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Close the path
+    ctx.closePath();
 }
 
 export function drawDashedLine(context, canvas) {
@@ -55,7 +39,7 @@ export function drawDashedLine(context, canvas) {
     const endY = canvas.height;  // Fin de la ligne (bas de l'écran)
 
     // Configuration de la couleur et de la largeur de la ligne
-    context.strokeStyle = "black";  // Blanc
+    context.strokeStyle = "#fff";  // Blanc
     context.lineWidth = 2;  // Largeur de la ligne
 
     // Calculer le nombre de segments nécessaires
@@ -75,41 +59,27 @@ export function drawDashedLine(context, canvas) {
 
     // Appliquer le tracé
     context.stroke();
-	// resetStyle(context);
 }
 
 //----------------------------TEXTE--------------------------------//
 
 //PlayerOne score Text
 export function displayScoreOne(context, scoreOne, canvas) {
+
 	context.font = "90px 'Press Start 2P'";
-	context.fillStyle = "black";
-	context.textBaseline = "top";
-	context.shadowColor = "rgba(0, 0, 0, 0.7)";
-	context.shadowOffsetX = 1;
-	context.shadowOffsetY = 0;
-	context.shadowBlur = 3;
+  	context.fillStyle = "#FFFFFF";
+  	context.textBaseline = "top";
+
 	context.fillText(scoreOne, canvas.width / 2 - 120, 30);
-	resetStyle(context);
-	}
+}
 
 //PlayerTwo score Text
 export function displayScoreTwo(context, scoreTwo, canvas){
+
 	context.font = "90px 'Press Start 2P'";
-	context.fillStyle = "black";
+	context.fillStyle = "#FFFFFF";
 	context.textBaseline = "top";
-	context.shadowColor = "rgba(0, 125, 255, 255)";
-	context.shadowOffsetX = -1;
-	context.shadowOffsetY = 0;
-	context.shadowBlur = 3;
-	context.fillText(scoreTwo, canvas.width / 2 + 70, 30);
-	resetStyle(context);
+
+	context.fillText(scoreTwo, canvas.width / 2 + 60, 30);
 }
-	
-function resetStyle(context)
-{
-	context.shadowColor = "transparent";
-	context.shadowOffsetX = 0;
-	context.shadowOffsetY = 0;
-	context.shadowBlur = 0;
-}
+

@@ -1,36 +1,36 @@
 //----------------------------COLOR/STYLE--------------------------------//
 
 //raquette playerOne
-export function firstPaddle(context, element)
+export function firstPaddleBlue(context, element)
 {
-	context.fillStyle = element.color;
-	context.shadowColor = "rgba(0, 0, 0, 0.7)";
+	context.fillStyle = "rgba(150, 209, 209, 0.7)";
+	context.shadowColor = "rgba(71, 209, 209, 0.7)";
 	context.shadowOffsetX = 3;
 	context.shadowOffsetY = 1;
 	context.shadowBlur = 10;
 
 	context.fillRect(element.x, element.y, element.width, element.height);
-	resetStyle(context);
+	resetStyleBlue(context);
 }
 
 //raquette playerTwo
-export function secondPaddle(context, element)
+export function secondPaddleBlue(context, element)
 {
-	context.fillStyle = element.color;
-	context.shadowColor = "rgba(6, 7, 7, 0.7)";
+	context.fillStyle = "rgba(150, 209, 209, 0.7)";
+	context.shadowColor = "rgba(71, 209, 209, 0.7)";
 	context.shadowOffsetX = -3;
 	context.shadowOffsetY = 1;
 	context.shadowBlur = 6;
 
 	context.fillRect(element.x, element.y, element.width, element.height);
-	resetStyle(context);
+	resetStyleBlue(context);
 }
 
 //ball -> ronde + couleur + ombre
-export function ballStyle(context, element)
+export function ballStyleBlue(context, element)
 {
-	context.fillStyle = element.color;
-	context.shadowColor = "rgba(0, 0, 0, 0.7)";
+	context.fillStyle = "rgba(150, 209, 209, 0.7)";
+	context.shadowColor = "rgba(71, 209, 209, 0.7)";
 	context.shadowOffsetX = 0;
 	context.shadowOffsetY = 0;
 	context.shadowBlur = 6;
@@ -44,10 +44,10 @@ export function ballStyle(context, element)
         Math.PI * 2 // Fin de l'angle (cercle complet)
     );
     context.fill();
-	// resetStyle(context);
+	// resetStyleBlue(context);
 }
 
-export function drawDashedLine(context, canvas) {
+export function drawDashedLineBlue(context, canvas) {
     const dashLength = 20;  // Longueur des segments de la ligne pointillée
     const spaceLength = 10; // Longueur des espaces entre les segments
     const centerX = canvas.width / 2;  // X du centre de la ligne
@@ -75,38 +75,38 @@ export function drawDashedLine(context, canvas) {
 
     // Appliquer le tracé
     context.stroke();
-	// resetStyle(context);
+	// resetStyleBlue(context);
 }
 
 //----------------------------TEXTE--------------------------------//
 
 //PlayerOne score Text
-export function displayScoreOne(context, scoreOne, canvas) {
+export function displayScoreOneBlue(context, scoreOne, canvas) {
 	context.font = "90px 'Press Start 2P'";
 	context.fillStyle = "black";
 	context.textBaseline = "top";
-	context.shadowColor = "rgba(0, 0, 0, 0.7)";
+	context.shadowColor = "rgba(122, 72, 72, 0.7)";
 	context.shadowOffsetX = 1;
 	context.shadowOffsetY = 0;
 	context.shadowBlur = 3;
 	context.fillText(scoreOne, canvas.width / 2 - 120, 30);
-	resetStyle(context);
+	resetStyleBlue(context);
 	}
 
 //PlayerTwo score Text
-export function displayScoreTwo(context, scoreTwo, canvas){
+export function displayScoreTwoBlue(context, scoreTwo, canvas){
 	context.font = "90px 'Press Start 2P'";
 	context.fillStyle = "black";
 	context.textBaseline = "top";
-	context.shadowColor = "rgba(0, 125, 255, 255)";
+	context.shadowColor = "rgba(122, 72, 72, 0.7)";
 	context.shadowOffsetX = -1;
 	context.shadowOffsetY = 0;
 	context.shadowBlur = 3;
 	context.fillText(scoreTwo, canvas.width / 2 + 70, 30);
-	resetStyle(context);
+	resetStyleBlue(context);
 }
 	
-function resetStyle(context)
+function resetStyleBlue(context)
 {
 	context.shadowColor = "transparent";
 	context.shadowOffsetX = 0;

@@ -6,8 +6,8 @@ services:
     depends_on:
       postgresql:
         condition: service_healthy
-    ports:
-      - '8000:8000'
+    # ports:
+    #   - '8000:8000'
     volumes:
       - django_volume:/project
       # - frontend_volume:/var/www/html
@@ -23,8 +23,8 @@ services:
     build: ./srcs/postgresql/
     volumes:
       - postgresql_volume:/var/lib/postgresql/data
-    ports:
-      - '5432:5432'
+    # ports:
+    #   - '5432:5432'
     env_file:
       - .env
     networks:
@@ -42,13 +42,14 @@ services:
     image: nginx:1
     build: ./srcs/nginx/
     ports:
+      - '80:80'
       - '443:443'
-    # volumes:
-    #   - postgresql_volume:/var/lib/postgresql/data
+    volumes:
+      - frontend_volume:/var/www/html
     env_file:
       - .env
     depends_on:
-      - postgresql
+      - django
     networks:
       - transcendence
     # restart: always
@@ -60,7 +61,7 @@ services:
     networks:
       - transcendence
     volumes:
-      - django_volume:/project
+      - frontend_volume:/var/www/html
     depends_on:
       - django
     # restart: always
@@ -83,14 +84,14 @@ volumes:
       # device: /Users/yuuuuki/ecole_42/transcendence/data/postgresql_volume
       o : bind
 
-  # frontend_volume:
-  #   name: frontend_volume
-  #   driver: local
-  #   driver_opts:
-  #     type : none
-  #     # device: /home/user/ecole_42/transcendence/data/frontend_volume
-  #     device: /Users/yuuuuki/ecole_42/transcendence/data/frontend_volume
-  #     o : bind
+  frontend_volume:
+    name: frontend_volume
+    driver: local
+    driver_opts:
+      type : none
+      device: /home/user/ecole_42/transcendence/data/frontend_volume
+      # device: /Users/yuuuuki/ecole_42/transcendence/data/frontend_volume
+      o : bind
 
 networks:
   transcendence:
