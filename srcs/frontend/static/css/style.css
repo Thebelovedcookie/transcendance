@@ -6,7 +6,7 @@ body {
 
 /* Center content styles */
 #dynamicPage {
-    height: calc(100vh - 96px);
+    height: calc(100vh - 66px - 56px);
 }
 .home-container {
     position: relative;
@@ -38,13 +38,13 @@ body {
     }
 }
 
-.text-center {
+/* Play content styles */
+.play-content {
     position: absolute;
-    z-index: 1;
-    left: 50%;
     top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
-    width: 100%;
+    z-index: 1;
 }
 
 /* Play button styles */
