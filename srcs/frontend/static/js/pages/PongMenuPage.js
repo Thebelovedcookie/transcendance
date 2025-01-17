@@ -15,6 +15,7 @@ export class PongMenuPage {
                 <div class="button-container">
                     <button data-path="/pong/normal">Normal Mode</button>
                     <button data-path="/pong/solo">Solo Mode</button>
+                    <button data-path="/pong/tournement">Tournement Mode</button>
                 </div>
             </div>
         `;

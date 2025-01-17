@@ -6,6 +6,7 @@ import { HomePage } from './pages/HomePage.js';
 import { PongMenuPage } from './pages/PongMenuPage.js';
 import { NormalGamePage } from './pages/NormalGamePage.js';
 import { SoloGamePage } from './pages/SoloGamePage.js';
+import { TournementPage } from './pages/TournementPage.js';
 import { NotFoundPage } from './pages/NotFoundPage.js';
 import { LoginPage } from './pages/LoginPage.js';
 import { RegisterPage } from './pages/RegisterPage.js';
@@ -32,6 +33,7 @@ class Router {
         this.routes.set('/pong', new PongMenuPage());
         this.routes.set('/pong/normal', new NormalGamePage("base"));
         this.routes.set('/pong/solo', new SoloGamePage());
+        this.routes.set('/pong/tournement', new TournementPage());
         this.routes.set('/login', new LoginPage());
         this.routes.set('/register', new RegisterPage());
         this.routes.set('/profile', new ProfilePage());
