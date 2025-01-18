@@ -3,8 +3,8 @@
 //raquette playerOne
 export function firstPaddleSolo(contextSolo, elementSolo)
 {
-	contextSolo.fillStyle = elementSolo.color;
-	contextSolo.shadowColor = "rgba(0, 125, 255, 0.7)";
+	contextSolo.fillStyle = "#3498db";
+	contextSolo.shadowColor = "rgba(52, 152, 219, 0.7)";
 	contextSolo.shadowOffsetX = -3;
 	contextSolo.shadowOffsetY = 1;
 	contextSolo.shadowBlur = 6;
@@ -16,8 +16,7 @@ export function firstPaddleSolo(contextSolo, elementSolo)
 //ballSolo -> ronde + couleur + ombre
 export function ballSoloStyle(contextSolo, elementSolo)
 {
-	contextSolo.fillStyle = elementSolo.color;
-	contextSolo.shadowColor = "rgba(0, 125, 255, 0.7)";
+	contextSolo.fillStyle = "#000000";
 	contextSolo.shadowOffsetX = 0;
 	contextSolo.shadowOffsetY = 0;
 	contextSolo.shadowBlur = 6;
@@ -35,35 +34,45 @@ export function ballSoloStyle(contextSolo, elementSolo)
 }
 
 export function drawDashedLineSolo(contextSolo, canvasSolo) {
-    const dashLength = 20;  // Longueur des segments de la ligne pointillée
-    const spaceLength = 10; // Longueur des espaces entre les segments
-    const centerX = canvasSolo.width / 2;  // X du centre de la ligne
-    const startY = 0;  // Début de la ligne (haut de l'écran)
-    const endY = canvasSolo.height;  // Fin de la ligne (bas de l'écran)
+    const dashLength = 20;
+    const spaceLength = 10;
+    const centerX = canvasSolo.width / 2;
+    const startY = 0;
+    const endY = canvasSolo.height;
 
-    // Configuration de la couleur et de la largeur de la ligne
-    contextSolo.strokeStyle = "#fff";  // Blanc
-    contextSolo.lineWidth = 2;  // Largeur de la ligne
+    contextSolo.strokeStyle = "#808080";  // Changed to darker gray
+    contextSolo.lineWidth = 2;
 
-    // Calculer le nombre de segments nécessaires
     let currentY = startY;
-
-    // Commencer à dessiner la ligne
     contextSolo.beginPath();
 
     while (currentY < endY) {
-        // Dessiner un segment
         contextSolo.moveTo(centerX, currentY);
         contextSolo.lineTo(centerX, currentY + dashLength);
-
-        // Avancer à la position suivante (pour le prochain segment)
-        currentY += dashLength + spaceLength;  // Ajouter un segment + un espace
+        currentY += dashLength + spaceLength;
     }
 
-    // Appliquer le tracé
     contextSolo.stroke();
 }
 
+export function drawWallsSolo(contextSolo, canvasSolo) {
+    contextSolo.fillStyle = "#808080";  // Changed to darker gray
+    contextSolo.shadowColor = "rgba(128, 128, 128, 0.7)";  // Matching shadow
+    contextSolo.shadowOffsetX = 0;
+    contextSolo.shadowOffsetY = 0;
+    contextSolo.shadowBlur = 6;
+
+    // Top wall
+    contextSolo.fillRect(0, 0, canvasSolo.width, 10);
+
+    // Bottom wall
+    contextSolo.fillRect(0, canvasSolo.height - 10, canvasSolo.width, 10);
+
+    // left wall
+    contextSolo.fillRect(0, 0, 10, canvasSolo.height);
+
+    resetStyleSolo(contextSolo);
+}
 
 function resetStyleSolo(contextSolo)
 {
