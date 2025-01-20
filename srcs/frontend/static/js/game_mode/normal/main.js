@@ -267,7 +267,6 @@ class GameWebSocket {
 			this.resetBall();
 		} else if (this.gameState.ball.x + this.gameState.ball.speed > this.gameState.player2.x + this.gameState.player2.width)
 		{
-			console.log("ici");
 			this.gameState.scores.playerOne++;
 			this.checkScore();
 			this.resetBall();
@@ -283,7 +282,8 @@ class GameWebSocket {
 	checkScore() {
 		if (this.typeOfMatch == "tournament" && (this.gameState.scores.playerOne == 5 || this.gameState.scores.playerTwo == 5))
 		{
-			console.log(bla);
+			stopGame();
+			
 		}
 		else if (this.typeOfMatch == "normal" && (this.gameState.scores.playerOne == 10 || this.gameState.scores.playerTwo == 10))
 		{

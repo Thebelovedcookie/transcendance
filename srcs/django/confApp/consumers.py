@@ -167,8 +167,8 @@ class TournamentConsumer(WebsocketConsumer):
             # Manage the type of the msg
             if message_type == "tournament.starting":
                 response = self.initialisation(data)
-            if message_type == "tournament.winner":
-                response = self.eliminate(data)
+            # if message_type == "tournament.winner":
+            #     response = self.eliminate(data)
             # elif message_type == "tournament.":
             #     response = self.ballBounce(data)
             else:
