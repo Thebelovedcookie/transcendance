@@ -890,3 +890,150 @@ main {
     max-width: 400px;
 }
 
+/* Settings page styles */
+.settings-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.settings-title {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 3rem;
+    font-size: 2.5rem;
+}
+
+.settings-section {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.settings-section h2 {
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.language-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.language-option {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.language-option:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.language-option.active {
+    border-color: #3498db;
+    background: #f0f7ff;
+}
+
+.language-icon {
+    font-size: 1.5rem;
+}
+
+.danger-zone {
+    border: 2px solid #ff6b6b;
+    background: #fff5f5;
+}
+
+.warning-text {
+    color: #e74c3c;
+    margin-bottom: 1rem;
+}
+
+.delete-account-btn {
+    background: #ff6b6b;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.delete-account-btn:hover {
+    background: #e74c3c;
+}
+
+/* Display mode toggle styles */
+.display-mode-toggle {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.mode-btn {
+    background: #f8f9fa;
+    border: 2px solid transparent;
+    padding: 1rem 2rem;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.mode-btn i {
+    font-size: 1.2rem;
+}
+
+.mode-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.mode-btn.active {
+    border-color: #3498db;
+    background: #f0f7ff;
+}
+
+/* Dark mode styles */
+body.dark-mode {
+    background: #1a1a1a;
+    color: #fff;
+}
+
+.dark-mode .settings-section {
+    background: #2c2c2c;
+}
+
+.dark-mode .mode-btn {
+    background: #3c3c3c;
+    color: #fff;
+}
+
+.dark-mode .settings-title,
+.dark-mode .settings-section h2 {
+    color: #fff;
+}
+
+@media (max-width: 768px) {
+    .settings-container {
+        padding: 1rem;
+    }
+
+    .language-options {
+        grid-template-columns: 1fr;
+    }
+}
+
