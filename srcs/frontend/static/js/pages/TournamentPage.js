@@ -1,4 +1,7 @@
-export class TournementPage {
+import { TournamentStart } from "../tournament/TournamentStart.js";
+
+TournamentStart
+export class TournamentPage {
 	constructor() {
 		this.container = document.getElementById('dynamicPage');
 		this.numberOfPlayers = 3;
@@ -45,10 +48,13 @@ export class TournementPage {
 				addFormPlayer.innerHTML += `<input class="form-control" type="text" placeholder="Player ${this.numberOfPlayers}">`;
 			}
 		});
-		// const enterButton = document.getElementById('play');
-		// enterButton.addEventListener('click', function(event) {
-
-		// });
+		const enterButton = document.getElementById('play');
+		enterButton.addEventListener('click', (event) => {
+			const inputs = document.querySelectorAll('.form-control');
+			const players = Array.from(inputs).map(input => input.value);
+			const tournament = new TournamentStart(players, this.numberOfPlayers);
+			tournament.connect();
+		});
 
 		const removeButton = document.getElementById('remove');
 		removeButton.addEventListener('click', (event) => {
