@@ -93,10 +93,6 @@ export class PongMenuPage {
             card.addEventListener('click', () => {
                 if (card.classList.contains('solo-mode')) {
                     this.showSoloModeModal();
-                } else {
-                    const path = card.getAttribute('data-path');
-                    window.history.pushState({}, '', path);
-                    window.dispatchEvent(new PopStateEvent('popstate'));
                 }
             });
         });
