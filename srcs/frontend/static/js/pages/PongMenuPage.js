@@ -74,7 +74,7 @@ export class PongMenuPage {
                         <div class="mode-hover">PLAY</div>
                     </div>
 
-                    <div class="mode-card" data-path="/pong/tournement">
+                    <div class="mode-card" data-path="/pong/tournament">
                         <div class="mode-icon">🏆</div>
                         <h3>Tournament Mode</h3>
                         <p>Compete to win</p>

@@ -1,3 +1,4 @@
+import { EndNormalGamePage } from '../../pages/EndNormalGamePage.js';
 import { firstPaddle, secondPaddle, ballStyle, drawDashedLine, displayScoreOne, displayScoreTwo } from './style.js';
 import { firstPaddleBlue, secondPaddleBlue, ballStyleBlue, drawDashedLineBlue, displayScoreOneBlue, displayScoreTwoBlue } from './themeBlue.js';
 import { firstPaddleRed, secondPaddleRed, ballStyleRed, drawDashedLineRed, displayScoreOneRed, displayScoreTwoRed } from './themeRed.js';
@@ -6,13 +7,14 @@ let context = null;
 let theme = "base";
 
 class GameWebSocket {
-	constructor() {
+	constructor(typeOfMatch) {
 		canvas = document.getElementById("pongGame");
 		context = canvas.getContext("2d");
 		canvas.height = window.innerHeight * 0.8;
 		canvas.width = window.innerWidth;
 		context.clearRect(0, 0, canvas.width, canvas.height);
 
+		this.typeOfMatch = typeOfMatch;
 		this.socket = null;
 		this.isConnected = false;
 		this.gameLoopInterval = null;
@@ -97,7 +99,7 @@ class GameWebSocket {
 				console.log("WebSocket connection closed:", event.code, event.reason);
 				this.isConnected = false;
 				this.stopGameLoop();
-				setTimeout(() => this.connect(), 3000);
+				// setTimeout(() => this.connect(), 3000);
 			};
 
 		} catch (error) {
@@ -137,6 +139,7 @@ class GameWebSocket {
 			start: {
 				"windowHeight": window.innerHeight * 0.8,
 				"windowWidth": window.innerWidth,
+				"typeOfMatch": this.typeOfMatch,
 			}
 		};
 	
@@ -200,8 +203,6 @@ class GameWebSocket {
 
 	getInfoFromBackend(data)
 	{
-
-		// console.log(data.scores.playerOne, data.scores.playerTwo);
 		this.gameState = {
 			player1: {
 				x: data.player1.x,
@@ -231,6 +232,7 @@ class GameWebSocket {
 			scores: {
 				playerOne: data.scores.playerOne,
 				playerTwo: data.scores.playerTwo,
+				scoreMax: data.scores.scoreMax,
 			}
 		};
 	}
@@ -261,10 +263,13 @@ class GameWebSocket {
 		} else if (this.gameState.ball.x + this.gameState.ball.speed < this.gameState.player1.x)
 		{
 			this.gameState.scores.playerTwo++;
+			this.checkScore();
 			this.resetBall();
 		} else if (this.gameState.ball.x + this.gameState.ball.speed > this.gameState.player2.x + this.gameState.player2.width)
 		{
+			console.log("ici");
 			this.gameState.scores.playerOne++;
+			this.checkScore();
 			this.resetBall();
 		}
 		if (theme == "base")
@@ -273,6 +278,28 @@ class GameWebSocket {
 			this.drawGameRed();
 		else if (theme == "blue")
 			this.drawGameBlue();
+	}
+
+	checkScore() {
+		if (this.typeOfMatch == "tournament" && (this.gameState.scores.playerOne == 5 || this.gameState.scores.playerTwo == 5))
+		{
+			console.log(bla);
+		}
+		else if (this.typeOfMatch == "normal" && (this.gameState.scores.playerOne == 10 || this.gameState.scores.playerTwo == 10))
+		{
+			if (this.gameState.scores.playerOne == 10)
+			{
+				stopGame();
+				const end = new EndNormalGamePage("PlayerOne");
+				end.handle();
+			}
+			else
+			{
+				stopGame();
+				const end = new EndNormalGamePage("PlayerTwo");
+				end.handle();
+			}
+		}
 	}
 
 	resetBall() {
@@ -325,17 +352,17 @@ class GameWebSocket {
 	}
 
 	cleanup() {
-		window.removeEventListener('keydown');
-		window.removeEventListener('keyup');
+		// window.removeEventListener('keydown');
+		// window.removeEventListener('keyup');
 	}
 }
 
 let gameSocket = null;
 
-export function normalMode(themeReceived) {
+export function normalMode(themeReceived, typeOfMatch) {
 	if (!gameSocket) {
 		theme = themeReceived;
-		gameSocket = new GameWebSocket();
+		gameSocket = new GameWebSocket(typeOfMatch);
 	}
 }
 
