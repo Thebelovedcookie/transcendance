@@ -3,7 +3,7 @@ export class HomePage {
         const content = `
             <div class="home-container">
                 <canvas id="ballAnimation"></canvas>
-                <div class="text-center">
+                <div class="play-content">
                     <a href="/pong" data-path="/pong" class="play-btn">
                         PLAY
                     </a>
@@ -28,11 +28,19 @@ export class HomePage {
         const ctx = canvas.getContext('2d');
         let x, y, dx, dy, radius;
 
-        // Set canvas size to 80% of window size
+        // Set canvas size considering header and footer
         const resizeCanvas = () => {
+            // Calculate available height (100vh - header - footer)
+            const headerHeight = document.querySelector('header').offsetHeight;
+            const footerHeight = document.querySelector('footer').offsetHeight;
+            const availableHeight = window.innerHeight - headerHeight - footerHeight;
+
             canvas.width = window.innerWidth * 0.8;
-            canvas.height = window.innerHeight * 0.8;
-            canvas.style.margin = '5vh 10vw'; // Center the canvas
+            canvas.height = availableHeight * 0.8;
+
+            // Adjust vertical margin to center within available space
+            const verticalMargin = (availableHeight - canvas.height) / 2;
+            canvas.style.margin = `${verticalMargin}px 10vw`;
         };
 
         // Draw pong background elements

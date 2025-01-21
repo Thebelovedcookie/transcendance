@@ -1,16 +1,23 @@
 export class LogoutPage {
-    async handle() {
-        const content = `
-            <div class="logout-container">
-                <h1>Logout</h1>
-            </div>
-        `;
+    constructor() {
+        this.container = document.getElementById('dynamicPage');
+    }
 
-        document.getElementById('dynamicPage').innerHTML = content;
+    async handle() {
+        // Call logout process
+        await this.handleLogout();
     }
 
     async handleLogout() {
-        // TODO: Implement logout logic
-        console.log('Logout logic');
+        // Show logout message in console
+        console.log('Executing logout process...');
+
+        // Clear any user-related data from localStorage if needed
+
+        // Navigate to home using window.history
+        window.history.pushState({}, '', '/');
+
+        // Dispatch a popstate event to trigger the router's handleLocation
+        window.dispatchEvent(new PopStateEvent('popstate'));
     }
 }

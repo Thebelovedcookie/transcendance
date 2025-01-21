@@ -1,4 +1,4 @@
-import { firstPaddleSolo, ballSoloStyle, drawDashedLineSolo } from './style.js';
+import { firstPaddleSolo, ballSoloStyle, drawDashedLineSolo, drawWallsSolo } from './style.js';
 
 
 //----------------------GLOBAL GAME ELEMENT----------------------------//
@@ -37,7 +37,7 @@ function init_canvasSolo(){
 		y: canvasSolo.height / 2,
 		width: 15 * ratioWidthSolo,
 		height: 15 * ratioHeightSolo,
-		color: "#c480da",
+		color: "#808080",
 		speed: 30,
 		gravity: 2,
 	})
@@ -90,13 +90,27 @@ const executeMovesSolo = () => {
 	})}
 
 function movePaddleUpP2Solo() {
-	if (controllerSolo["o"].pressedSolo == true && playerOneSolo.y - playerOneSolo.gravity > 0)
-		playerOneSolo.y -= playerOneSolo.gravity * 7;
+	if (controllerSolo["o"].pressedSolo == true) {
+		const nextY = playerOneSolo.y - playerOneSolo.gravity * 7;
+
+		if (nextY > 10) {
+			playerOneSolo.y = nextY;
+		} else {
+			playerOneSolo.y = 10;
+		}
+	}
 }
 
 function movePaddleDownP2Solo() {
-	if (controllerSolo["l"].pressedSolo == true && playerOneSolo.y + playerOneSolo.height + playerOneSolo.gravity < canvasSolo.height)
-		playerOneSolo.y += playerOneSolo.gravity * 7;
+	if (controllerSolo["l"].pressedSolo == true) {
+		const nextY = playerOneSolo.y + playerOneSolo.gravity * 7;
+
+		if (nextY + playerOneSolo.height < canvasSolo.height - 10) {
+			playerOneSolo.y = nextY;
+		} else {
+			playerOneSolo.y = canvasSolo.height - 10 - playerOneSolo.height; // 壁にぴったりつける
+		}
+	}
 }
 
 
@@ -132,30 +146,51 @@ function drawElement(element){
 
 //make ballSolo bounce
 function ballSoloBounce(){
-	if(ballSolo.y + ballSolo.gravity <= 0 || ballSolo.y + ballSolo.gravity >= canvasSolo.height){
-		ballSolo.gravity = ballSolo.gravity * (-1);
-		ballSolo.y += ballSolo.gravity;
-		ballSolo.x += ballSolo.speed;
-	} else if (ballSolo.x <= 0) {
-		ballSolo.speed = ballSolo.speed * (-1);
-		ballSolo.y += ballSolo.gravity;
-    	ballSolo.x += ballSolo.speed;
+	let nextX = ballSolo.x + ballSolo.speed;
+	let nextY = ballSolo.y + ballSolo.gravity;
+
+	if(nextY <= 10 || nextY + ballSolo.height >= canvasSolo.height - 10){
+		ballSolo.gravity *= -1;
+		if (nextY <= 10) {
+			ballSolo.y = 10;
+		}
+		if (nextY + ballSolo.height >= canvasSolo.height - 10) {
+			ballSolo.y = canvasSolo.height - 10 - ballSolo.height;
+		}
 	}
-	else
-	{
-		ballSolo.y += ballSolo.gravity;
+
+	if (nextX <= 10) {
+		ballSolo.speed *= -1;
+		ballSolo.x = 10;
+	} else {
 		ballSolo.x += ballSolo.speed;
 	}
+
+	ballSolo.y += ballSolo.gravity;
+
 	ballSoloWallCollision();
 }
 
 function ballSoloWallCollision(){
-	if ((ballSolo.y + ballSolo.gravity <= playerOneSolo.y + playerOneSolo.height
-			&& ballSolo.x + ballSolo.width + ballSolo.speed >= playerOneSolo.x
-			&& ballSolo.y + ballSolo.gravity > playerOneSolo.y))
+	if (ballSolo.x + ballSolo.width + ballSolo.speed >= playerOneSolo.x &&
+		ballSolo.x <= playerOneSolo.x + playerOneSolo.width &&
+		ballSolo.y + ballSolo.height >= playerOneSolo.y &&
+		ballSolo.y <= playerOneSolo.y + playerOneSolo.height)
 	{
-		ballSolo.speed = ballSolo.speed * (-1);
+		const paddleCenter = playerOneSolo.y + playerOneSolo.height / 2;
+		const ballCenter = ballSolo.y + ballSolo.height / 2;
+		const relativeIntersectY = (paddleCenter - ballCenter) / (playerOneSolo.height / 2);
+
+		// calculate bounce angle depending on the position of the ball on the paddle
+		const bounceAngle = relativeIntersectY * 0.75;
+
+		const speed = Math.sqrt(ballSolo.speed * ballSolo.speed + ballSolo.gravity * ballSolo.gravity);
+		ballSolo.speed = -speed * Math.cos(bounceAngle);
+		ballSolo.gravity = speed * Math.sin(bounceAngle);
+
+		ballSolo.x = playerOneSolo.x - ballSolo.width;
 	}
+
 	if (ballSolo.x + ballSolo.speed > playerOneSolo.x + playerOneSolo.width)
 	{
 		resetBallSolo();
@@ -172,6 +207,7 @@ function resetBallSolo() {
 
 function drawElementsSolo(){
 	contextSolo.clearRect(0, 0, canvasSolo.width, canvasSolo.height);
+	drawWallsSolo(contextSolo, canvasSolo);
 	firstPaddleSolo(contextSolo, playerOneSolo);
 	ballSoloStyle(contextSolo, ballSolo);
 	drawDashedLineSolo(contextSolo, canvasSolo);

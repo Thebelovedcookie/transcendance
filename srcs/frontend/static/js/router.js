@@ -6,6 +6,7 @@ import { HomePage } from './pages/HomePage.js';
 import { PongMenuPage } from './pages/PongMenuPage.js';
 import { NormalGamePage } from './pages/NormalGamePage.js';
 import { SoloGamePage } from './pages/SoloGamePage.js';
+import { TournamentPage } from './pages/TournamentPage.js';
 import { NotFoundPage } from './pages/NotFoundPage.js';
 import { LoginPage } from './pages/LoginPage.js';
 import { RegisterPage } from './pages/RegisterPage.js';
@@ -30,8 +31,9 @@ class Router {
     initializeRoutes() {
         this.routes.set('/', new HomePage());
         this.routes.set('/pong', new PongMenuPage());
-        this.routes.set('/pong/normal', new NormalGamePage("base"));
+        this.routes.set('/pong/normal', new NormalGamePage("base", "normal"));
         this.routes.set('/pong/solo', new SoloGamePage());
+        this.routes.set('/pong/tournament', new TournamentPage());
         this.routes.set('/login', new LoginPage());
         this.routes.set('/register', new RegisterPage());
         this.routes.set('/profile', new ProfilePage());
@@ -47,10 +49,6 @@ class Router {
             this.handleLocation();
         });
 
-        /*--------------------------------------------------------------------------------------*/
-        //Yuki : Could you documente this section because it's not very clear for me even after research please?
-
-        //listening to all event 'click' on the document to detext if the user clicked on an element who has the attribute "data-path"
         //  e.target.closest('[data-path]') : Recherche l'élément le plus proche de l'élément cliqué qui contient l'attribut data-path.
         //  Cela permet de détecter si l'utilisateur a cliqué sur un lien ou un bouton avec un chemin spécifié.
         //  Si un tel élément est trouvé :
@@ -58,6 +56,12 @@ class Router {
         //  target.getAttribute('data-path') récupère la valeur de l'attribut data-path, qui contient probablement l'URL
         //  ou le chemin vers lequel l'utilisateur veut naviguer.
         //  this.navigateTo(path) est appelé pour gérer la navigation dans l'application.
+
+        /**
+         * listening to all event 'click' on the document to detect if the user clicked on an element who has the attribute "data-path"
+         * The closest() method searches up the DOM tree for elements which matches a specified CSS selector.
+         * if the element is found, the event is prevented and the navigateTo function is called with the path of the element.
+         */
         document.addEventListener('click', (e) => {
             const target = e.target.closest('[data-path]');
             if (target) {
@@ -69,7 +73,13 @@ class Router {
 
     }
 
-    //how does it work ?
+    /**
+     * how does it work ?
+     * 1. get the path of the current page
+     * 2. get the page associated to the path
+     * 3. if the page is not found, create a new NotFoundPage
+     * 4. call the handle function of the page
+     */
     async handleLocation() {
         const path = window.location.pathname;
         const page = this.routes.get(path) || new NotFoundPage();

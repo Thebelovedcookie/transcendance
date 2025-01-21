@@ -138,7 +138,7 @@ export class HomePage {
 		// });
 
 		const playButton = document.getElementById('playButton1');
-			playButton.addEventListener('click', function () {
+		playButton.addEventListener('click', function () {
 			const gamePage = new NormalGamePage("base");
 			gamePage.handle();
 		});
