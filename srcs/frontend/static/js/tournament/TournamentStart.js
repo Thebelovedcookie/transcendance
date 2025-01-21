@@ -89,7 +89,7 @@ export class TournamentStart {
 			playerTwo: data.playerTwo,
 		}
 		
-		const game = new NormalGamePage("base", "tournament");
+		const game = new NormalGamePage("base", "tournament", this.socket, this.infoMatch);
 		game.handle();
 	}
 }

@@ -1,4 +1,5 @@
 import { EndNormalGamePage } from '../../pages/EndNormalGamePage.js';
+import { TournamentEndGamePage } from '../../pages/TournamentEndGamePage.js';
 import { firstPaddle, secondPaddle, ballStyle, drawDashedLine, displayScoreOne, displayScoreTwo } from './style.js';
 import { firstPaddleBlue, secondPaddleBlue, ballStyleBlue, drawDashedLineBlue, displayScoreOneBlue, displayScoreTwoBlue } from './themeBlue.js';
 import { firstPaddleRed, secondPaddleRed, ballStyleRed, drawDashedLineRed, displayScoreOneRed, displayScoreTwoRed } from './themeRed.js';
@@ -7,14 +8,19 @@ let context = null;
 let theme = "base";
 
 class GameWebSocket {
-	constructor(typeOfMatch) {
+	constructor(typeOfMatch, socketTournament, infoMatch) {
 		canvas = document.getElementById("pongGame");
 		context = canvas.getContext("2d");
 		canvas.height = window.innerHeight * 0.8;
 		canvas.width = window.innerWidth;
 		context.clearRect(0, 0, canvas.width, canvas.height);
 
-		this.typeOfMatch = typeOfMatch;
+		/* for tournament */
+		this.typeOfMatch = typeOfMatch; // "normal" || "tournament"
+		this.socketTournament = socketTournament; // null for normal || socket of tournament
+		this.infoMatch = infoMatch; // null for normal || contains name of player for tournament
+		/* end */
+
 		this.socket = null;
 		this.isConnected = false;
 		this.gameLoopInterval = null;
@@ -282,8 +288,18 @@ class GameWebSocket {
 	checkScore() {
 		if (this.typeOfMatch == "tournament" && (this.gameState.scores.playerOne == 5 || this.gameState.scores.playerTwo == 5))
 		{
-			stopGame();
-			
+			if (this.gameState.scores.playerOne == 5)
+			{
+				stopGame();
+				const end = new TournamentEndGamePage(this.gameState.playerOne, this.socketTournament, this.infoMatch);
+				end.handle();
+			}
+			else
+			{
+				stopGame();
+				const end = new TournamentEndGamePage(this.gameState.playerTwo, this.socketTournament);
+				end.handle();
+			}
 		}
 		else if (this.typeOfMatch == "normal" && (this.gameState.scores.playerOne == 10 || this.gameState.scores.playerTwo == 10))
 		{
@@ -319,6 +335,8 @@ class GameWebSocket {
 		const scoreOne = this.gameState.scores.playerOne ?? 0;
 		const scoreTwo = this.gameState.scores.playerTwo ?? 0;
 
+		if (this.typeOfMatch == "tournament")
+			displayPlayerName(context, canvas, this.infoMatch);
 		displayScoreOne(context, scoreOne, canvas);
 		displayScoreTwo(context, scoreTwo, canvas);
 	}
@@ -359,10 +377,10 @@ class GameWebSocket {
 
 let gameSocket = null;
 
-export function normalMode(themeReceived, typeOfMatch) {
+export function normalMode(themeReceived, typeOfMatch, socketTournament, infoMatch) {
 	if (!gameSocket) {
 		theme = themeReceived;
-		gameSocket = new GameWebSocket(typeOfMatch);
+		gameSocket = new GameWebSocket(typeOfMatch, socketTournament, infoMatch);
 	}
 }
 

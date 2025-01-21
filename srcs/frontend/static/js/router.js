@@ -31,7 +31,7 @@ class Router {
     initializeRoutes() {
         this.routes.set('/', new HomePage());
         this.routes.set('/pong', new PongMenuPage());
-        this.routes.set('/pong/normal', new NormalGamePage("base", "normal"));
+        this.routes.set('/pong/normal', new NormalGamePage("base", "normal", null, null));
         this.routes.set('/pong/solo', new SoloGamePage());
         this.routes.set('/pong/tournament', new TournamentPage());
         this.routes.set('/login', new LoginPage());
