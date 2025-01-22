@@ -1,4 +1,5 @@
 import { NormalGamePage } from "../pages/NormalGamePage.js";
+import { EndTournementPage } from "../pages/EndTournementPage.js";
 export class TournamentStart {
 
 	constructor(playerName, playerNumber) {
@@ -72,6 +73,8 @@ export class TournamentStart {
 			case "tournament.match":
 				this.setNewMatch(data);
 				break;
+			case "tournament.end":
+				this.endTournement(data);
 			case "error":
 				console.log(data.type);
 				console.error("Server error:", data.message);
@@ -84,12 +87,19 @@ export class TournamentStart {
 	setNewMatch(data)
 	{
 		this.infoMatch = {
-			match: data.match,
 			playerOne: data.playerOne,
 			playerTwo: data.playerTwo,
 		}
 		
 		const game = new NormalGamePage("base", "tournament", this.socket, this.infoMatch);
 		game.handle();
+	}
+
+	endTournement(data)
+	{
+		this.socket.close();
+		const winner = data.winner;
+		const endOfTournement = new EndTournementPage(winner);
+		endOfTournement.handle();
 	}
 }

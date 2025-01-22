@@ -115,8 +115,8 @@ export function displayPlayerName(context, canvas, infoMatch)
 	context.shadowOffsetX = -1;
 	context.shadowOffsetY = 0;
 	context.shadowBlur = 3;
-	context.fillText(infoMatch.playerOne, canvas.width / 2 + 90, 30);
-	context.fillText(infoMatch.playerTwo, canvas.width / 2 - 150, 30);
+	context.fillText(infoMatch.playerOne, canvas.width / 2 + 190, 30);
+	context.fillText(infoMatch.playerTwo, canvas.width / 2 - 250, 30);
 	resetStyle(context);
 }
 

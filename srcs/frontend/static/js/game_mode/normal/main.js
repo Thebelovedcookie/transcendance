@@ -1,6 +1,6 @@
 import { EndNormalGamePage } from '../../pages/EndNormalGamePage.js';
 import { TournamentEndGamePage } from '../../pages/TournamentEndGamePage.js';
-import { firstPaddle, secondPaddle, ballStyle, drawDashedLine, displayScoreOne, displayScoreTwo } from './style.js';
+import { firstPaddle, secondPaddle, ballStyle, drawDashedLine, displayScoreOne, displayScoreTwo, displayPlayerName } from './style.js';
 import { firstPaddleBlue, secondPaddleBlue, ballStyleBlue, drawDashedLineBlue, displayScoreOneBlue, displayScoreTwoBlue } from './themeBlue.js';
 import { firstPaddleRed, secondPaddleRed, ballStyleRed, drawDashedLineRed, displayScoreOneRed, displayScoreTwoRed } from './themeRed.js';
 let canvas = null;
@@ -291,13 +291,13 @@ class GameWebSocket {
 			if (this.gameState.scores.playerOne == 5)
 			{
 				stopGame();
-				const end = new TournamentEndGamePage(this.gameState.playerOne, this.socketTournament, this.infoMatch);
+				const end = new TournamentEndGamePage(this.infoMatch.playerOne, this.socketTournament, this.infoMatch);
 				end.handle();
 			}
 			else
 			{
 				stopGame();
-				const end = new TournamentEndGamePage(this.gameState.playerTwo, this.socketTournament);
+				const end = new TournamentEndGamePage(this.infoMatch.playerTwo, this.socketTournament, this.infoMatch);
 				end.handle();
 			}
 		}

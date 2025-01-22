@@ -95,36 +95,10 @@ class GameConsumer(WebsocketConsumer):
         else:
             response = {
                 "type": "game.starting",
-                "player1": {
-                    "x": 5,
-                    "y": window_height * 0.4,
-                    "width": window_width / 80,
-                    "height": window_height / 6,
-                    "color": "black",
-                    "gravity": 2,
-                },
-                "player2": {
-                    "x": window_width - 20,
-                    "y": window_height * 0.4,
-                    "width": window_width / 80,
-                    "height": window_height / 6,
-                    "color": "black",
-                    "gravity": 2,
-                },
-                "ball": {
-                    "x": window_width / 2,
-                    "y": window_height / 2,
-                    "width": 15,
-                    "height": 15,
-                    "color": "black",
-                    "speed": 8,
-                    "gravity": 3,
-                },
-                "scores": {
-                    "playerOne": 0,
-                    "playerTwo": 0,
-                    "scoreMax": 10,
-                }
+                "player1": { "x": 5, "y": window_height * 0.4, "width": window_width / 80, "height": window_height / 6, "color": "black", "gravity": 2},
+                "player2": { "x": window_width - 20, "y": window_height * 0.4, "width": window_width / 80, "height": window_height / 6, "color": "black", "gravity": 2},
+                "ball": {"x": window_width / 2, "y": window_height / 2, "width": 15, "height": 15, "color": "black", "speed": 8, "gravity": 3},
+                "scores": {"playerOne": 0, "playerTwo": 0, "scoreMax": 10}
             }
         return response
 
@@ -140,6 +114,12 @@ class GameConsumer(WebsocketConsumer):
         }
     
 class TournamentConsumer(WebsocketConsumer):
+    def __init__(self):
+        super().__init__()
+        self.infoPlayer = {
+            "players": []
+        }
+
     def connect(self):
         logger.info("WebSocket connection attempt")
         try:
@@ -167,17 +147,14 @@ class TournamentConsumer(WebsocketConsumer):
             # Manage the type of the msg
             if message_type == "tournament.starting":
                 response = self.initialisation(data)
-            # if message_type == "tournament.winner":
-            #     response = self.eliminate(data)
-            # elif message_type == "tournament.":
-            #     response = self.ballBounce(data)
+            elif message_type == "tournament.winner":
+                response = self.throwGamePhase1(data)
             else:
                 response = {
                     "type": "error",
                     "message": f"Unknown message type: {message_type}"
                 }
 
-            # Envoyer la réponse au client
             self.send(text_data=json.dumps(response))
 
         except json.JSONDecodeError:
@@ -189,24 +166,32 @@ class TournamentConsumer(WebsocketConsumer):
         
     def initialisation(self, data):
         start_data = data.get("start", {})
-        numberOfPlayer = start_data.get("numberPlayer", 0)
         players = start_data.get("players", [])
 
-        numberOfMatch = numberOfPlayer - 1
-
-        response = {
-                "type": "tournament.match",
-                "numberOfMatch": numberOfMatch,
-                "match": 1,
-                "playerOne": players[0],
-                "playerTwo": players[1],
+        for player in players:
+            obj = {
+                "id": player,
+                "phase": 0,
+                "elim": False,
             }
-        return response
-    def eliminate(self, data):
-        start_data = data.get("start", {})
-        eliminated = start_data.get("eliminated", 0)
-        winner = start_data.get("winner", 0)
+
+            self.infoPlayer["players"].append(obj)
+
+        return self.throwGamePhase1(data)
+    
+    def throwGamePhase1(self, data):
+        for player in self.infoPlayer["players"]:
+            if player.phase == 0:
+                
+        response = {
+                    "type": "tournament.match",
+                    
+                }
         
+    def receiveData(self, data)
+        
+
+
     #systeme par phase
         
 

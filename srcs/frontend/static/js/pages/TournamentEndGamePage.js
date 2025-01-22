@@ -1,3 +1,5 @@
+
+
 export class TournamentEndGamePage {
 	constructor(winner, socket, infoMatch) {
         this.container = document.getElementById('dynamicPage');
@@ -16,13 +18,31 @@ export class TournamentEndGamePage {
         gameContent.innerHTML = `
             <div class="win normal game">
             <h2>And the Winner is ... ${this.winner}</h2>
-			<a href="/pong" data-path="/pong" class="play-btn">
-				return
-			</a>
+            <button id ="nextGame">
+                Next Match
+            </button>
         </div>
         `;
 
         this.container.innerHTML = '';
         this.container.appendChild(gameContent);
+
+        const nextGameButton = document.getElementById('nextGame');
+        nextGameButton.addEventListener('click', (event) => {
+            console.log(this.winner);
+            const data = {
+                type: "tournament.winner",
+                timestamp: Date.now(),
+                start: {
+                    "winner": this.winner,
+                }
+		    };
+	
+            if (this.socketTournament) {
+                this.socketTournament.send(JSON.stringify(data));
+            } else {
+                console.warn("WebSocket not connected");
+            }
+        })
     }
 }
