@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'backend_app',
     'channels',
     'corsheaders',
+    'usrman_app',
 ]
 
 MIDDLEWARE = [

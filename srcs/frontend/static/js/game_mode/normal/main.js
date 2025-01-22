@@ -238,7 +238,7 @@ class GameWebSocket {
 	}
 
 	ballBounce(){
-		if(this.gameState.ball.y + this.gameState.ball.gravity <= 0 || this.gameState.ball.y + this.gameState.ball.gravity >= canvas.height){
+		if(this.gameState.ball.y + this.gameState.ball.gravity <= 0 || this.gameState.ball.y + this.gameState.ball.width + this.gameState.ball.gravity >= canvas.height){
 			this.sendBallState();
 		} else {
 			this.gameState.ball.y += this.gameState.ball.gravity;
