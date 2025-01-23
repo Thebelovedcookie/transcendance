@@ -47,6 +47,4 @@ RUN pip install psycopg[binary] channels[daphne] django-cors-headers
 
 WORKDIR /project
 
-RUN pip install bcrypt
-
 ENTRYPOINT [ "/setups_backend.sh" ]
