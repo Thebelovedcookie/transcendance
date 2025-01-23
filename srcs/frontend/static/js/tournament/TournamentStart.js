@@ -1,4 +1,3 @@
-// import { NormalGamePage } from "../pages/NormalGamePage.js";
 import { EndTournementPage } from "../tournament/EndTournementPage.js";
 import { NextGamePage } from "./NextGamePage.js";
 export class TournamentStart {
@@ -92,9 +91,6 @@ export class TournamentStart {
 			playerTwo: data.player2,
 		}
 		
-		// const game = new NormalGamePage("base", "tournament", this.socket, this.infoMatch);
-		// game.handle();
-
 		const game = new NextGamePage("base", "tournament", this.socket, this.infoMatch);
 		game.handle();
 	}

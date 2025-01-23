@@ -24,3 +24,4 @@ export class EndTournementPage {
         this.container.appendChild(gameContent);
     }
 }
+// YUKI
