@@ -74,12 +74,6 @@ export class RegisterPage {
         }
 
         try {
-            const userData = {
-                username: document.getElementById('typeUsernameX').value,
-                email: document.getElementById('typeEmailX').value,
-                password: document.getElementById('typePasswordX').value,
-            };
-
             const response = await fetch('/api/register', {
                 method: 'POST',
                 headers: {
@@ -87,7 +81,10 @@ export class RegisterPage {
                     'X-CSRFToken': window.csrfToken,
                 },
                 credentials: 'same-origin',
-                body: JSON.stringify(userData)
+                body: JSON.stringify({ 'username': document.getElementById('typeUsernameX').value,
+                    'email': document.getElementById('typeEmailX').value,
+                    'password': document.getElementById('typePasswordX').value
+                 })
             });
             console.log("use token:", window.csrfToken);
             console.log('Response status:', response.status);
@@ -152,7 +149,7 @@ export class RegisterPage {
             passwordError.textContent = 'Please enter your password';
             passwordError.style.display = 'block';
             isValid = false;
-        } else if (password.value.length < 8) {
+        } else if (password.value.length < 2) {
             passwordError.textContent = 'Password must be at least 8 characters';
             passwordError.style.display = 'block';
             isValid = false;
@@ -195,7 +192,7 @@ export class RegisterPage {
         const strengthBar = document.getElementById('passwordStrength');
 
         // Calculate strength and update progress bar
-        if (password.length >= 8) {
+        if (password.length >= 2) {
             strengthBar.style.width = '100%';
             strengthBar.className = 'progress-bar bg-success';
         } else {
@@ -210,7 +207,7 @@ export class RegisterPage {
         const originalPassword = document.getElementById('typePasswordX').value;
 
         // Calculate strength and update progress bar
-        if (password === originalPassword && password.length >= 8) {
+        if (password === originalPassword && password.length >= 2) {
             strengthBar.style.width = '100%';
             strengthBar.className = 'progress-bar bg-success';
         } else {
