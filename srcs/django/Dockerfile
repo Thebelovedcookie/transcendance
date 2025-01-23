@@ -47,11 +47,6 @@ RUN pip install psycopg[binary] channels[daphne] django-cors-headers
 
 WORKDIR /project
 
-#install node.js for hashing with bcrypt
-# Download and install npm:
-#RUN apt install nodejs npm -y
-#RUN npm install bcrypt
-
 RUN pip install bcrypt
 
 ENTRYPOINT [ "/setups_backend.sh" ]
