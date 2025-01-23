@@ -291,9 +291,10 @@ class GameWebSocket {
 			if (this.gameState.scores.playerOne == 5)
 			{
 				stopGame();
-				const end = new TournamentEndGamePage(this.infoMatch.playerOne, this.infoMatch.playerTwo,this.socketTournament, this.infoMatch);
+				const end = new TournamentEndGamePage(this.infoMatch.playerOne, this.infoMatch.playerTwo, this.socketTournament, this.infoMatch);
 				end.handle();
 			}
+			else
 			{
 				stopGame();
 				const end = new TournamentEndGamePage(this.infoMatch.playerTwo, this.infoMatch.playerOne, this.socketTournament, this.infoMatch);
