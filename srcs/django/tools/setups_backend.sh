@@ -7,7 +7,14 @@ trap cleanup SIGINT SIGTERM
 
 export PYTHONPATH=${PYTHONPATH}:/project
 
-# python3.11 /project/manage.py runserver 0.0.0.0:8000 &
+export DJANGO_SUPERUSER_PASSWORD=12qwaszx
+python3.11 manage.py collectstatic --noinput
+cp -r /project/staticfiles/static/* /var/www/html/static/
+python3.11 manage.py makemigrations
+python3.11 manage.py migrate
+python3.11 manage.py createsuperuser --noinput --username admin --email admin@admin.com
+
+#python3.11 /project/manage.py runserver 0.0.0.0:8000 &
 daphne backend_project.asgi:application -b 0.0.0.0 -p 8000 &
 DJANGO_PID=$!
 

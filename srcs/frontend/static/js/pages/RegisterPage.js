@@ -1,5 +1,6 @@
 export class RegisterPage {
     async handle() {
+
         const content = `
 <section class="gradient-custom">
     <div class="container py-5 h-100">
@@ -64,12 +65,45 @@ export class RegisterPage {
         `;
 
         document.getElementById('dynamicPage').innerHTML = content;
+        this.addEventListeners();
+    }
 
-        // Add event listeners with correct binding
-        document.getElementById('registerButton').addEventListener('click', (e) => this.validateForm(e));
-        document.getElementById('typePasswordX').addEventListener('input', (e) => this.updatePasswordStrength(e));
-        document.getElementById('typeConfirmPasswordX').addEventListener('input', (e) => this.updatePasswordConfirmStrength(e));
-        document.getElementById('typeEmailX').addEventListener('input', (e) => this.validateEmail(e));
+    async sendToBackend(e) {
+        if (this.validateForm(e) == false) {
+            return false;
+        }
+
+        try {
+            const response = await fetch('/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': window.csrfToken,
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify({ 'username': document.getElementById('typeUsernameX').value,
+                    'email': document.getElementById('typeEmailX').value,
+                    'password': document.getElementById('typePasswordX').value
+                 })
+            });
+            console.log("use token:", window.csrfToken);
+            console.log('Response status:', response.status);
+            console.log('Response headers:', Object.fromEntries(response.headers));
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Response error:', errorText);
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('Success:', data);
+            return data;
+
+        } catch (error) {
+            console.error('Error details:', error);
+            throw error;
+        }
     }
 
     validateForm(e) {
@@ -189,5 +223,13 @@ export class RegisterPage {
         } else {
             confirmPasswordError.style.display = 'none';
         }
+    }
+
+    addEventListeners() {
+        // Add event listeners with correct binding
+        document.getElementById('registerButton').addEventListener('click', (e) => this.sendToBackend(e));
+        document.getElementById('typePasswordX').addEventListener('input', (e) => this.updatePasswordStrength(e));
+        document.getElementById('typeConfirmPasswordX').addEventListener('input', (e) => this.updatePasswordConfirmStrength(e));
+        document.getElementById('typeEmailX').addEventListener('input', (e) => this.validateEmail(e));
     }
 }

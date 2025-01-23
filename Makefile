@@ -1,54 +1,68 @@
 DC = docker-compose.yml
 
-all: clean creat_v build up
+all: clean creat_v build up logs
 
 network:
+	@echo 'up'
 	@docker compose -f $(DC) up -d $(c)
 
 creat_v:
-	@sudo mkdir -p $(HOME)/ecole_42/transcendence/data/postgresql_volume
-	@sudo mkdir -p $(HOME)/ecole_42/transcendence/data/django_volume
-	@sudo mkdir -p $(HOME)/ecole_42/transcendence/data/frontend_volume
-	@sudo chown -R $(USER) $(HOME)/ecole_42/transcendence/data
-	@sudo chmod -R 777 $(HOME)/ecole_42/transcendence/data/postgresql_volume
-	@sudo chmod -R 755 $(HOME)/ecole_42/transcendence/data/django_volume
-	@sudo chmod -R 755 $(HOME)/ecole_42/transcendence/data/frontend_volume
+	@echo 'making directories'
+	@sudo mkdir -p /home/user/ecole_42/transcendence/data/postgresql_volume
+	@sudo mkdir -p /home/user/ecole_42/transcendence/data/django_volume
+	@sudo mkdir -p /home/user/ecole_42/transcendence/data/frontend_volume
+	@sudo chown -R $(USER) /home/user/ecole_42/transcendence/data
+	@sudo chmod -R 777 /home/user/ecole_42/transcendence/data/postgresql_volume
+	@sudo chmod -R 755 /home/user/ecole_42/transcendence/data/django_volume
+	@sudo chmod -R 755 /home/user/ecole_42/transcendence/data/frontend_volume
 
 build:
+	@echo 'building'
 	@docker compose -f $(DC) build $(c)
 
 up: network
+	@echo 'up'
 	@docker compose -f $(DC) up -d $(c)
 
 start:
+	@echo 'start'
 	@docker compose -f $(DC) start $(c)
 
 down:
+	@echo 'down'
 	@docker compose -f $(DC) down $(c)
 
 destroy:
+	@echo 'destroy - down'
 	@docker compose -f $(DC) down -v $(c)
 
 stop:
+	@echo 'stop'
 	@docker compose -f $(DC) stop $(c)
 
 restart:
+	@echo 'stop - up'
 	@docker compose -f $(DC) stop $(c)
 	@docker compose -f $(DC) up -d $(c)
 
 logs:
+	@echo 'logs'
 	@docker compose -f $(DC) logs --tail=100 -f $(c)
 
 ps:
+	@echo 'ps'
 	@docker compose -f $(DC) ps
 
 login:
+	@echo 'exec'
 	@docker compose -f $(DC) exec $(c) /bin/bash
 
 clean: destroy
-	@sudo rm -rf $(HOME)/ecole_42/transcendence/data/postgresql_volume
-	@sudo rm -rf $(HOME)/ecole_42/transcendence/data/django_volume
-	@sudo rm -rf $(HOME)/ecole_42/transcendence/data/frontend_volume
+	@echo 'removing volumes'
+	@sudo rm -rf /home/user/ecole_42/transcendence/data/postgresql_volume
+	@sudo rm -rf /home/user/ecole_42/transcendence/data/django_volume
+	@sudo rm -rf /home/user/ecole_42/transcendence/data/frontend_volume
+
 help:
 	@echo    "build  : Services are built once and then tagged, by default as project-service."
 	@echo    "up     : Builds, (re)creates, starts, and attaches to containers for a service."
