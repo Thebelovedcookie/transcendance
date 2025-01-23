@@ -149,7 +149,7 @@ export class RegisterPage {
             passwordError.textContent = 'Please enter your password';
             passwordError.style.display = 'block';
             isValid = false;
-        } else if (password.value.length < 2) {
+        } else if (password.value.length < 8) {
             passwordError.textContent = 'Password must be at least 8 characters';
             passwordError.style.display = 'block';
             isValid = false;
@@ -192,7 +192,7 @@ export class RegisterPage {
         const strengthBar = document.getElementById('passwordStrength');
 
         // Calculate strength and update progress bar
-        if (password.length >= 2) {
+        if (password.length >= 8) {
             strengthBar.style.width = '100%';
             strengthBar.className = 'progress-bar bg-success';
         } else {
@@ -207,7 +207,7 @@ export class RegisterPage {
         const originalPassword = document.getElementById('typePasswordX').value;
 
         // Calculate strength and update progress bar
-        if (password === originalPassword && password.length >= 2) {
+        if (password === originalPassword && password.length >= 8) {
             strengthBar.style.width = '100%';
             strengthBar.className = 'progress-bar bg-success';
         } else {

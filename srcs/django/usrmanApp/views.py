@@ -12,7 +12,7 @@ def register_user(request):
     user = CustomUser.objects.create_user(username=username, email=email, password=password)
     return JsonResponse({
         'status': 'success',
-        'message': password
+        'message': 'user registered'
     }, status=200)
 
 def get_csrf_token(request):
