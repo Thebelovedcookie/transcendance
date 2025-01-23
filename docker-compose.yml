@@ -10,7 +10,7 @@ services:
     #   - '8000:8000'
     volumes:
       - django_volume:/project
-      # - frontend_volume:/var/www/html
+      - frontend_volume:/var/www/html
     env_file:
       - .env
     networks:
