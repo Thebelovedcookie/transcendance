@@ -6,7 +6,7 @@ import { HomePage } from './pages/HomePage.js';
 import { PongMenuPage } from './pages/PongMenuPage.js';
 import { NormalGamePage } from './pages/NormalGamePage.js';
 import { SoloGamePage } from './pages/SoloGamePage.js';
-import { TournamentPage } from './pages/TournamentPage.js';
+import { TournamentPage } from './tournament/TournamentPage.js';
 import { NotFoundPage } from './pages/NotFoundPage.js';
 import { LoginPage } from './pages/LoginPage.js';
 import { RegisterPage } from './pages/RegisterPage.js';
