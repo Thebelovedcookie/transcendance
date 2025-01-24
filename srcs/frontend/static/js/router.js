@@ -113,5 +113,5 @@ class Router {
 
 //waiting for all document loaded in the DOM before create a Router object.
 document.addEventListener('DOMContentLoaded', () => {
-    new Router();
+    window.router = new Router();
 });
