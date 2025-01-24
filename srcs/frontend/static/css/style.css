@@ -1059,3 +1059,649 @@ body.dark-mode {
 	width: 225px;
 	margin: auto;
 }
+
+.next-game-container,
+.end-tournament-container {
+    min-height: calc(100vh - 120px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    padding: 2rem 1rem;
+    box-sizing: border-box;
+}
+
+.prepare-game-wrapper {
+    width: 100%;
+    max-width: 1200px;
+    padding: 2rem;
+    text-align: center;
+}
+
+.tournament-match-header {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 4rem;
+    gap: 2rem;
+}
+
+.player-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 2rem;
+    width: 300px;
+    transition: transform 0.3s ease;
+}
+
+.player-card.left {
+    transform: translateX(-50px);
+}
+
+.player-card.right {
+    transform: translateX(50px);
+}
+
+.player-label {
+    color: #3498db;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.glow-text {
+    font-size: 2.5rem;
+    margin: 0;
+    text-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+    background: linear-gradient(45deg, #3498db, #2ecc71);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+
+
+.game-countdown {
+    margin: 3rem 0;
+}
+
+.countdown-circle {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 4px solid #3498db;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    animation: pulse 1s infinite;
+}
+
+.countdown-circle::before {
+    content: '';
+    position: absolute;
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    border: 2px solid rgba(52, 152, 219, 0.3);
+}
+
+#countdown-number {
+    font-size: 5rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+.ready-text {
+    font-size: 2rem;
+    margin-top: 1rem;
+    color: #2ecc71;
+    text-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
+}
+
+.start-game-btn {
+    background: linear-gradient(45deg, #3498db, #2ecc71);
+    border: none;
+    border-radius: 50px;
+    padding: 1.5rem 4rem;
+    font-size: 1.5rem;
+    color: white;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.start-game-btn:hover {
+    transform: translateY(-5px);
+}
+
+.btn-animation-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.btn-ping {
+    position: absolute;
+    border: 2px solid white;
+    width: 100%;
+    height: 100%;
+    border-radius: 50px;
+    animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+    opacity: 0;
+}
+
+.btn-ping:nth-child(2) {
+    animation-delay: 0.5s;
+}
+
+/* Animations */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.4);
+    }
+    70% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 15px rgba(52, 152, 219, 0);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(52, 152, 219, 0);
+    }
+}
+
+@keyframes ping {
+    75%, 100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.animate-slide-right {
+    animation: slideRight 0.5s ease-out forwards;
+}
+
+.animate-slide-left {
+    animation: slideLeft 0.5s ease-out forwards;
+}
+
+.animate-pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes slideRight {
+    from { transform: translateX(-100px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideLeft {
+    from { transform: translateX(100px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+.fade-out {
+    animation: fadeOut 0.5s ease-out forwards;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .tournament-match-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .player-card {
+        width: 100%;
+        max-width: 280px;
+    }
+
+    .player-card.left,
+    .player-card.right {
+        transform: none;
+    }
+
+    .vs-symbol {
+        font-size: 3rem;
+    }
+
+    .start-game-btn {
+        padding: 1rem 2rem;
+        font-size: 1.2rem;
+    }
+}
+
+/* End Tournament Page Styles */
+.winner-announcement {
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+.trophy-container {
+    margin-bottom: 2rem;
+}
+
+.trophy-container i {
+    font-size: 8rem;
+    color: #f1c40f;
+    text-shadow: 0 0 30px rgba(241, 196, 15, 0.5);
+}
+
+.winner-title {
+    font-size: 2rem;
+    color: #3498db;
+    margin-bottom: 1rem;
+    letter-spacing: 3px;
+}
+
+.return-btn {
+    display: inline-block;
+    background: linear-gradient(45deg, #3498db, #2ecc71);
+    border: none;
+    border-radius: 50px;
+    padding: 1.2rem 3rem;
+    font-size: 1.2rem;
+    color: white;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    margin-top: 3rem;
+}
+
+.return-btn:hover {
+    transform: translateY(-5px);
+}
+
+/* Confetti Animation */
+.confetti-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.confetti-piece {
+    position: absolute;
+    width: 10px;
+    height: 20px;
+    top: -20px;
+    animation: confetti-fall linear infinite;
+}
+
+@keyframes confetti-fall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* Additional Animations */
+.animate-bounce {
+    animation: bounce 2s ease infinite;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+.animate-slide-down {
+    animation: slideDown 0.5s ease-out forwards;
+}
+
+.animate-fade-in-delay {
+    animation: fadeIn 0.5s ease-out 0.3s forwards;
+    opacity: 0;
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.5s ease-out 0.6s forwards;
+    opacity: 0;
+}
+
+@keyframes fadeInUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .trophy-container i {
+        font-size: 6rem;
+    }
+
+    .winner-title {
+        font-size: 1.5rem;
+    }
+
+    .return-btn {
+        padding: 1rem 2rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .next-game-container,
+    .end-tournament-container {
+        min-height: calc(100vh - 100px);
+        margin: 50px 0;
+        padding: 1rem;
+    }
+}
+
+@media (max-height: 600px) {
+    .next-game-container,
+    .end-tournament-container {
+        min-height: auto;
+        padding: 3rem 1rem;
+    }
+
+    .trophy-container i {
+        font-size: 4rem;
+    }
+
+    .winner-name {
+        font-size: 2.5rem;
+        margin: 1rem 0;
+    }
+
+    .countdown-circle {
+        width: 100px;
+        height: 100px;
+    }
+
+    #countdown-number {
+        font-size: 3rem;
+    }
+}
+
+/* Tournament Pages Common Styles */
+.match-result-container,
+.tournament-final-container {
+    min-height: calc(100vh - 120px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    padding: 2rem 1rem;
+    box-sizing: border-box;
+}
+
+/* Match Result Page Styles */
+.match-result {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 3rem;
+    width: 100%;
+    max-width: 800px;
+    text-align: center;
+}
+
+.match-title {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: #3498db;
+    text-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+}
+
+.players-result {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.winner-section, .loser-section {
+    flex: 1;
+    max-width: 300px;
+}
+
+.result-label {
+    display: block;
+    font-size: 1.2rem;
+    color: #bdc3c7;
+    margin-bottom: 0.5rem;
+}
+
+.player-name {
+    font-size: 2rem;
+    margin: 0;
+}
+
+.winner-name {
+    color: #2ecc71;
+    text-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
+}
+
+.loser-name {
+	color: #e74c3c;
+	text-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
+}
+
+.vs-symbol {
+    font-size: 2rem;
+    color: #e74c3c;
+}
+
+/* Tournament Final Page Styles */
+.tournament-final {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+.trophy-container {
+    margin-bottom: 2rem;
+}
+
+.trophy-container i {
+    font-size: 8rem;
+    color: #f1c40f;
+    text-shadow: 0 0 30px rgba(241, 196, 15, 0.5);
+}
+
+.champion-title {
+    font-size: 3rem;
+    color: #3498db;
+    margin-bottom: 2rem;
+    letter-spacing: 3px;
+}
+
+.champion-name {
+    font-size: 4rem;
+    margin: 2rem 0;
+    font-weight: bold;
+    background: linear-gradient(45deg, #3498db, #2ecc71);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 20px rgba(52, 152, 219, 0.5);
+}
+
+/* Button Styles */
+.next-match-btn,
+.return-btn {
+    background: linear-gradient(45deg, #3498db, #2ecc71);
+    border: none;
+    border-radius: 50px;
+    padding: 1.2rem 3rem;
+    font-size: 1.2rem;
+    color: white;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    text-decoration: none;
+}
+
+.next-match-btn:hover,
+.return-btn:hover {
+    transform: translateY(-5px);
+}
+
+/* Animation Classes */
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.animate-slide-down {
+    animation: slideDown 0.5s ease-out;
+}
+
+.animate-fade-in-delay {
+    animation: fadeIn 0.5s ease-out 0.3s forwards;
+    opacity: 0;
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.5s ease-out 0.6s forwards;
+    opacity: 0;
+}
+
+.animate-bounce {
+    animation: bounce 2s ease infinite;
+}
+
+/* Confetti Styles */
+.confetti-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.confetti-piece {
+    position: absolute;
+    width: 10px;
+    height: 20px;
+    top: -20px;
+    animation: confetti-fall linear infinite;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeInUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+@keyframes confetti-fall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .players-result {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .winner-section, .loser-section {
+        max-width: 100%;
+    }
+
+    .match-title {
+        font-size: 2rem;
+    }
+
+    .player-name {
+        font-size: 1.5rem;
+    }
+
+    .champion-title {
+        font-size: 2rem;
+    }
+
+    .champion-name {
+        font-size: 2.5rem;
+    }
+
+    .trophy-container i {
+        font-size: 6rem;
+    }
+}
+
+@media (max-height: 600px) {
+    .match-result-container,
+    .tournament-final-container {
+        min-height: auto;
+        padding: 3rem 1rem;
+    }
+}
+
+.key-info {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.key-label {
+    display: block;
+    color: #bdc3c7;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.key-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.key {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    color: #fff;
+    min-width: 20px;
+    display: inline-block;
+}
