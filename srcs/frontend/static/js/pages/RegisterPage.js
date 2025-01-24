@@ -98,7 +98,7 @@ export class RegisterPage {
 
             const data = await response.json();
             console.log('Success:', data);
-            return data;
+			window.router.navigateTo('/login');
 
         } catch (error) {
             console.error('Error details:', error);
