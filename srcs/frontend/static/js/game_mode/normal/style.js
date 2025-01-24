@@ -117,10 +117,10 @@ export function displayPlayerName(context, canvas, infoMatch)
 	context.shadowBlur = 3;
 
     context.textAlign = "left";
-    context.fillText(infoMatch.playerTwo, 30, 30);
+    context.fillText(infoMatch.playerOne, 30, 30);
 
     context.textAlign = "right";
-    context.fillText(infoMatch.playerOne, canvas.width - 30, 30);
+    context.fillText(infoMatch.playerTwo, canvas.width - 30, 30);
 
 	resetStyle(context);
 }
