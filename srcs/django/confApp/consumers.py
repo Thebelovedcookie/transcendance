@@ -192,10 +192,19 @@ class TournamentConsumer(WebsocketConsumer):
             if obj["phase"] == phaseWanted and obj["elim"] == False:
                 players_in_phase.append(obj)
 
-        player1 = players_in_phase[random.randrange(0, len(players_in_phase))]
-        player2 = players_in_phase[random.randrange(0, len(players_in_phase))]
-        while player2 == player1:
+        if len(players_in_phase) == 1:
+            player1 = players_in_phase[0]
+            phaseWanted += 1
+            del players_in_phase[0]
+            for obj in self.infoPlayer["players"]:
+                if obj["phase"] == phaseWanted and obj["elim"] == False:
+                    players_in_phase.append(obj)
             player2 = players_in_phase[random.randrange(0, len(players_in_phase))]
+        else:
+            player1 = players_in_phase[random.randrange(0, len(players_in_phase))]
+            player2 = players_in_phase[random.randrange(0, len(players_in_phase))]
+            while player2 == player1:
+                player2 = players_in_phase[random.randrange(0, len(players_in_phase))]
 
         response = {
                     "type": "tournament.match",
@@ -212,13 +221,13 @@ class TournamentConsumer(WebsocketConsumer):
                 if player["phase"] == phase and player["elim"] == False:
                     count += 1
 
-            if count > 1:
+            if count > 0:
                 return phase
             
-            if count == 1:
-                for player in self.infoPlayer["players"]:
-                    if player["phase"] == phase:
-                        player["phase"] += 1
+            # if count == 1:
+            #     for player in self.infoPlayer["players"]:
+            #         if player["phase"] == phase:
+            #             player["phase"] += 1
             phase += 1
         return phase
             
