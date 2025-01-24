@@ -6,13 +6,14 @@ import { HomePage } from './pages/HomePage.js';
 import { PongMenuPage } from './pages/PongMenuPage.js';
 import { NormalGamePage } from './pages/NormalGamePage.js';
 import { SoloGamePage } from './pages/SoloGamePage.js';
-import { TournamentPage } from './pages/TournamentPage.js';
+import { TournamentPage } from './tournament/TournamentPage.js';
 import { NotFoundPage } from './pages/NotFoundPage.js';
 import { LoginPage } from './pages/LoginPage.js';
 import { RegisterPage } from './pages/RegisterPage.js';
 import { ProfilePage } from './pages/ProfilePage.js';
 import { SettingPage } from './pages/SettingPage.js';
 import { LogoutPage } from './pages/LogoutPage.js';
+import { TicTacToeGamePage } from './tic_tac_toe/TicTacToeGamePage.js';
 
 
 //first step : Creation of a class Router which will allows to naviguates between pages and add an history
@@ -46,7 +47,7 @@ class Router {
     initializeRoutes() {
         this.routes.set('/', new HomePage());
         this.routes.set('/pong', new PongMenuPage());
-        this.routes.set('/pong/normal', new NormalGamePage("base", "normal"));
+        this.routes.set('/pong/normal', new NormalGamePage("base", "normal", null, null));
         this.routes.set('/pong/solo', new SoloGamePage());
         this.routes.set('/pong/tournament', new TournamentPage());
         this.routes.set('/login', new LoginPage());
@@ -54,6 +55,7 @@ class Router {
         this.routes.set('/profile', new ProfilePage());
         this.routes.set('/settings', new SettingPage());
         this.routes.set('/logout', new LogoutPage());
+        this.routes.set('/tictactoe', new TicTacToeGamePage());
     }
 
     //add listeners popstate (backward/forward)

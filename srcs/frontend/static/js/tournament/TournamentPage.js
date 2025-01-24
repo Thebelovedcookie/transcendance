@@ -1,4 +1,4 @@
-import { TournamentStart } from "../tournament/TournamentStart.js";
+import { TournamentStart } from "./TournamentStart.js";
 
 TournamentStart
 export class TournamentPage {
