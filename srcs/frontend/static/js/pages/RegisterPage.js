@@ -74,6 +74,9 @@ export class RegisterPage {
         }
 
         try {
+            // sending a post request to the backend -> (email, username, password)
+            //Who will allow us to register a new account
+            /*---------------------------REQUEST-----------------------------*/
             const response = await fetch('/api/register', {
                 method: 'POST',
                 headers: {
@@ -86,10 +89,12 @@ export class RegisterPage {
                     'password': document.getElementById('typePasswordX').value
                  })
             });
+            /*--------------------------ENDREQUEST----------------------------*/
             console.log("use token:", window.csrfToken);
             console.log('Response status:', response.status);
             console.log('Response headers:', Object.fromEntries(response.headers));
 
+            //if we get a bad response 
             if (!response.ok) {
                 const errorText = await response.text();
                 console.error('Response error:', errorText);
@@ -98,6 +103,7 @@ export class RegisterPage {
 
             const data = await response.json();
             console.log('Success:', data);
+            //changing the page to loginPage
 			window.router.navigateTo('/login');
 
         } catch (error) {
@@ -106,6 +112,7 @@ export class RegisterPage {
         }
     }
 
+    //parsing of the Form 
     validateForm(e) {
         e.preventDefault();  // Prevent form submission by default
 

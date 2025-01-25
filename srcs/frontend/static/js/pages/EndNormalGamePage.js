@@ -24,3 +24,4 @@ export class EndNormalGamePage {
         this.container.appendChild(gameContent);
     }
 }
+// YUKI
