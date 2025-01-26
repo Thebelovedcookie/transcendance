@@ -257,15 +257,37 @@ class GameWebSocket {
 	//make ball bounce against paddle1 or paddle2
 	//adding one to the score if not bouncing
 	ballWallCollision(){
-		if ((this.gameState.ball.y + this.gameState.ball.gravity <= this.gameState.player2.y + this.gameState.player2.height
+		if (this.gameState.ball.y + this.gameState.ball.gravity <= this.gameState.player2.y + this.gameState.player2.height
 			&& this.gameState.ball.x + this.gameState.ball.width + this.gameState.ball.speed >= this.gameState.player2.x
-			&& this.gameState.ball.y + this.gameState.ball.gravity > this.gameState.player2.y) ||
-			(this.gameState.ball.y + this.gameState.ball.gravity >= this.gameState.player1.y &&
-				this.gameState.ball.y + this.gameState.ball.gravity <= this.gameState.player1.y + this.gameState.player1.height &&
-				this.gameState.ball.x + this.gameState.ball.speed <= this.gameState.player1.x + this.gameState.player1.width))
+			&& this.gameState.ball.y + this.gameState.ball.gravity > this.gameState.player2.y) 
 		{
-			// myAudio.play();
-			this.gameState.ball.speed = this.gameState.ball.speed * (-1);
+			const paddleCenter = this.gameState.player2.y + this.gameState.player2.height / 2;
+			const ballCenter = this.gameState.ball.y + this.gameState.ball.height / 2;
+			const relativeIntersectY = (paddleCenter - ballCenter) / (this.gameState.player2.height / 2);
+
+			const bounceAngle = relativeIntersectY * 0.75;
+
+			const speed = Math.sqrt(this.gameState.ball.speed * this.gameState.ball.speed + this.gameState.ball.gravity * this.gameState.ball.gravity);
+			this.gameState.ball.speed = -speed * Math.cos(bounceAngle);
+			this.gameState.ball.gravity = speed * Math.sin(bounceAngle);
+
+			this.gameState.ball.x = this.gameState.player2.x - this.gameState.ball.width;
+		}
+		else if (this.gameState.ball.y + this.gameState.ball.gravity >= this.gameState.player1.y &&
+				this.gameState.ball.y + this.gameState.ball.gravity <= this.gameState.player1.y + this.gameState.player1.height &&
+				this.gameState.ball.x + this.gameState.ball.speed <= this.gameState.player1.x + this.gameState.player1.width)
+		{
+			const paddleCenter = this.gameState.player1.y + this.gameState.player1.height / 2;
+			const ballCenter = this.gameState.ball.y + this.gameState.ball.height / 2;
+			const relativeIntersectY = (paddleCenter - ballCenter) / (this.gameState.player1.height / 2);
+
+			const bounceAngle = relativeIntersectY * 0.75;
+
+			const speed = Math.sqrt(this.gameState.ball.speed * this.gameState.ball.speed + this.gameState.ball.gravity * this.gameState.ball.gravity);
+			this.gameState.ball.speed = speed * Math.cos(bounceAngle); // put off the -speed
+			this.gameState.ball.gravity = speed * Math.sin(bounceAngle);
+
+			this.gameState.ball.x = this.gameState.player1.x + this.gameState.ball.width;
 		} else if (this.gameState.ball.x + this.gameState.ball.speed < this.gameState.player1.x)
 		{
 			this.gameState.scores.playerTwo++;
