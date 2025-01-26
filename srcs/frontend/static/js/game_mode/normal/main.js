@@ -12,7 +12,7 @@ class GameWebSocket {
 		canvas = document.getElementById("pongGame");
 		context = canvas.getContext("2d");
 		canvas.height = window.innerHeight * 0.8;
-		canvas.width = window.innerWidth;
+		canvas.width = canvas.height * (16/9);
 		context.clearRect(0, 0, canvas.width, canvas.height);
 
 		/* for tournament */
@@ -105,7 +105,6 @@ class GameWebSocket {
 				console.log("WebSocket connection closed:", event.code, event.reason);
 				this.isConnected = false;
 				this.stopGameLoop();
-				// setTimeout(() => this.connect(), 3000);
 			};
 
 		} catch (error) {
@@ -143,8 +142,8 @@ class GameWebSocket {
 			type: "game.starting",
 			timestamp: Date.now(),
 			start: {
-				"windowHeight": window.innerHeight * 0.8,
-				"windowWidth": window.innerWidth,
+				"windowHeight": canvas.height,
+				"windowWidth": canvas.width,
 				"typeOfMatch": this.typeOfMatch,
 			}
 		};
@@ -284,7 +283,7 @@ class GameWebSocket {
 			const bounceAngle = relativeIntersectY * 0.75;
 
 			const speed = Math.sqrt(this.gameState.ball.speed * this.gameState.ball.speed + this.gameState.ball.gravity * this.gameState.ball.gravity);
-			this.gameState.ball.speed = speed * Math.cos(bounceAngle); // put off the -speed
+			this.gameState.ball.speed = speed * Math.cos(bounceAngle);
 			this.gameState.ball.gravity = speed * Math.sin(bounceAngle);
 
 			this.gameState.ball.x = this.gameState.player1.x + this.gameState.ball.width;
@@ -392,8 +391,8 @@ class GameWebSocket {
 	}
 
 	cleanup() {
-		// window.removeEventListener('keydown');
-		// window.removeEventListener('keyup');
+		window.removeEventListener('keydown');
+		window.removeEventListener('keyup');
 	}
 }
 
@@ -408,7 +407,7 @@ export function normalMode(themeReceived, typeOfMatch, socketTournament, infoMat
 
 export function stopGame() {
 	if (gameSocket) {
-		gameSocket.cleanup();  // Clean up event listeners
+		gameSocket.cleanup();
 		gameSocket.stopGameLoop();
 		gameSocket.socket.close();
 		gameSocket = null;
