@@ -106,25 +106,6 @@ export function displayScoreTwo(context, scoreTwo, canvas){
 	resetStyle(context);
 }
 
-// export function displayPlayerName(context, canvas, infoMatch)
-// {
-// 	context.font = "30px 'Press Start 2P'";
-// 	context.fillStyle = "black";
-// 	context.textBaseline = "top";
-// 	context.shadowColor = "rgba(0, 0, 0, 0.7)";
-// 	context.shadowOffsetX = -1;
-// 	context.shadowOffsetY = 0;
-// 	context.shadowBlur = 3;
-
-//     context.textAlign = "left";
-//     context.fillText(infoMatch.playerOne, 30, 30);
-
-//     context.textAlign = "right";
-//     context.fillText(infoMatch.playerTwo, canvas.width - 30, 30);
-
-// 	resetStyle(context);
-// }
-
 function resetStyle(context)
 {
 	context.shadowColor = "transparent";

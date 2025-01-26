@@ -393,7 +393,7 @@ class GameWebSocket {
 
 	cleanup() {
 		window.removeEventListener('keydown');
-		window.removeEventListener('keyup');
+		window.removeEventListener('keyup'); // those two lines are not working properly
 	}
 }
 
@@ -408,7 +408,7 @@ export function normalMode(themeReceived, typeOfMatch, socketTournament, infoMat
 
 export function stopGame() {
 	if (gameSocket) {
-		gameSocket.cleanup();
+		// gameSocket.cleanup(); // this function is not working properly
 		gameSocket.stopGameLoop();
 		gameSocket.socket.close();
 		gameSocket = null;
