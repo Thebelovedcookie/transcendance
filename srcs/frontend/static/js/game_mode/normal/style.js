@@ -89,7 +89,7 @@ export function displayScoreOne(context, scoreOne, canvas) {
 	context.shadowOffsetX = 1;
 	context.shadowOffsetY = 0;
 	context.shadowBlur = 3;
-	context.fillText(scoreOne, canvas.width / 2 - 30, 30);
+	context.fillText(scoreOne, (canvas.width / 2) - (canvas.width / 4), 30);
 	resetStyle(context);
 }
 
@@ -102,7 +102,7 @@ export function displayScoreTwo(context, scoreTwo, canvas){
 	context.shadowOffsetX = -1;
 	context.shadowOffsetY = 0;
 	context.shadowBlur = 3;
-	context.fillText(scoreTwo, canvas.width / 2 + 70, 30);
+	context.fillText(scoreTwo, (canvas.width / 2) + (canvas.width / 4) , 30);
 	resetStyle(context);
 }
 
@@ -121,6 +121,34 @@ export function displayPlayerName(context, canvas, infoMatch)
 
     context.textAlign = "right";
     context.fillText(infoMatch.playerTwo, canvas.width - 30, 30);
+
+	resetStyle(context);
+}
+
+export function drawWalls(context, canvas) {
+	context.fillStyle = "rgb(78, 78, 78)";  // Changed to darker gray
+	context.shadowColor = "rgba(128, 128, 128, 0.7)";  // Matching shadow
+	context.shadowOffsetX = 0;
+	context.shadowOffsetY = 0;
+	context.shadowBlur = 6;
+
+	// Top wall
+	context.fillRect(0, 0, canvas.width, 5);
+
+	// Bottom wall
+	context.fillRect(0, canvas.height - 5, canvas.width, 5);
+
+	context.fillStyle = "rgba(78, 78, 78, 0.48)";  // Changed to darker gray
+	context.shadowColor = "rgba(128, 128, 128, 0.7)";  // Matching shadow
+	context.shadowOffsetX = 0;
+	context.shadowOffsetY = 0;
+	context.shadowBlur = 6;
+
+	// left wall
+	context.fillRect(0, 0, 5, canvas.height);
+
+	// Right wall
+	context.fillRect(canvas.width - 5, 0, 5, canvas.height);
 
 	resetStyle(context);
 }

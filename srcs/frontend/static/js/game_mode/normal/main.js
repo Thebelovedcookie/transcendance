@@ -1,6 +1,6 @@
 import { EndNormalGamePage } from '../../pages/EndNormalGamePage.js';
 import { TournamentEndGamePage } from '../../tournament/TournamentEndGamePage.js';
-import { firstPaddle, secondPaddle, ballStyle, drawDashedLine, displayScoreOne, displayScoreTwo, displayPlayerName } from './style.js';
+import { firstPaddle, secondPaddle, ballStyle, drawDashedLine, displayScoreOne, displayScoreTwo, displayPlayerName, drawWalls } from './style.js';
 import { firstPaddleBlue, secondPaddleBlue, ballStyleBlue, drawDashedLineBlue, displayScoreOneBlue, displayScoreTwoBlue } from './themeBlue.js';
 import { firstPaddleRed, secondPaddleRed, ballStyleRed, drawDashedLineRed, displayScoreOneRed, displayScoreTwoRed } from './themeRed.js';
 let canvas = null;
@@ -352,6 +352,7 @@ class GameWebSocket {
 		secondPaddle(context, this.gameState.player2);
 		ballStyle(context, this.gameState.ball);
 		drawDashedLine(context, canvas);
+		drawWalls(context, canvas)
 
 		const scoreOne = this.gameState.scores.playerOne ?? 0;
 		const scoreTwo = this.gameState.scores.playerTwo ?? 0;
