@@ -99,7 +99,7 @@ class GameConsumer(WebsocketConsumer):
                 "type": "game.starting",
                 "player1": { "x": 5, "y": window_height * 0.4, "width": window_width / 80, "height": window_height / 6, "color": "black", "gravity": 2},
                 "player2": { "x": window_width - 20, "y": window_height * 0.4, "width": window_width / 80, "height": window_height / 6, "color": "black", "gravity": 2},
-                "ball": {"x": window_width / 2, "y": window_height / 2, "width": 15, "height": 15, "color": "black", "speed": 8, "gravity": 3},
+                "ball": {"x": window_width / 2, "y": window_height / 2, "width": 15, "height": 15, "color": "black", "speed": 8, "gravity": 3 },
                 "scores": {"playerOne": 0, "playerTwo": 0, "scoreMax": 10}
             }
         return response
