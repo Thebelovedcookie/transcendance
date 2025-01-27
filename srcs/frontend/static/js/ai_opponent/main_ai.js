@@ -65,6 +65,29 @@ class GameAISocket {
 		context.stroke(); // Dessiner le chemin
 	}
 
+	movePaddleAi_middle() {
+		if (this.gameState.player2.y + this.gameState.player2.height * .2 > canvas.height / 2) {
+			this.gameState.player2.y -= 10;
+		} else if (this.gameState.player2.y + this.gameState.player2.height * .8 < canvas.height / 2) {
+			this.gameState.player2.y += 10;
+		}
+	}
+
+	movePaddleAi_ball() {
+		if (this.gameState.ball.x > canvas.width / 2 && this.gameState.ball.speed > 0) {
+			if (this.gameState.ball.y < this.gameState.player2.y + this.gameState.player2.height * .2) {
+				this.gameState.player2.y -= 10;
+			} else if (this.gameState.ball.y > this.gameState.player2.y + this.gameState.player2.height * .8) {
+				this.gameState.player2.y += 10;
+			}
+		}
+
+		// Empêcher le paddle de sortir des limites du canvas
+		if (this.gameState.player2.y < 0) this.gameState.player2.y = 0;
+		if (this.gameState.player2.y + this.gameState.player2.height > canvas.height)
+			this.gameState.player2.y = canvas.height - this.gameState.player2.height;
+	}
+
 	movePaddleAi() {
 		this.hitAiLine = false;
 
@@ -161,9 +184,10 @@ class GameAISocket {
 		this.gameLoopInterval = setInterval(() => {
 			// Update player positions based on key states
 			this.updatePlayerPositions();
+
 			if (this.hitAiLine)
 				this.movePaddleAi();
-
+			
 			// Draw every frame (60 FPS)
 			this.ballBounce();
 

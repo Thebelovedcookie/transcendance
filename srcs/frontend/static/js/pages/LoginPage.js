@@ -51,7 +51,7 @@ export class LoginPage {
         document.getElementById('dynamicPage').innerHTML = loginHTML;
 
         // Add event listener for form validation
-        document.getElementById('loginButton').addEventListener('click', this.validateForm);
+        document.getElementById('loginButton').addEventListener('click', (e) => this.sendToBackend(e));
     }
 
     validateForm(e) {
