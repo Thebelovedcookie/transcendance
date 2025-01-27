@@ -82,4 +82,47 @@ export class LoginPage {
             e.preventDefault();
         }
     }
+
+    async sendToBackend(e) {
+      if (this.validateForm(e) == false) {
+          return false;
+      }
+
+      try {
+          // sending a post request to the backend -> (email, username, password)
+          //Who will allow us to login
+          /*---------------------------REQUEST-----------------------------*/
+          const response = await fetch('/api/login', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRFToken': window.csrfToken,
+              },
+              credentials: 'same-origin',
+              body: JSON.stringify({ 'email': document.getElementById('typeEmailX').value,
+                  'password': document.getElementById('typePasswordX').value
+               })
+          });
+          /*--------------------------ENDREQUEST----------------------------*/
+          console.log("use token:", window.csrfToken);
+          console.log('Response status:', response.status);
+          console.log('Response headers:', Object.fromEntries(response.headers));
+
+          //if we get a bad response 
+          if (!response.ok) {
+              const errorText = await response.text();
+              console.error('Response error:', errorText);
+              throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+          console.log('Success:', data);
+          //changing the page to ProfilePage
+          window.router.navigateTo('/profile');
+
+      } catch (error) {
+          console.error('Error details:', error);
+          throw error;
+      }
+}
 }

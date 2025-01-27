@@ -39,7 +39,7 @@ class GameAISocket {
 		context.beginPath();
 		context.moveTo(predictionX + this.gameState.ball.width / 2, predictionY + this.gameState.ball.height / 2); // Point de départ
   
-		for (let i = 0; i < 45; i++) { // Simulate x step
+		for (let i = 0; i < 15; i++) { // Simulate x step
 			predictionX += predictionSpeedX;
 			predictionY += predictionSpeedY;
 
@@ -67,13 +67,10 @@ class GameAISocket {
 
 	movePaddleAi() {
 		this.hitAiLine = false;
-		const rand = Math.random(10);
-		console.log(rand);
-		if (this.directionY < this.gameState.player2.y + this.gameState.player2.height * rand) {
-			// Si la balle est au-dessus du centre du paddle
+
+		if (this.directionY < this.gameState.player2.y + this.gameState.player2.height * .2 ) {
 			this.gameState.player2.y -= 10;
-		} else if (this.directionY > this.gameState.player2.y + this.gameState.player2.height * rand) {
-			// Si la balle est en dessous du centre du paddle
+		} else if (this.directionY > this.gameState.player2.y + this.gameState.player2.height * .8) {
 			this.gameState.player2.y += 10;
 		}
 	
