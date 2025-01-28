@@ -1,6 +1,5 @@
 import { firstPaddleSolo, ballSoloStyle, drawDashedLineSolo, drawWallsSolo } from './style.js';
 
-
 //----------------------GLOBAL GAME ELEMENT----------------------------//
 let canvasSolo;
 let contextSolo;
@@ -15,9 +14,7 @@ function init_canvasSolo(){
 	canvasSolo = document.getElementById("pongGame");
 	contextSolo = canvasSolo.getContext("2d");
 	canvasSolo.width = window.innerWidth;
-	canvasSolo.height = window.innerHeight * 0.94;
-	ratioWidthSolo = window.innerWidth / canvasSolo.width;
-	ratioHeightSolo = window.innerHeight / canvasSolo.height;
+	canvasSolo.height = window.innerWidth * (16/9);
 
 	//----------------------------OBJET--------------------------------//
 
@@ -27,7 +24,7 @@ function init_canvasSolo(){
 		y: canvasSolo.height * 0.4,
 		width: canvasSolo.width / 80,
 		height: canvasSolo.height / 6,
-		color: "#3B2077",
+		color: "#808080",
 		gravity: 2,
 	})
 
@@ -35,11 +32,11 @@ function init_canvasSolo(){
 	ballSolo = new Element({
 		x: canvasSolo.width / 2,
 		y: canvasSolo.height / 2,
-		width: 15 * ratioWidthSolo,
-		height: 15 * ratioHeightSolo,
+		width: 15,
+		height: 15,
 		color: "#808080",
-		speed: 30,
-		gravity: 2,
+		speed: 8,
+		gravity: 3,
 	})
 
 	controllerSolo = {
@@ -59,14 +56,6 @@ class Element{
 		this.color = options.color;
 		this.speed = options.speed || 2;
 		this.gravity = options.gravity;
-	}
-
-	update({ x, y, width, height, speed }) {
-		this.x = x !== undefined ? x : this.x;
-		this.y = y !== undefined ? y : this.y;
-		this.width = width !== undefined ? width : this.width;
-		this.height = height !== undefined ? height : this.height;
-		this.speed = speed !== undefined ? speed : this.speed;
 	}
 }
 
@@ -116,27 +105,27 @@ function movePaddleDownP2Solo() {
 
 //----------------------------METHOD--------------------------------//
 
-//if we move the window, we resize object on the canvasSolo
-window.addEventListener('resize', resizeCanvasSolo);
+// //if we move the window, we resize object on the canvasSolo
+// window.addEventListener('resize', resizeCanvasSolo);
 
-function resizeCanvasSolo() {
-	const ratioWidthSolo = window.innerWidth / canvasSolo.width;
-	const ratioHeightSolo = window.innerHeight / canvasSolo.height;
-	canvasSolo.width = window.innerWidth;
-	canvasSolo.height = window.innerHeight * 0.94;
-	playerOneSolo.update({
-		x: canvasSolo.width - 20,
-		y: canvasSolo.height * 0.4,
-		width: canvasSolo.width / 80,
-		height: canvasSolo.height / 6,
-	})
-	ballSolo.update({
-		width: 15 * ratioWidthSolo,
-		height: 15 * ratioHeightSolo,
-	})
+// function resizeCanvasSolo() {
+// 	const ratioWidthSolo = window.innerWidth / canvasSolo.width;
+// 	const ratioHeightSolo = window.innerHeight / canvasSolo.height;
+// 	canvasSolo.width = window.innerWidth;
+// 	canvasSolo.height = window.innerHeight * 0.94;
+// 	playerOneSolo.update({
+// 		x: canvasSolo.width - 20,
+// 		y: canvasSolo.height * 0.4,
+// 		width: canvasSolo.width / 80,
+// 		height: canvasSolo.height / 6,
+// 	})
+// 	ballSolo.update({
+// 		width: 15 * ratioWidthSolo,
+// 		height: 15 * ratioHeightSolo,
+// 	})
 
-	ballSoloBounce();
-}
+// 	ballSoloBounce();
+// }
 
 //draw elements
 function drawElement(element){
@@ -215,6 +204,8 @@ function drawElementsSolo(){
 
 export function resetGameSolo()
 {
+	canvasSolo.height = window.innerHeight * 0.8;
+	canvasSolo.width = canvasSolo.height * (16/9);
 	playerOneSolo.x = canvasSolo.width - 20;
 	playerOneSolo.y = canvasSolo.height * 0.4;
 	playerOneSolo.width = canvasSolo.width / 80;
@@ -223,16 +214,11 @@ export function resetGameSolo()
 
 	ballSolo.x = canvasSolo.width / 2;
 	ballSolo.y = canvasSolo.height / 2;
-	ballSolo.width = 15 * ratioWidthSolo;
-	ballSolo.height = 15 * ratioHeightSolo;
-	ballSolo.speed = 10;
+	ballSolo.width = 15;
+	ballSolo.height = 15;
+	ballSolo.speed = 8;
 	ballSolo.gravity = 3;
-
-	canvasSolo.width = window.innerWidth;
-	canvasSolo.height = window.innerHeight * 0.94;
-	ratioWidthSolo = window.innerWidth / canvasSolo.width;
-	ratioHeightSolo = window.innerHeight / canvasSolo.height;
-
+	
 	controllerSolo = {
 		"o": {pressedSolo: false, func: movePaddleUpP2Solo},
 		"l": {pressedSolo: false, func: movePaddleDownP2Solo},

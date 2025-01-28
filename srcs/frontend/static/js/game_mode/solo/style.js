@@ -3,7 +3,7 @@
 //raquette playerOne
 export function firstPaddleSolo(contextSolo, elementSolo)
 {
-	contextSolo.fillStyle = "#3498db";
+	contextSolo.fillStyle = "black";
 	contextSolo.shadowColor = "rgba(52, 152, 219, 0.7)";
 	contextSolo.shadowOffsetX = -3;
 	contextSolo.shadowOffsetY = 1;

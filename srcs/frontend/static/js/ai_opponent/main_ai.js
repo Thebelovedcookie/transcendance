@@ -1,40 +1,106 @@
-import { EndNormalGamePage } from '../../pages/EndNormalGamePage.js';
-import { TournamentEndGamePage } from '../../tournament/TournamentEndGamePage.js';
-import { firstPaddle, secondPaddle, ballStyle, drawDashedLine, displayScoreOne, displayScoreTwo, displayPlayerName, drawWalls } from './style.js';
-import { firstPaddleBlue, secondPaddleBlue, ballStyleBlue, drawDashedLineBlue, displayScoreOneBlue, displayScoreTwoBlue } from './themeBlue.js';
-import { firstPaddleRed, secondPaddleRed, ballStyleRed, drawDashedLineRed, displayScoreOneRed, displayScoreTwoRed } from './themeRed.js';
+import { EndNormalGamePage } from '../pages/EndNormalGamePage.js';
+import { firstPaddle, secondPaddle, ballStyle, drawDashedLine, displayScoreOne, displayScoreTwo } from './style_ai.js';
 let canvas = null;
 let context = null;
 let theme = "base";
 
-class GameWebSocket {
-	constructor(typeOfMatch, socketTournament, infoMatch) {
+class GameAISocket {
+	constructor() {
 		canvas = document.getElementById("pongGame");
 		context = canvas.getContext("2d");
 		canvas.height = window.innerHeight * 0.8;
-		canvas.width = canvas.height * (16/9);
+		canvas.width = window.innerWidth;
 		context.clearRect(0, 0, canvas.width, canvas.height);
 
-		/* for tournament */
-		this.typeOfMatch = typeOfMatch; // "normal" || "tournament"
-		this.socketTournament = socketTournament; // null for normal || socket of tournament
-		this.infoMatch = infoMatch; // null for normal || contains name of player for tournament
-		/* end */
-
+		this.hitAiLine = false;
 		this.socket = null;
 		this.isConnected = false;
 		this.gameLoopInterval = null;
 		this.gamestate = null;
+		this.directionY = 0;
 		this.keys = {
 			w: false,
 			s: false,
-			ArrowUp: false,
-			ArrowDown: false
 		};
 		this.setupKeyboardControls();
 		this.connect();
 		this.frameCount = 0;
 		this.sendRate = 20;
+	}
+
+	drawPredictedPath() {
+		let predictionX = this.gameState.ball.x;
+		let predictionY = this.gameState.ball.y;
+		let predictionSpeedX = this.gameState.ball.speed;
+		let predictionSpeedY = this.gameState.ball.gravity;
+  
+		context.strokeStyle = "rgba(204, 7, 0, 0.2)";
+		context.lineWidth = 10;
+		context.beginPath();
+		context.moveTo(predictionX + this.gameState.ball.width / 2, predictionY + this.gameState.ball.height / 2); // Point de départ
+  
+		for (let i = 0; i < 15; i++) { // Simulate x step
+			predictionX += predictionSpeedX;
+			predictionY += predictionSpeedY;
+
+			// Gestion des collisions avec les bords
+			if (predictionX + this.gameState.ball.width > canvas.width || predictionX < 0) {
+				predictionSpeedX *= -1; // Inverser direction X
+			}
+			if (predictionY + this.gameState.ball.height > canvas.height || predictionY < 0) {
+				predictionSpeedY *= -0.9; // Inverser direction Y
+				predictionY = predictionY + this.gameState.ball.height > canvas.height ? canvas.height - this.gameState.ball.height : predictionY;
+			}
+			
+			// Tracer une ligne jusqu'à la position prédite
+			context.lineTo(predictionX + this.gameState.ball.width / 2, predictionY + this.gameState.ball.height / 2);
+			if (predictionX + this.gameState.ball.width / 2 >= this.gameState.Ailine.x)
+			{
+				this.hitAiLine = true;
+				context.fillStyle = "rgba(0, 83, 0, 0.7)";
+				context.fillRect((predictionX + this.gameState.ball.width / 2) - 5, (predictionY + this.gameState.ball.height / 2) - 10, 10, 10);
+				this.directionY = (predictionY + this.gameState.ball.height / 2);
+			}
+		}
+		context.stroke(); // Dessiner le chemin
+	}
+
+	movePaddleAi_middle() {
+		if (this.gameState.player2.y + this.gameState.player2.height * .2 > canvas.height / 2) {
+			this.gameState.player2.y -= 10;
+		} else if (this.gameState.player2.y + this.gameState.player2.height * .8 < canvas.height / 2) {
+			this.gameState.player2.y += 10;
+		}
+	}
+
+	movePaddleAi_ball() {
+		if (this.gameState.ball.x > canvas.width / 2 && this.gameState.ball.speed > 0) {
+			if (this.gameState.ball.y < this.gameState.player2.y + this.gameState.player2.height * .2) {
+				this.gameState.player2.y -= 10;
+			} else if (this.gameState.ball.y > this.gameState.player2.y + this.gameState.player2.height * .8) {
+				this.gameState.player2.y += 10;
+			}
+		}
+
+		// Empêcher le paddle de sortir des limites du canvas
+		if (this.gameState.player2.y < 0) this.gameState.player2.y = 0;
+		if (this.gameState.player2.y + this.gameState.player2.height > canvas.height)
+			this.gameState.player2.y = canvas.height - this.gameState.player2.height;
+	}
+
+	movePaddleAi() {
+		this.hitAiLine = false;
+
+		if (this.directionY < this.gameState.player2.y + this.gameState.player2.height * .2 ) {
+			this.gameState.player2.y -= 10;
+		} else if (this.directionY > this.gameState.player2.y + this.gameState.player2.height * .8) {
+			this.gameState.player2.y += 10;
+		}
+	
+		// Empêcher le paddle de sortir des limites du canvas
+		if (this.gameState.player2.y < 0) this.gameState.player2.y = 0;
+		if (this.gameState.player2.y + this.gameState.player2.height > canvas.height)
+			this.gameState.player2.y = canvas.height - this.gameState.player2.height;
 	}
 
 	setupKeyboardControls() {
@@ -64,13 +130,13 @@ class GameWebSocket {
 			this.gameState.player1.y += moveSpeed;
 		}
 
-		// Player 2 movement (Arrow keys)
-		if (this.keys.ArrowUp && this.gameState.player2.y > 0) {
-			this.gameState.player2.y -= moveSpeed;
-		}
-		if (this.keys.ArrowDown && this.gameState.player2.y < canvas.height - this.gameState.player2.height) {
-			this.gameState.player2.y += moveSpeed;
-		}
+		// // Player 2 movement (Arrow keys)
+		// if (this.keys.ArrowUp && this.gameState.player2.y > 0) {
+		// 	this.gameState.player2.y -= moveSpeed;
+		// }
+		// if (this.keys.ArrowDown && this.gameState.player2.y < canvas.height - this.gameState.player2.height) {
+		// 	this.gameState.player2.y += moveSpeed;
+		// }
 	}
 	
 	connect() {
@@ -119,6 +185,9 @@ class GameWebSocket {
 			// Update player positions based on key states
 			this.updatePlayerPositions();
 
+			if (this.hitAiLine)
+				this.movePaddleAi();
+			
 			// Draw every frame (60 FPS)
 			this.ballBounce();
 
@@ -142,8 +211,8 @@ class GameWebSocket {
 			type: "game.starting",
 			timestamp: Date.now(),
 			start: {
-				"windowHeight": canvas.height,
-				"windowWidth": canvas.width,
+				"windowHeight": window.innerHeight * 0.8,
+				"windowWidth": window.innerWidth,
 				"typeOfMatch": this.typeOfMatch,
 			}
 		};
@@ -209,6 +278,14 @@ class GameWebSocket {
 	getInfoFromBackend(data)
 	{
 		this.gameState = {
+			Ailine: {
+				x: data.player2.x,
+				y: 0,
+				width: data.player1.width / 2,
+				height: canvas.height,
+				color: "rgba(204, 7, 0, 0.7)",
+				gravity: data.player1.gravity,
+			},
 			player1: {
 				x: data.player1.x,
 				y: data.player1.y,
@@ -248,7 +325,6 @@ class GameWebSocket {
 		} else {
 			this.gameState.ball.y += this.gameState.ball.gravity;
 			this.gameState.ball.x += this.gameState.ball.speed;
-
 		}
 		this.ballWallCollision();
 	}
@@ -261,32 +337,35 @@ class GameWebSocket {
 			&& this.gameState.ball.y + this.gameState.ball.gravity > this.gameState.player2.y) 
 		{
 			const paddleCenter = this.gameState.player2.y + this.gameState.player2.height / 2;
-			const ballCenter = this.gameState.ball.y + this.gameState.ball.height / 2;
-			const relativeIntersectY = (paddleCenter - ballCenter) / (this.gameState.player2.height / 2);
+				const ballCenter = this.gameState.ball.y + this.gameState.ball.height / 2;
+				const relativeIntersectY = (paddleCenter - ballCenter) / (this.gameState.player2.height / 2);
 
-			const bounceAngle = relativeIntersectY * 0.75;
+				// calculate bounce angle depending on the position of the ball on the paddle
+				const bounceAngle = relativeIntersectY * 0.75;
 
-			const speed = Math.sqrt(this.gameState.ball.speed * this.gameState.ball.speed + this.gameState.ball.gravity * this.gameState.ball.gravity);
-			this.gameState.ball.speed = -speed * Math.cos(bounceAngle);
-			this.gameState.ball.gravity = speed * Math.sin(bounceAngle);
+				const speed = Math.sqrt(this.gameState.ball.speed * this.gameState.ball.speed + this.gameState.ball.gravity * this.gameState.ball.gravity);
+				this.gameState.ball.speed = -speed * Math.cos(bounceAngle);
+				this.gameState.ball.gravity = speed * Math.sin(bounceAngle);
 
-			this.gameState.ball.x = this.gameState.player2.x - this.gameState.ball.width;
+				this.gameState.ball.x = this.gameState.player2.x - this.gameState.ball.width;
 		}
 		else if (this.gameState.ball.y + this.gameState.ball.gravity >= this.gameState.player1.y &&
 				this.gameState.ball.y + this.gameState.ball.gravity <= this.gameState.player1.y + this.gameState.player1.height &&
 				this.gameState.ball.x + this.gameState.ball.speed <= this.gameState.player1.x + this.gameState.player1.width)
 		{
-			const paddleCenter = this.gameState.player1.y + this.gameState.player1.height / 2;
-			const ballCenter = this.gameState.ball.y + this.gameState.ball.height / 2;
-			const relativeIntersectY = (paddleCenter - ballCenter) / (this.gameState.player1.height / 2);
+				const paddleCenter = this.gameState.player1.y + this.gameState.player1.height / 2;
+				const ballCenter = this.gameState.ball.y + this.gameState.ball.height / 2;
+				const relativeIntersectY = (paddleCenter - ballCenter) / (this.gameState.player1.height / 2);
 
-			const bounceAngle = relativeIntersectY * 0.75;
+				// calculate bounce angle depending on the position of the ball on the paddle
+				const bounceAngle = relativeIntersectY * 0.75;
 
-			const speed = Math.sqrt(this.gameState.ball.speed * this.gameState.ball.speed + this.gameState.ball.gravity * this.gameState.ball.gravity);
-			this.gameState.ball.speed = speed * Math.cos(bounceAngle);
-			this.gameState.ball.gravity = speed * Math.sin(bounceAngle);
+				const speed = Math.sqrt(this.gameState.ball.speed * this.gameState.ball.speed + this.gameState.ball.gravity * this.gameState.ball.gravity);
+				this.gameState.ball.speed = speed * Math.cos(bounceAngle); // put off the -speed
+				this.gameState.ball.gravity = speed * Math.sin(bounceAngle);
 
-			this.gameState.ball.x = this.gameState.player1.x + this.gameState.ball.width;
+				this.gameState.ball.x = this.gameState.player1.x + this.gameState.ball.width;
+
 		} else if (this.gameState.ball.x + this.gameState.ball.speed < this.gameState.player1.x)
 		{
 			this.gameState.scores.playerTwo++;
@@ -300,39 +379,20 @@ class GameWebSocket {
 		}
 		if (theme == "base")
 			this.drawGame();
-		else if (theme == "red")
-			this.drawGameRed();
-		else if (theme == "blue")
-			this.drawGameBlue();
 	}
 
 	checkScore() {
-		if (this.typeOfMatch == "tournament" && (this.gameState.scores.playerOne == 5 || this.gameState.scores.playerTwo == 5))
-		{
-			if (this.gameState.scores.playerOne == 5)
-			{
-				stopGame();
-				const end = new TournamentEndGamePage(this.infoMatch.playerOne, this.infoMatch.playerTwo, this.socketTournament, this.infoMatch);
-				end.handle();
-			}
-			else
-			{
-				stopGame();
-				const end = new TournamentEndGamePage(this.infoMatch.playerTwo, this.infoMatch.playerOne, this.socketTournament, this.infoMatch);
-				end.handle();
-			}
-		}
-		else if (this.typeOfMatch == "normal" && (this.gameState.scores.playerOne == 10 || this.gameState.scores.playerTwo == 10))
+		if (this.gameState.scores.playerOne == 10 || this.gameState.scores.playerTwo == 10)
 		{
 			if (this.gameState.scores.playerOne == 10)
 			{
-				stopGame();
+				stopGameAi();
 				const end = new EndNormalGamePage("PlayerOne");
 				end.handle();
 			}
 			else
 			{
-				stopGame();
+				stopGameAi();
 				const end = new EndNormalGamePage("PlayerTwo");
 				end.handle();
 			}
@@ -348,67 +408,37 @@ class GameWebSocket {
 
 	drawGame() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
+		this.drawPredictedPath();
 		firstPaddle(context, this.gameState.player1);
 		secondPaddle(context, this.gameState.player2);
+		firstPaddle(context,  this.gameState.Ailine);
 		ballStyle(context, this.gameState.ball);
 		drawDashedLine(context, canvas);
-		drawWalls(context, canvas)
-
 		const scoreOne = this.gameState.scores.playerOne ?? 0;
 		const scoreTwo = this.gameState.scores.playerTwo ?? 0;
 
-		if (this.typeOfMatch == "tournament")
-			displayPlayerName(context, canvas, this.infoMatch);
 		displayScoreOne(context, scoreOne, canvas);
 		displayScoreTwo(context, scoreTwo, canvas);
 	}
 
-	drawGameBlue() {
-		context.clearRect(0, 0, canvas.width, canvas.height);
-		firstPaddleBlue(context, this.gameState.player1);
-		secondPaddleBlue(context, this.gameState.player2);
-		ballStyleBlue(context, this.gameState.ball);
-		drawDashedLineBlue(context, canvas);
-
-		const scoreOne = this.gameState.scores.playerOne ?? 0;
-		const scoreTwo = this.gameState.scores.playerTwo ?? 0;
-
-		displayScoreOneBlue(context, scoreOne, canvas);
-		displayScoreTwoBlue(context, scoreTwo, canvas);
-	}
-
-	drawGameRed() {
-		context.clearRect(0, 0, canvas.width, canvas.height);
-		firstPaddleRed(context, this.gameState.player1);
-		secondPaddleRed(context, this.gameState.player2);
-		ballStyleRed(context, this.gameState.ball);
-		drawDashedLineRed(context, canvas);
-
-		const scoreOne = this.gameState.scores.playerOne ?? 0;
-		const scoreTwo = this.gameState.scores.playerTwo ?? 0;
-
-		displayScoreOneRed(context, scoreOne, canvas);
-		displayScoreTwoRed(context, scoreTwo, canvas);
-	}
-
 	cleanup() {
-		window.removeEventListener('keydown');
-		window.removeEventListener('keyup'); // those two lines are not working properly
+		// window.removeEventListener('keydown');
+		// window.removeEventListener('keyup');
 	}
 }
 
 let gameSocket = null;
 
-export function normalMode(themeReceived, typeOfMatch, socketTournament, infoMatch) {
+export function aiMode(themeReceived) {
 	if (!gameSocket) {
 		theme = themeReceived;
-		gameSocket = new GameWebSocket(typeOfMatch, socketTournament, infoMatch);
+		gameSocket = new GameAISocket();
 	}
 }
 
-export function stopGame() {
+export function stopGameAi() {
 	if (gameSocket) {
-		// gameSocket.cleanup(); // this function is not working properly
+		gameSocket.cleanup();  // Clean up event listeners
 		gameSocket.stopGameLoop();
 		gameSocket.socket.close();
 		gameSocket = null;
