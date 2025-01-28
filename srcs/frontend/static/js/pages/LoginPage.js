@@ -117,11 +117,13 @@ export class LoginPage {
 
           const data = await response.json();
           console.log('Success:', data);
-          //changing the page to ProfilePage
+          //changing the page to ProfilePage 
           window.router.navigateTo('/profile');
 
       } catch (error) {
           console.error('Error details:', error);
+          passwordError.textContent = 'User email or password is incorrect';
+          passwordError.style.display = 'block';
           throw error;
       }
 }
