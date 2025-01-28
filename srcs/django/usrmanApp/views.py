@@ -1,8 +1,27 @@
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from . models import CustomUser
+from django.contrib.auth import authenticate, login
 
 import json
+
+def login_user(request):
+    data = json.load(request)
+    email = data.get('email')
+    password = data.get('password')
+    user = authenticate(email=email, password=password)
+    if user is not None:
+        login(request, user)
+        return JsonResponse({
+            'status': 'success',
+            'message': 'user logged in'
+        }, status=200)
+    else:
+        return JsonResponse({
+            'status': 'failure',
+            'message': 'bad user info'
+        }, status=401)
+
 
 def register_user(request):
     data = json.load(request)
