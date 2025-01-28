@@ -63,13 +63,13 @@ export function drawWallsSolo(contextSolo, canvasSolo) {
     contextSolo.shadowBlur = 6;
 
     // Top wall
-    contextSolo.fillRect(0, 0, canvasSolo.width, 10);
+    contextSolo.fillRect(0, 0, canvasSolo.width, 5);
 
     // Bottom wall
-    contextSolo.fillRect(0, canvasSolo.height - 10, canvasSolo.width, 10);
-
+    contextSolo.fillRect(0, canvasSolo.height - 5, canvasSolo.width, 5);
+    contextSolo.fillStyle = "rgba(128, 128, 128, 0.48)";  // Matching shadow
     // left wall
-    contextSolo.fillRect(0, 0, 10, canvasSolo.height);
+    contextSolo.fillRect(0, 0, 5, canvasSolo.height);
 
     resetStyleSolo(contextSolo);
 }
