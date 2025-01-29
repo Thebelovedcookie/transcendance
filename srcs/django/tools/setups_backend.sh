@@ -7,12 +7,12 @@ trap cleanup SIGINT SIGTERM
 
 export PYTHONPATH=${PYTHONPATH}:/project
 
-export DJANGO_SUPERUSER_PASSWORD=12qwaszx
+
 python3.11 manage.py collectstatic --noinput
 cp -r /project/staticfiles/static/* /var/www/html/static/
 python3.11 manage.py makemigrations
 python3.11 manage.py migrate
-python3.11 manage.py createsuperuser --noinput --username admin --email admin@admin.com
+python3.11 manage.py createsuperuser --noinput --username ${DJANGO_SUPERUSER_USERNAME} --email ${DJANGO_SUPERUSER_EMAIL}
 
 # for dev(socket not supported)
 # python3.11 /project/manage.py runserver 0.0.0.0:8000 &

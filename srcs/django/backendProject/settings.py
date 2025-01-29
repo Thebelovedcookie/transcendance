@@ -172,3 +172,8 @@ SESSION_COOKIE_AGE = 3600 # 1 hour
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = '/var/www/html/media'
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://localhost',
+    'https://127.0.0.1',
+]
