@@ -15,12 +15,14 @@ import { SettingPage } from './pages/SettingPage.js';
 import { LogoutPage } from './pages/LogoutPage.js';
 import { TicTacToeGamePage } from './tic_tac_toe/TicTacToeGamePage.js';
 import { AiPage } from './pages/AiPage.js';
+import { Header } from './pages/Header.js';
 
 
 //first step : Creation of a class Router which will allows to naviguates between pages and add an history
 class Router {
     //constructor of the class call his 3 function
     constructor() {
+		this.header = new Header();
         this.routes = new Map();
         this.container = document.getElementById('dynamicPage');
 
@@ -100,6 +102,8 @@ class Router {
      * 4. call the handle function of the page
      */
     async handleLocation() {
+		await this.header.render();
+
         const path = window.location.pathname;
         const page = this.routes.get(path) || new NotFoundPage();
         await page.handle();

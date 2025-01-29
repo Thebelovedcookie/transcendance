@@ -100,3 +100,18 @@ def get_profile(request):
 			'join_date': request.user.date_joined.strftime('%Y-%m-%d')
 		}
 	})
+
+def get_user(request):
+	if request.user.is_authenticated:
+		return JsonResponse({
+			'status': 'success',
+			'data': {
+				'username': request.user.username,
+				'email': request.user.email
+			}
+		})
+	else:
+		return JsonResponse({
+			'status': 'error',
+			'message': 'User not authenticated'
+		}, status=401)
