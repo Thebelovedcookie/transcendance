@@ -9,7 +9,7 @@ export class Header {
                 credentials: 'include'
             });
             const data = await response.json();
-            const isLoggedIn = data.status === 'success';
+            const isLoggedIn = data.data.isAuthenticated;
             const username = isLoggedIn ? data.data.username : '';
 
             this.container.innerHTML = `

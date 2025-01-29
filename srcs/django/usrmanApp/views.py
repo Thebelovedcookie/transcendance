@@ -113,6 +113,8 @@ def get_profile(request):
 			'username': request.user.username,
 			'email': request.user.email,
 			'profile_image': profile_image_url,
+			'wins': request.user.wins,
+			'totalGames': request.user.totalGames,
 			'join_date': request.user.date_joined.strftime('%Y-%m-%d')
 		}
 	})
@@ -123,11 +125,13 @@ def get_user(request):
 			'status': 'success',
 			'data': {
 				'username': request.user.username,
-				'email': request.user.email
+				'isAuthenticated': True
 			}
 		})
 	else:
 		return JsonResponse({
-			'status': 'error',
-			'message': 'User not authenticated'
-		}, status=401)
+			'status': 'success',
+			'data': {
+				'isAuthenticated': False
+			}
+		})
