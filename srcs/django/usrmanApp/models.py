@@ -16,9 +16,9 @@ class CustomUser(AbstractUser):
 		blank=True,
 	)
 
-	joinDate = models.CharField(max_length=200, default="1977-05-19")
-	wins = models.IntegerField(default=10)
-	totalGames = models.IntegerField(default=100)
+	wins = models.IntegerField(default=0)
+	totalGames = models.IntegerField(default=0)
+	losses = models.IntegerField(default=0)
 
 	USERNAME_FIELD = 'email'
 	REQUIRED_FIELDS = ('username',)
