@@ -1,4 +1,4 @@
-export class TournamentEndGamePage {
+export class EndGamePage {
 	constructor(winner, loser, socket, infoMatch) {
         this.container = document.getElementById('dynamicPage');
 		this.winner = winner;
