@@ -38,19 +38,22 @@ class GameWebSocket {
 	}
 
 	setupKeyboardControls() {
-		window.addEventListener('keydown', (e) => {
+		this.keyDownHandler = (e) => {
 			if (this.keys.hasOwnProperty(e.key)) {
 				this.keys[e.key] = true;
 				e.preventDefault();
 			}
-		});
-
-		window.addEventListener('keyup', (e) => {
+		};
+	
+		this.keyUpHandler = (e) => {
 			if (this.keys.hasOwnProperty(e.key)) {
 				this.keys[e.key] = false;
 				e.preventDefault();
 			}
-		});
+		};
+	
+		window.addEventListener('keydown', this.keyDownHandler);
+		window.addEventListener('keyup', this.keyUpHandler);
 	}
 
 	updatePlayerPositions() {
@@ -392,8 +395,8 @@ class GameWebSocket {
 	}
 
 	cleanup() {
-		window.removeEventListener('keydown');
-		window.removeEventListener('keyup'); // those two lines are not working properly
+		window.removeEventListener('keydown', this.keyDownHandler);
+		window.removeEventListener('keyup', this.keyUpHandler);
 	}
 }
 
@@ -408,7 +411,7 @@ export function normalMode(themeReceived, typeOfMatch, socketTournament, infoMat
 
 export function stopGame() {
 	if (gameSocket) {
-		// gameSocket.cleanup(); // this function is not working properly
+		gameSocket.cleanup(); // this function is not working properly
 		gameSocket.stopGameLoop();
 		gameSocket.socket.close();
 		gameSocket = null;
