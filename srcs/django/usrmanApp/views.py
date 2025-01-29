@@ -4,6 +4,7 @@ from . models import CustomUser
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 import json
+import datetime
 
 def login_user(request):
 	data = json.load(request)
@@ -89,6 +90,9 @@ def update_profile(request):
 			'data' : {
 				'username': request.user.username,
 				'email': request.user.email,
+				'joinDate': request.user.joinDate,
+				'wins': request.user.wins,
+				'totalGames': request.user.totalGames,
 				# 'profile_image': request.user.profile_image.url
 			},
 		}, status=200)

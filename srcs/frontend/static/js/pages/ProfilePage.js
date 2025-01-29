@@ -54,6 +54,10 @@ export class ProfilePage {
             const data = await response.json();
             if (data.status === 'success') {
                 this.userData = data.data;
+                console.log('username', this.userData.username);
+                console.log('email', this.userData.email);
+                console.log('wins', this.userData.wins);
+                console.log('totalGames', this.userData.totalGames);
             }
         } catch (error) {
             console.error('Failed to load user data:', error);
