@@ -90,10 +90,11 @@ def update_profile(request):
 			'data' : {
 				'username': request.user.username,
 				'email': request.user.email,
-				'joinDate': request.user.joinDate,
+				'profile_image': profile_image_url,
 				'wins': request.user.wins,
 				'totalGames': request.user.totalGames,
-				# 'profile_image': request.user.profile_image.url
+				'losses': request.user.losses,
+				'join_date': request.user.date_joined.strftime('%Y-%m-%d')
 			},
 		}, status=200)
 	except Exception as e:
@@ -115,6 +116,7 @@ def get_profile(request):
 			'profile_image': profile_image_url,
 			'wins': request.user.wins,
 			'totalGames': request.user.totalGames,
+			'losses': request.user.losses,
 			'join_date': request.user.date_joined.strftime('%Y-%m-%d')
 		}
 	})

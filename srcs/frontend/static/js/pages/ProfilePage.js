@@ -7,7 +7,7 @@ export class ProfilePage {
         this.userData = {
             username: "Player123",
             email: "player123@example.com",
-            joinDate: "2024-01-15",
+            join_date: "2024-01-15",
             totalGames: 150,
             wins: 89,
             losses: 61
@@ -85,7 +85,7 @@ export class ProfilePage {
                         </div>
                         <div class="profile-details">
                             <h1>${this.userData.username}</h1>
-                            <p>Member since: ${this.userData.joinDate}</p>
+                            <p>Member since: ${this.userData.join_date}</p>
                             <button class="edit-profile-btn">
                                 <i class="fas fa-edit"></i> Edit Profile
                             </button>
