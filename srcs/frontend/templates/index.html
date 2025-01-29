@@ -13,38 +13,7 @@
 	</head>
 	<body>
         <div class="mobile-menu-overlay"></div>
-        <header>
-            <nav class="navbar navbar-expand-lg navbar-light bg-secondary">
-                <div class="container-fluid">
-                    <!-- Left side: Brand/Logo -->
-                    <a class="navbar-brand" href="/" data-path="/">
-                        <img src="/static/img/logo.png" alt="Logo" width="80" height="40">
-                    </a>
-
-                    <!-- Right side: Profile dropdown -->
-                    <div class="dropdown">
-                        <img src="/static/img/anonymous.webp"
-                             class="rounded-circle"
-                             alt="Profile"
-                             width="40"
-                             height="40"
-                             style="cursor: pointer"
-                             data-bs-toggle="dropdown"
-                             aria-expanded="false">
-
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="/login" data-path="/login">Login</a></li>
-                            <li><a class="dropdown-item" href="/register" data-path="/register">Register</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="/profile" data-path="/profile">Mypage</a></li>
-                            <li><a class="dropdown-item" href="/settings" data-path="/settings">Settings</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="/logout" data-path="/logout">Logout</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </nav>
-        </header>
+        <header id="header-container"></header>
         <main>
             <div id="dynamicPage">
             </div>
