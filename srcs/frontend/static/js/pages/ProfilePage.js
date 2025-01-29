@@ -2,6 +2,7 @@ export class ProfilePage {
     constructor() {
         this.container = document.getElementById('dynamicPage');
         this.chartLoaded = false;
+        this.userData = null;
         // テストデータ
         this.userData = {
             username: "Player123",
@@ -25,13 +26,38 @@ export class ProfilePage {
     }
 
     async handle() {
-        // Chart.jsが読み込まれていない場合は読み込む
+        await this.loadUserData();
         if (!window.Chart) {
             await this.loadChartJS();
         }
         this.render();
         this.setupEventListeners();
         this.initializeCharts();
+    }
+
+    async loadUserData() {
+        try {
+            const response = await fetch('/api/profile/get', {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+					'X-CSRFToken': window.csrfToken,
+					'Content-Type': 'application/json',
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            if (data.status === 'success') {
+                this.userData = data.data;
+            }
+        } catch (error) {
+            console.error('Failed to load user data:', error);
+        }
     }
 
     async loadChartJS() {
@@ -50,7 +76,7 @@ export class ProfilePage {
                 <div class="profile-header">
                     <div class="profile-info">
                         <div class="profile-avatar-container">
-                            <img src="/static/img/anonymous.webp" alt="Profile" class="profile-avatar">
+                            <img src="${this.userData.profile_image || '/static/img/anonymous.webp'}" alt="Profile" class="profile-avatar">
                             <span class="online-status ${this.userData.online ? 'online' : ''}"></span>
                         </div>
                         <div class="profile-details">
@@ -145,7 +171,7 @@ export class ProfilePage {
                 <form id="editProfileForm">
                     <div class="avatar-upload">
                         <div class="avatar-preview">
-                            <img src="${this.userData.avatar || '/static/img/anonymous.webp'}" alt="Profile" id="avatarPreview">
+                            <img src="${this.userData.profile_image || '/static/img/anonymous.webp'}" alt="Profile" id="avatarPreview">
                         </div>
                         <div class="avatar-edit">
                             <input type="file" id="avatarInput" accept="image/*">
@@ -204,11 +230,57 @@ export class ProfilePage {
         });
 
         // Form submission handler
-        form.addEventListener('submit', (e) => {
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            // Here you would typically handle the form submission
-            modal.classList.add('fade-out');
-            setTimeout(() => modal.remove(), 300);
+
+			const csrfToken = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+
+            const formData = new FormData();
+            const avatarInput = modal.querySelector('#avatarInput');
+            const profileData = {
+                username: modal.querySelector('input[type="text"]').value,
+                email: modal.querySelector('input[type="email"]').value
+            };
+
+            if (avatarInput.files[0]) {
+                formData.append('profile_image', avatarInput.files[0]);
+            }
+            formData.append('data', JSON.stringify(profileData));
+
+            try {
+                const response = await fetch('/api/profile/update', {
+                    method: 'POST',
+                    credentials: 'include',
+					headers: {
+						'X-CSRFToken': csrfToken,
+						'Content-Type': 'application/json',
+					},
+                    body: formData
+                });
+
+				console.log('CSRF Token:', csrfToken);
+            	console.log('Response status:', response.status);
+				console.log('Response:', response);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                if (result.status === 'success') {
+					console.log('result.data:', result.data);
+					console.log(response);
+                    // this.userData = result.data;
+                    this.render();
+                    modal.classList.add('fade-out');
+                    setTimeout(() => modal.remove(), 300);
+                }
+            } catch (error) {
+                console.error('Failed to update profile:', error);
+            }
         });
     }
 
