@@ -1,5 +1,5 @@
 import { EndNormalGamePage } from '../../pages/EndNormalGamePage.js';
-import { TournamentEndGamePage } from '../../tournament/TournamentEndGamePage.js';
+import { EndGamePage } from '../../tournament/EndGamePage.js';
 import { firstPaddle, secondPaddle, ballStyle, drawDashedLine, displayScoreOne, displayScoreTwo, displayPlayerName, drawWalls } from './style.js';
 import { firstPaddleBlue, secondPaddleBlue, ballStyleBlue, drawDashedLineBlue, displayScoreOneBlue, displayScoreTwoBlue } from './themeBlue.js';
 import { firstPaddleRed, secondPaddleRed, ballStyleRed, drawDashedLineRed, displayScoreOneRed, displayScoreTwoRed } from './themeRed.js';
@@ -72,7 +72,7 @@ class GameWebSocket {
 			this.gameState.player2.y += moveSpeed;
 		}
 	}
-	
+
 	connect() {
 		try {
 			const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -147,7 +147,7 @@ class GameWebSocket {
 				"typeOfMatch": this.typeOfMatch,
 			}
 		};
-	
+
 		if (this.isConnected && this.socket) {
 			this.socket.send(JSON.stringify(data));
 		} else {
@@ -258,7 +258,7 @@ class GameWebSocket {
 	ballWallCollision(){
 		if (this.gameState.ball.y + this.gameState.ball.gravity <= this.gameState.player2.y + this.gameState.player2.height
 			&& this.gameState.ball.x + this.gameState.ball.width + this.gameState.ball.speed >= this.gameState.player2.x
-			&& this.gameState.ball.y + this.gameState.ball.gravity > this.gameState.player2.y) 
+			&& this.gameState.ball.y + this.gameState.ball.gravity > this.gameState.player2.y)
 		{
 			const paddleCenter = this.gameState.player2.y + this.gameState.player2.height / 2;
 			const ballCenter = this.gameState.ball.y + this.gameState.ball.height / 2;
@@ -312,13 +312,13 @@ class GameWebSocket {
 			if (this.gameState.scores.playerOne == 5)
 			{
 				stopGame();
-				const end = new TournamentEndGamePage(this.infoMatch.playerOne, this.infoMatch.playerTwo, this.socketTournament, this.infoMatch);
+				const end = new EndGamePage(this.infoMatch.playerOne, this.infoMatch.playerTwo, this.socketTournament, this.infoMatch);
 				end.handle();
 			}
 			else
 			{
 				stopGame();
-				const end = new TournamentEndGamePage(this.infoMatch.playerTwo, this.infoMatch.playerOne, this.socketTournament, this.infoMatch);
+				const end = new EndGamePage(this.infoMatch.playerTwo, this.infoMatch.playerOne, this.socketTournament, this.infoMatch);
 				end.handle();
 			}
 		}
