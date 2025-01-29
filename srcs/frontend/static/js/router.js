@@ -108,7 +108,8 @@ class Router {
     //add the history
     navigateTo(path) {
         window.history.pushState({}, '', path);
-        this.handleLocation();
+        // this.handleLocation();
+		window.dispatchEvent(new PopStateEvent('popstate'));
     }
     /*--------------------------------------------------------------------------------------*/
 }

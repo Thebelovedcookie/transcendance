@@ -38,9 +38,6 @@ export class PongMenuPage {
         const options = modal.querySelectorAll('.modal-option');
         options.forEach(option => {
             option.addEventListener('click', () => {
-                const path = option.getAttribute('data-path');
-                window.history.pushState({}, '', path);
-                window.dispatchEvent(new PopStateEvent('popstate'));
                 modal.remove();
             });
         });
