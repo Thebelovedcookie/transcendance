@@ -4,20 +4,30 @@ export class LogoutPage {
     }
 
     async handle() {
-        // Call logout process
-        await this.handleLogout();
-    }
+        try {
+			const csrfToken = document.cookie
+				.split('; ')
+				.find(row => row.startsWith('csrftoken='))
+				?.split('=')[1];
 
-    async handleLogout() {
-        // Show logout message in console
-        console.log('Executing logout process...');
+			const response = await fetch('/api/logout', {
+				method: 'POST',
+				credentials: 'include',
+				headers: {
+					'X-CSRFToken': csrfToken,
+					'Content-Type': 'application/json'
+				}
+			});
 
-        // Clear any user-related data from localStorage if needed
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
 
-        // Navigate to home using window.history
-        window.history.pushState({}, '', '/');
+			window.history.pushState({}, '', '/');
+			window.dispatchEvent(new PopStateEvent('popstate'));
 
-        // Dispatch a popstate event to trigger the router's handleLocation
-        window.dispatchEvent(new PopStateEvent('popstate'));
+		} catch (error) {
+			console.error('Logout failed:', error);
+		}
     }
 }

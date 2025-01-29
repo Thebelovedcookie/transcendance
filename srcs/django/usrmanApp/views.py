@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from . models import CustomUser
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 import json
 
@@ -22,6 +22,18 @@ def login_user(request):
 			'message': 'bad user info'
 		}, status=401)
 
+def logout_user(request):
+	if request.method == 'POST':
+		logout(request)
+		return JsonResponse({
+			'status': 'success',
+			'message': 'user logged out'
+		}, status=200)
+	else:
+		return JsonResponse({
+			'status': 'error',
+			'message': 'invalid request method'
+		}, status=405)
 
 def register_user(request):
 	data = json.load(request)
