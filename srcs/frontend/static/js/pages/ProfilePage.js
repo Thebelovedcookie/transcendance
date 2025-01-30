@@ -54,10 +54,6 @@ export class ProfilePage {
             const data = await response.json();
             if (data.status === 'success') {
                 this.userData = data.data;
-                console.log('username', this.userData.username);
-                console.log('email', this.userData.email);
-                console.log('wins', this.userData.wins);
-                console.log('totalGames', this.userData.totalGames);
             }
         } catch (error) {
             console.error('Failed to load user data:', error);
@@ -75,6 +71,12 @@ export class ProfilePage {
     }
 
     render() {
+        var win_percent = 0;
+        console.log(win_percent);
+        if (this.userData.totalGames != 0) {
+            win_percent = Math.round(this.userData.wins / this.userData.totalGames * 100);
+        }
+        console.log(win_percent);
         const content = `
             <div class="profile-container">
                 <div class="profile-header">
@@ -98,7 +100,7 @@ export class ProfilePage {
                         </div>
                         <div class="stat-card">
                             <h3>Win Rate</h3>
-                            <p>${Math.round((this.userData.wins / this.userData.totalGames) * 100)}%</p>
+                            <p>${win_percent}%</p>
                         </div>
                     </div>
                 </div>
