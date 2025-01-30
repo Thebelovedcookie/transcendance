@@ -55,6 +55,9 @@ export class ProfilePage {
             if (data.status === 'success') {
                 this.userData = data.data;
             }
+            console.log('loaduserdate');
+            console.log(this.userData.username);
+            console.log(this.userData.email);
         } catch (error) {
             console.error('Failed to load user data:', error);
         }
@@ -72,11 +75,12 @@ export class ProfilePage {
 
     render() {
         var win_percent = 0;
-        console.log(win_percent);
         if (this.userData.totalGames != 0) {
             win_percent = Math.round(this.userData.wins / this.userData.totalGames * 100);
         }
-        console.log(win_percent);
+        console.log('render');
+        console.log(this.userData.username);
+        console.log(this.userData.email);
         const content = `
             <div class="profile-container">
                 <div class="profile-header">
@@ -277,9 +281,12 @@ export class ProfilePage {
 
                 const result = await response.json();
                 if (result.status === 'success') {
-					console.log('result.data:', result.data);
 					console.log(response);
-                    // this.userData = result.data;
+                    console.log('message');
+                    console.log(result.message);
+                    // user data has been updated but page needs to be reloaded
+                    this.render();
+                    this.loadUserData();
                     this.render();
                     modal.classList.add('fade-out');
                     setTimeout(() => modal.remove(), 300);
