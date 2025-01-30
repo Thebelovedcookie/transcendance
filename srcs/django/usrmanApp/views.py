@@ -71,36 +71,36 @@ def update_profile(request):
 		# if (profile_image):
 		# 	request.user.profile_image = profile_image
 
+		# problem here: data not being properly retreived
 		data = json.loads(request.POST.get('data', '{}'))
-		print(data['username'])
-		print(data['email'])
+
+		#print(data['username'])
+		#print(data['email'])
+
+		u = CustomUser.objects.get(email=request.user.email)
+
+		# this returns a negative, username is NOT in the data
 		if ('username' in data):
-			request.user.username = data['username']
-		if ('email' in data):
-			request.user.email = data['email']
+			mes = 'username in data'
+		else:
+			mes = 'username not in data'
+		#if ('email' in data):
+			##u.set_email(data['email'])
+			#request.user.email = data['email']
 
-		print(request.user.username)
-		print(request.user.email)
-
-		request.user.save()
+		# this will save the new user data to the database (on reload of page)
+		u.username = 'new_username'
+		u.email = 'new_email@c.com'
+		u.save()
 
 		return JsonResponse({
 			'status': 'success',
-			'message': 'Profile updated',
-			'data' : {
-				'username': request.user.username,
-				'email': request.user.email,
-				'profile_image': profile_image_url,
-				'wins': request.user.wins,
-				'totalGames': request.user.totalGames,
-				'losses': request.user.losses,
-				'join_date': request.user.date_joined.strftime('%Y-%m-%d')
-			},
+			'message': mes,
 		}, status=200)
 	except Exception as e:
 		return JsonResponse({
 			'status': 'success',
-			'message': str("test")
+			'message': str("failed update")
 		}, status=200)
 
 @login_required
