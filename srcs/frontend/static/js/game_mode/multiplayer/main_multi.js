@@ -66,7 +66,7 @@ class GameWebSocket {
 			this.gameState.player1.startAngle = clampAngle(
 				this.gameState.player1.startAngle - angleSpeed,
 				0,
-				2 * Math.PI / 3 - Math.PI / 6
+				(2 * (Math.PI / 3)) - (Math.PI / 6)
 			);
 			this.gameState.player1.endAngle = clampAngle(
 				this.gameState.player1.endAngle - angleSpeed,
@@ -78,7 +78,7 @@ class GameWebSocket {
 			this.gameState.player1.startAngle = clampAngle(
 				this.gameState.player1.startAngle + angleSpeed,
 				0,
-				2 * Math.PI / 3 - Math.PI / 6
+				(2 * (Math.PI / 3)) - (Math.PI / 6)
 			);
 			this.gameState.player1.endAngle = clampAngle(
 				this.gameState.player1.endAngle + angleSpeed,
@@ -196,8 +196,6 @@ class GameWebSocket {
 		}, 1000 / 60);  // Still run at 60 FPS locally
 	}
 
-	
-
 	stopGameLoop() {
 		if (this.gameLoopInterval) {
 			clearInterval(this.gameLoopInterval);
@@ -213,7 +211,7 @@ class GameWebSocket {
 			start: {
 				"windowHeight": canvas.height,
 				"windowWidth": canvas.width,
-				"radius":canvas.height / 2,
+				"radius": canvas.height / 2,
 				"typeOfMatch": this.typeOfMatch,
 			}
 		};
@@ -313,39 +311,51 @@ class GameWebSocket {
 	}
 
 	bounceBall() {
-		const angleBall = this.getAngleOfBall();
+		const angleBall = this.getAngleOfBall() + Math.PI;
 		const distanceBall = this.getBallDistanceFromCenter();
 
-		if (distanceBall + 20 >= this.gameState.player1.radius)
+		if (distanceBall + 20 >= this.gameState.player1.radius
+			&& angleBall > (this.gameState.player1.startAngle)
+				&& angleBall < (this.gameState.player1.endAngle))
 		{
-			console.log(this.centerX, this.centerY, this.radius);
-			console.log("je suis dans une zone", angleBall);
-			console.log(angleBall, "zone 1 =", "0 to", ((2 * Math.PI) / 3), "zone 2 = ", ((2 * Math.PI) / 3), "to", ((4 * Math.PI) / 3), "zone 3 = ", ((4 * Math.PI) / 3), "to ", ((6 * Math.PI) / 3));
-			if (angleBall > ((4 * Math.PI) / 3) && angleBall < ((4 * Math.PI) / 3))
+			const paddleCenter = (this.gameState.player1.endAngle - this.gameState.player1.startAngle) / 2;
+			const ballCenter = (this.gameState.ball.y + this.gameState.ball.height) / 2;
+			const relativeIntersectY = (paddleCenter - ballCenter) / ((this.gameState.player1.endAngle - this.gameState.player1.startAngle) / 2);
+
+			const bounceAngle = relativeIntersectY * (Math.PI / 3);
+
+			const speed = Math.sqrt(this.gameState.ball.vx * this.gameState.ball.vx + this.gameState.ball.vy * this.gameState.ball.vy);
+			this.gameState.ball.vx = -speed * Math.cos(bounceAngle);
+			this.gameState.ball.vy = speed * Math.sin(bounceAngle);
+		}
+		if (angleBall > this.gameState.player2.startAngle && angleBall < this.gameState.player2.endAngle)
+		{
+			if (distanceBall + 20 >= this.gameState.player1.radius)
 			{
-				if (angleBall > this.gameState.player1.startAngle && angleBall < this.gameState.player1.endAngle)
-				{
-					console.log(angleBall, "zone 1 =", "0 to", ((2 * Math.PI) / 3), "zone 2 = ", ((2 * Math.PI) / 3), "to", ((4 * Math.PI) / 3), "zone 3 = ", ((4 * Math.PI) / 3), "to ", ((6 * Math.PI) / 3));
-					this.gameState.ball.vx *= -1;
-					this.gameState.ball.vy *= -1;
-				}
+				const paddleCenter = (this.gameState.player2.endAngle - this.gameState.player2.startAngle) / 2;
+				const ballCenter = (this.gameState.ball.y + this.gameState.ball.height) / 2;
+				const relativeIntersectY = (paddleCenter - ballCenter) / ((this.gameState.player2.endAngle - this.gameState.player2.startAngle) / 2);
+
+				const bounceAngle = relativeIntersectY * (Math.PI / 3);
+
+				const speed = Math.sqrt(this.gameState.ball.vx * this.gameState.ball.vx + this.gameState.ball.vy * this.gameState.ball.vy);
+				this.gameState.ball.vx = -speed * Math.cos(bounceAngle);
+				this.gameState.ball.vy = speed * Math.sin(bounceAngle);
 			}
-			if (angleBall > ((2 * Math.PI) / 3) && angleBall < ((4 * Math.PI) / 3))
+		}
+		if (angleBall > this.gameState.player3.startAngle && angleBall < this.gameState.player3.endAngle)
+		{
+			if (distanceBall + 20 >= this.gameState.player1.radius)
 			{
-				if (angleBall > this.gameState.player2.startAngle && angleBall < this.gameState.player2.endAngle)
-				{
-					this.gameState.ball.vx *= -1;
-					this.gameState.ball.vy *= -1;
-				}
-					
-			}
-			if (angleBall > 0 && angleBall < ((2 * Math.PI) / 3))
-			{
-				if (angleBall > this.gameState.player3.startAngle && angleBall < this.gameState.player3.endAngle)
-				{
-					this.gameState.ball.vx *= -1;
-					this.gameState.ball.vy *= -1;
-				}
+				const paddleCenter = (this.gameState.player3.endAngle - this.gameState.player3.startAngle) / 2;
+				const ballCenter = (this.gameState.ball.y + this.gameState.ball.height) / 2;
+				const relativeIntersectY = (paddleCenter - ballCenter) / ((this.gameState.player3.endAngle - this.gameState.player3.startAngle) / 2);
+
+				const bounceAngle = relativeIntersectY * (Math.PI / 3);
+
+				const speed = Math.sqrt(this.gameState.ball.vx * this.gameState.ball.vx + this.gameState.ball.vy * this.gameState.ball.vy);
+				this.gameState.ball.vx = -speed * Math.cos(bounceAngle);
+				this.gameState.ball.vy = speed * Math.sin(bounceAngle);
 			}
 		}
 		if (distanceBall + 20 >= this.radius)
@@ -363,19 +373,7 @@ class GameWebSocket {
 
 	getAngleOfBall()
 	{
-		// if (this.gameState.ball.x > 0 && this.gameState.ball.y >= 0)
-		// 	return Math.atan(this.gameState.ball.y / this.gameState.ball.x);
-		// else if (this.gameState.ball.x > 0 && this.gameState.ball.y < 0)
-		// 	return (Math.atan(this.gameState.ball.y / this.gameState.ball.x) + (2 * Math.PI));
-		// else if (this.gameState.ball.x < 0)
-		// 	return (Math.atan(this.gameState.ball.y / this.gameState.ball.x) + Math.PI);
-		// else if (this.gameState.ball.x == 0 && this.gameState.ball.y > 0)
-		// 	return (Math.PI / 2);
-		// else if (this.gameState.ball.x == 0 && this.gameState.ball.y < 0)
-		// 	return ((3 * Math.PI) / 2);
-		// else
-		// 	console.log("probleme get angleOfBall");
-		return (Math.atan2(this.gameState.ball.y, this.gameState.ball.x));
+		return (Math.atan2(this.centerY - this.gameState.ball.y, this.centerX - this.gameState.ball.x));
 	}
 
 	checkScore() {

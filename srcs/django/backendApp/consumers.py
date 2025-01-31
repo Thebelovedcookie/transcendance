@@ -319,7 +319,7 @@ class GameMultiConsumer(WebsocketConsumer):
         response = {
             "type": "game.starting",
             "player1": {
-                "color": "black",
+                "color": "red",
                 "centerX": canvas_width / 2,
                 "centerY": canvas_height / 2,
                 "radius" : (canvas_height / 2) - 10,
@@ -328,16 +328,16 @@ class GameMultiConsumer(WebsocketConsumer):
                 "width": 10,
             },
             "player2": {
-                "color": "black",
+                "color": "blue",
                 "centerX": canvas_width / 2,
                 "centerY": canvas_height / 2,
                 "radius" : (canvas_height / 2) - 10,
-                "startAngle": (2 * math.pi) / 3,
+                "startAngle": ((2 * math.pi) / 3),
                 "endAngle": (2 * math.pi) / 3 + math.pi / 6,
                 "width": 10,
             },
             "player3": {
-                "color": "black",
+                "color": "green",
                 "centerX": canvas_width / 2,
                 "centerY": canvas_height / 2,
                 "radius" : (canvas_height / 2) - 10,

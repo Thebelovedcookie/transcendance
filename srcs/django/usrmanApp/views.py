@@ -41,7 +41,7 @@ def register_user(request):
 	username = data.get('username')
 	email = data.get('email')
 	password = data.get('password')
-	user = CustomUser.objects.create_user(username=username, email=email, password=password)
+	user = CustomUser.objects.create_user(username=username, email=email, password=password) #this is not used ?
 	return JsonResponse({
 		'status': 'success',
 		'message': 'user registered'

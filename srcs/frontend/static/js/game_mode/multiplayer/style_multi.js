@@ -47,12 +47,16 @@ export function drawDashedLine(context, canvas) {
     const dashLength = 15;  // Longueur des segments
     const spaceLength = 10; // Longueur des espaces
 
-    context.strokeStyle = "black";  
+    context.strokeStyle = "blue";  
     context.lineWidth = 2;  
     context.setLineDash([dashLength, spaceLength]); // Activer les pointillés
 
     // Dessiner les 3 lignes à 120° d'écart
     for (let i = 0; i < 3; i++) {
+		if (i == 1)
+			context.strokeStyle = "red";
+		if (i == 2)
+			context.strokeStyle = "green";
         const angle = (i * 2 * Math.PI) / 3;  // 0°, 120°, 240°
         const endX = centerX + Math.cos(angle) * radius;
         const endY = centerY + Math.sin(angle) * radius;
@@ -62,6 +66,7 @@ export function drawDashedLine(context, canvas) {
         context.lineTo(endX, endY);
         context.stroke();
     }
+	
 
     // Réinitialiser les pointillés pour éviter d'affecter d'autres dessins
     context.setLineDash([]);

@@ -122,21 +122,12 @@ class GameAISocket {
 	updatePlayerPositions() {
 		const moveSpeed = 10;
 
-		// Player 1 movement (W and S keys)
 		if (this.keys.w && this.gameState.player1.y > 0) {
 			this.gameState.player1.y -= moveSpeed;
 		}
 		if (this.keys.s && this.gameState.player1.y < canvas.height - this.gameState.player1.height) {
 			this.gameState.player1.y += moveSpeed;
 		}
-
-		// // Player 2 movement (Arrow keys)
-		// if (this.keys.ArrowUp && this.gameState.player2.y > 0) {
-		// 	this.gameState.player2.y -= moveSpeed;
-		// }
-		// if (this.keys.ArrowDown && this.gameState.player2.y < canvas.height - this.gameState.player2.height) {
-		// 	this.gameState.player2.y += moveSpeed;
-		// }
 	}
 	
 	connect() {
