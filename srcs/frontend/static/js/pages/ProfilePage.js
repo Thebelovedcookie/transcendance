@@ -55,9 +55,6 @@ export class ProfilePage {
             if (data.status === 'success') {
                 this.userData = data.data;
             }
-            console.log('loaduserdate');
-            console.log(this.userData.username);
-            console.log(this.userData.email);
         } catch (error) {
             console.error('Failed to load user data:', error);
         }
@@ -78,9 +75,6 @@ export class ProfilePage {
         if (this.userData.totalGames != 0) {
             win_percent = Math.round(this.userData.wins / this.userData.totalGames * 100);
         }
-        console.log('render');
-        console.log(this.userData.username);
-        console.log(this.userData.email);
         const content = `
             <div class="profile-container">
                 <div class="profile-header">
@@ -268,7 +262,11 @@ export class ProfilePage {
 						'X-CSRFToken': csrfToken,
 						'Content-Type': 'application/json',
 					},
-                    body: formData
+                    //body: formData
+                    body: JSON.stringify({ 'username': modal.querySelector('input[type="text"]').value,
+                        'email': modal.querySelector('input[type="email"]').value,
+                        'image': avatarInput.files[0]
+                     })
                 });
 
 				console.log('CSRF Token:', csrfToken);
@@ -285,8 +283,11 @@ export class ProfilePage {
                     console.log('message');
                     console.log(result.message);
                     // user data has been updated but page needs to be reloaded
-                    this.render();
-                    this.loadUserData();
+                    
+                    //this.userData.username = data.username;
+                    //this.userData.email = data.email;
+                    //this.userData.profile_image = data.profile_image;
+
                     this.render();
                     modal.classList.add('fade-out');
                     setTimeout(() => modal.remove(), 300);

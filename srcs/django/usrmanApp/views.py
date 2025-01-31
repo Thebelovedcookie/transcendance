@@ -67,35 +67,28 @@ def update_profile(request):
 		}, status=405)
 
 	try:
-		# profile_image = request.FILES.get('profile_image')
-		# if (profile_image):
-		# 	request.user.profile_image = profile_image
+		data = json.load(request)
+		username = data.get('username')
+		email = data.get('email')
+		image = data.get('image')
 
-		# problem here: data not being properly retreived
-		data = json.loads(request.POST.get('data', '{}'))
-
-		#print(data['username'])
-		#print(data['email'])
-
+		#load user data based on request.user email
 		u = CustomUser.objects.get(email=request.user.email)
 
-		# this returns a negative, username is NOT in the data
-		if ('username' in data):
-			mes = 'username in data'
-		else:
-			mes = 'username not in data'
-		#if ('email' in data):
-			##u.set_email(data['email'])
-			#request.user.email = data['email']
-
-		# this will save the new user data to the database (on reload of page)
-		u.username = 'new_username'
-		u.email = 'new_email@c.com'
+		# this will save the new user data to the database
+		u.username = username
+		u.email = email
+		u.profile_image = image
 		u.save()
 
 		return JsonResponse({
 			'status': 'success',
-			'message': mes,
+			'message': 'update made',
+			#'data' : {
+			#	'username': u.username,
+			#	'email': u.email,
+			#	'profile_image': u.profile_image
+			#}
 		}, status=200)
 	except Exception as e:
 		return JsonResponse({
