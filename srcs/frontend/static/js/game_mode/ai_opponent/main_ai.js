@@ -1,4 +1,4 @@
-import { EndNormalGamePage } from '../pages/EndNormalGamePage.js';
+import { EndNormalGamePage } from '../../pages/EndNormalGamePage.js';
 import { firstPaddle, secondPaddle, ballStyle, drawDashedLine, displayScoreOne, displayScoreTwo } from './style_ai.js';
 let canvas = null;
 let context = null;

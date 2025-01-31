@@ -38,19 +38,22 @@ class GameWebSocket {
 	}
 
 	setupKeyboardControls() {
-		window.addEventListener('keydown', (e) => {
+		this.keyDownHandler = (e) => {
 			if (this.keys.hasOwnProperty(e.key)) {
 				this.keys[e.key] = true;
 				e.preventDefault();
 			}
-		});
-
-		window.addEventListener('keyup', (e) => {
+		};
+	
+		this.keyUpHandler = (e) => {
 			if (this.keys.hasOwnProperty(e.key)) {
 				this.keys[e.key] = false;
 				e.preventDefault();
 			}
-		});
+		};
+	
+		window.addEventListener('keydown', this.keyDownHandler);
+		window.addEventListener('keyup', this.keyUpHandler);
 	}
 
 	updatePlayerPositions() {
@@ -72,7 +75,7 @@ class GameWebSocket {
 			this.gameState.player2.y += moveSpeed;
 		}
 	}
-
+	
 	connect() {
 		try {
 			const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -147,7 +150,7 @@ class GameWebSocket {
 				"typeOfMatch": this.typeOfMatch,
 			}
 		};
-
+	
 		if (this.isConnected && this.socket) {
 			this.socket.send(JSON.stringify(data));
 		} else {
@@ -258,7 +261,7 @@ class GameWebSocket {
 	ballWallCollision(){
 		if (this.gameState.ball.y + this.gameState.ball.gravity <= this.gameState.player2.y + this.gameState.player2.height
 			&& this.gameState.ball.x + this.gameState.ball.width + this.gameState.ball.speed >= this.gameState.player2.x
-			&& this.gameState.ball.y + this.gameState.ball.gravity > this.gameState.player2.y)
+			&& this.gameState.ball.y + this.gameState.ball.gravity > this.gameState.player2.y) 
 		{
 			const paddleCenter = this.gameState.player2.y + this.gameState.player2.height / 2;
 			const ballCenter = this.gameState.ball.y + this.gameState.ball.height / 2;
@@ -392,8 +395,8 @@ class GameWebSocket {
 	}
 
 	cleanup() {
-		window.removeEventListener('keydown');
-		window.removeEventListener('keyup'); // those two lines are not working properly
+		window.removeEventListener('keydown', this.keyDownHandler);
+		window.removeEventListener('keyup', this.keyUpHandler);
 	}
 }
 
@@ -408,7 +411,7 @@ export function normalMode(themeReceived, typeOfMatch, socketTournament, infoMat
 
 export function stopGame() {
 	if (gameSocket) {
-		// gameSocket.cleanup(); // this function is not working properly
+		gameSocket.cleanup(); // this function is not working properly
 		gameSocket.stopGameLoop();
 		gameSocket.socket.close();
 		gameSocket = null;

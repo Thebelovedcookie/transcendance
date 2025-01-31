@@ -16,6 +16,7 @@ import { LogoutPage } from './pages/LogoutPage.js';
 import { TicTacToeGamePage } from './tic_tac_toe/TicTacToeGamePage.js';
 import { AiPage } from './pages/AiPage.js';
 import { Header } from './pages/Header.js';
+import { MultiPage } from './pages/MultiPage.js';
 
 
 //first step : Creation of a class Router which will allows to naviguates between pages and add an history
@@ -60,6 +61,7 @@ class Router {
         this.routes.set('/logout', new LogoutPage());
         this.routes.set('/tictactoe', new TicTacToeGamePage());
         this.routes.set('/pong/solo/ai', new AiPage());
+        this.routes.set('/pong/multi', new MultiPage());
     }
 
     //add listeners popstate (backward/forward)
