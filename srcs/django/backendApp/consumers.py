@@ -325,7 +325,9 @@ class GameMultiConsumer(WebsocketConsumer):
                 "radius" : (canvas_height / 2) - 10,
                 "startAngle": 0,
                 "endAngle": math.pi / 6,
-                "width": 10,
+                "startZone": 0,
+                "endZone": 2 * math.pi / 3,
+                "width": 15,
             },
             "player2": {
                 "color": "blue",
@@ -333,8 +335,10 @@ class GameMultiConsumer(WebsocketConsumer):
                 "centerY": canvas_height / 2,
                 "radius" : (canvas_height / 2) - 10,
                 "startAngle": ((2 * math.pi) / 3),
-                "endAngle": (2 * math.pi) / 3 + math.pi / 6,
-                "width": 10,
+                "endAngle": ((2 * math.pi) / 3) + (math.pi / 6),
+                "startZone": 2 * math.pi / 3,
+                "endZone": 4 * math.pi / 3,
+                "width": 15,
             },
             "player3": {
                 "color": "green",
@@ -343,7 +347,9 @@ class GameMultiConsumer(WebsocketConsumer):
                 "radius" : (canvas_height / 2) - 10,
                 "startAngle": (4 * math.pi) / 3,
                 "endAngle": (4 * math.pi) / 3 + math.pi / 6,
-                "width": 10,
+                "startZone": 4 * math.pi / 3,
+                "endZone": 2 * math.pi,
+                "width": 15,
             },
             "ball": {
                 "x": canvas_width / 2,
@@ -351,12 +357,13 @@ class GameMultiConsumer(WebsocketConsumer):
                 "width": 15,
                 "height": 15,
                 "color": "black",
-                "speed": 8,
+                "speed": 6,
                 "gravity": 3,
             },
             "scores": {
                 "playerOne": 0,
                 "playerTwo": 0,
+                "playerThree": 0,
                 "scoreMax": 5,
             }
         }

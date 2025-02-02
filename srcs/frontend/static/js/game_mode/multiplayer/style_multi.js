@@ -78,12 +78,13 @@ export function drawDashedLine(context, canvas) {
 export function displayScoreOne(context, scoreOne, canvas) {
 	context.font = "90px 'Press Start 2P'";
 	context.fillStyle = "black";
-	context.textBaseline = "top";
+	context.textAlign = "right"
+	context.textBaseline = "bottom";
 	context.shadowColor = "rgba(0, 0, 0, 0.7)";
 	context.shadowOffsetX = 1;
 	context.shadowOffsetY = 0;
 	context.shadowBlur = 3;
-	context.fillText(scoreOne, (canvas.width / 2) - (canvas.width / 4), 30);
+	context.fillText(scoreOne, (canvas.width / 2) + (canvas.width / 4), canvas.height - 20);
 	resetStyle(context);
 }
 
@@ -91,14 +92,29 @@ export function displayScoreOne(context, scoreOne, canvas) {
 export function displayScoreTwo(context, scoreTwo, canvas){
 	context.font = "90px 'Press Start 2P'";
 	context.fillStyle = "black";
+	context.textBaseline = "bottom";
+	context.textAlign = "left"
+	context.shadowColor = "rgba(0, 0, 0, 0.7";
+	context.shadowOffsetX = -1;
+	context.shadowOffsetY = 0;
+	context.shadowBlur = 3;
+	context.fillText(scoreTwo, (canvas.width / 2) - (canvas.width / 4) , canvas.height - 20);
+	resetStyle(context);
+}
+
+//PlayerTwo score Text
+export function displayScoreThree(context, scoreThree, canvas){
+	context.font = "90px 'Press Start 2P'";
+	context.fillStyle = "black";
 	context.textBaseline = "top";
 	context.shadowColor = "rgba(0, 0, 0, 0.7";
 	context.shadowOffsetX = -1;
 	context.shadowOffsetY = 0;
 	context.shadowBlur = 3;
-	context.fillText(scoreTwo, (canvas.width / 2) + (canvas.width / 4) , 30);
+	context.fillText(scoreThree, (canvas.width / 2) + (canvas.width / 4) , 30);
 	resetStyle(context);
 }
+
 
 export function displayPlayerName(context, canvas, infoMatch)
 {
