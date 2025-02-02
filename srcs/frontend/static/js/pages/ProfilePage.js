@@ -119,7 +119,12 @@ export class ProfilePage {
                     </div>
 
                     <div class="profile-section friends-section">
-                        <h2>Friends</h2>
+                        <div class="friends-header">
+                            <h2>Friends</h2>
+                            <button class="search-friends-btn">
+                                <i class="fas fa-search"></i> Search Friends
+                            </button>
+                        </div>
                         <div class="friends-list">
                             ${this.renderFriendsList()}
                         </div>
@@ -164,6 +169,10 @@ export class ProfilePage {
     setupEventListeners() {
         const editBtn = document.querySelector('.edit-profile-btn');
         editBtn.addEventListener('click', () => this.showEditModal());
+
+        // Add friend search button listener
+        const searchFriendsBtn = document.querySelector('.search-friends-btn');
+        searchFriendsBtn.addEventListener('click', () => this.showFriendSearchModal());
     }
 
     showEditModal() {
@@ -298,6 +307,91 @@ export class ProfilePage {
         });
     }
 
+    showFriendSearchModal() {
+        const modal = document.createElement('div');
+        modal.className = 'friend-search-modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <h2>Search Friends</h2>
+                <div class="search-container">
+                    <input type="text" id="friendSearchInput" placeholder="Search by username..." class="form-input">
+                    <button type="button" id="searchButton" class="search-btn">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+                <div id="searchResults" class="search-results">
+                    <!-- Search results will be displayed here -->
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="cancel-btn">Close</button>
+                </div>
+                <button class="modal-close">&times;</button>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+        this.setupFriendSearchModalListeners(modal);
+    }
+
+    setupFriendSearchModalListeners(modal) {
+        const closeBtn = modal.querySelector('.modal-close');
+        const cancelBtn = modal.querySelector('.cancel-btn');
+        const searchInput = modal.querySelector('#friendSearchInput');
+        const searchButton = modal.querySelector('#searchButton');
+        const resultsContainer = modal.querySelector('#searchResults');
+
+        // Close modal handlers
+        [closeBtn, cancelBtn].forEach(btn => {
+            btn.addEventListener('click', () => {
+                modal.classList.add('fade-out');
+                setTimeout(() => modal.remove(), 300);
+            });
+        });
+
+        // Search handler
+        const handleSearch = async () => {
+            const searchTerm = searchInput.value.trim();
+            if (!searchTerm) return;
+
+            const mockResults = [
+                { username: 'Player1', profile_image: null, status: 'online' },
+                { username: 'Player2', profile_image: null, status: 'offline' },
+                { username: 'Player3', profile_image: null, status: 'online' }
+            ];
+
+            resultsContainer.innerHTML = mockResults.map(user => `
+                <div class="search-result-item">
+                    <div class="user-info">
+                        <img src="${user.profile_image || '/static/img/anonymous.webp'}" alt="${user.username}" class="user-avatar">
+                        <div class="user-details">
+                            <h3>${user.username}</h3>
+                            <span class="status ${user.status}">${user.status}</span>
+                        </div>
+                    </div>
+                    <button class="add-friend-btn" data-username="${user.username}">
+                        <i class="fas fa-user-plus"></i> Add Friend
+                    </button>
+                </div>
+            `).join('');
+
+            // Add friend button handlers
+            const addFriendBtns = resultsContainer.querySelectorAll('.add-friend-btn');
+            addFriendBtns.forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const username = btn.dataset.username;
+                    console.log(`Adding friend: ${username}`);
+                    btn.disabled = true;
+                    btn.innerHTML = '<i class="fas fa-check"></i> Friend Request Sent';
+                });
+            });
+        };
+
+        searchButton.addEventListener('click', handleSearch);
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleSearch();
+        });
+    }
+
     initializeCharts() {
         const ctx = document.getElementById('performanceChart').getContext('2d');
         new Chart(ctx, {
@@ -307,8 +401,8 @@ export class ProfilePage {
                 datasets: [{
                     data: [this.userData.wins, this.userData.losses],
                     backgroundColor: [
-                        '#2ecc71',  // 勝利の色
-                        '#e74c3c'   // 敗北の色
+                        '#2ecc71',
+                        '#e74c3c'
                     ],
                     borderWidth: 0
                 }]
