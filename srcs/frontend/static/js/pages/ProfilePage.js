@@ -159,8 +159,8 @@ export class ProfilePage {
                     <span class="online-status ${friend.online ? 'online' : ''}"></span>
                 </div>
                 <div class="friend-info">
-                    <h3>${friend.userName}</h3>
-                    <p>${friend.online ? 'Online' : `Last seen ${friend.lastSeen}`}</p>
+                    <h3>${friend.username}</h3>
+                    <p>${friend.is_online ? 'Online' : `Last seen ${friend.lastSeen}`}</p>
                 </div>
             </div>
         `).join('');
@@ -353,13 +353,25 @@ export class ProfilePage {
             const searchTerm = searchInput.value.trim();
             if (!searchTerm) return;
 
-            const mockResults = [
-                { username: 'Player1', profile_image: null, status: 'online' },
-                { username: 'Player2', profile_image: null, status: 'offline' },
-                { username: 'Player3', profile_image: null, status: 'online' }
-            ];
+			const result = await fetch('/api/search_user', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-CSRFToken': window.csrfToken,
+				},
+				body: JSON.stringify({ 'search': searchTerm })
+			});
 
-            resultsContainer.innerHTML = mockResults.map(user => `
+			const users = [];
+			for (const user of result.data) {
+				users.push({
+					username: user.username,
+					profile_image: user.profile_image,
+					status: 'online'
+				});
+			}
+
+            resultsContainer.innerHTML = users.map(user => `
                 <div class="search-result-item">
                     <div class="user-info">
                         <img src="${user.profile_image || '/static/img/anonymous.webp'}" alt="${user.username}" class="user-avatar">
@@ -379,6 +391,7 @@ export class ProfilePage {
             addFriendBtns.forEach(btn => {
                 btn.addEventListener('click', async () => {
                     const username = btn.dataset.username;
+                    // ここにフレンド追加のAPI呼び出しを実装
                     console.log(`Adding friend: ${username}`);
                     btn.disabled = true;
                     btn.innerHTML = '<i class="fas fa-check"></i> Friend Request Sent';

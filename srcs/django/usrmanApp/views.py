@@ -98,20 +98,30 @@ def update_profile(request):
 
 @login_required
 def get_profile(request):
-	profile_image_url = None
-	if request.user.profile_image:
-		profile_image_url = request.user.profile_image.url
+	user = request.user
+
+	# Convert ManyToMany field to list of usernames or IDs
+	friends_data = [
+		{
+			'username': friend.username,
+			'profile_image': friend.profile_image.url if friend.profile_image else None,
+			'is_online': "true",
+			'lastSeen': "Now"
+		}
+		for friend in user.friends.all()
+	]
+
 	return JsonResponse({
 		'status': 'success',
-		'data' : {
-			'friends' : request.user.friends,
-			'username': request.user.username,
-			'email': request.user.email,
-			'profile_image': profile_image_url,
-			'wins': request.user.wins,
-			'totalGames': request.user.totalGames,
-			'losses': request.user.losses,
-			'join_date': request.user.date_joined.strftime('%Y-%m-%d')
+		'data': {
+			'username': user.username,
+			'email': user.email,
+			'join_date': user.date_joined,
+			'totalGames': user.totalGames,
+			'wins': user.wins,
+			'losses': user.losses,
+			'profile_image': user.profile_image.url if user.profile_image else None,
+			'friends': friends_data
 		}
 	})
 
@@ -131,3 +141,28 @@ def get_user(request):
 				'isAuthenticated': False
 			}
 		})
+
+def search_user(request):
+	data = json.loads(request.body)
+	search_term = data.get('search_term', '')
+
+	users = CustomUser.objects.filter(
+		username__icontains=search_term
+	).exclude(
+		username=request.user.username
+	)
+
+	users_data = [
+		{
+			'username': user.username,
+			'profile_image': user.profile_image.url if user.profile_image else None,
+			'is_online': user.is_online if hasattr(user, 'is_online') else False,
+			'is_friend': request.user.friends.filter(id=user.id).exists()
+		}
+		for user in users
+	]
+
+	return JsonResponse({
+		'status': 'success',
+		'data': users_data
+	})
