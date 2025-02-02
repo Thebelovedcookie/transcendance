@@ -86,8 +86,8 @@ class GameConsumer(WebsocketConsumer):
                     "width": 15,
                     "height": 15,
                     "color": "black",
-                    "speed": 8,
-                    "gravity": 3,
+                    "speed": 16,
+                    "gravity": 6,
                 },
                 "scores": {
                     "playerOne": 0,

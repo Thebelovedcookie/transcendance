@@ -89,7 +89,7 @@ export function displayScoreOne(context, scoreOne, canvas) {
 	context.shadowOffsetX = 1;
 	context.shadowOffsetY = 0;
 	context.shadowBlur = 3;
-	context.fillText(scoreOne, canvas.width / 2 - 30, 30);
+	context.fillText(scoreOne, (canvas.width / 2) - (canvas.width / 4), 30);
 	resetStyle(context);
 }
 
@@ -102,7 +102,7 @@ export function displayScoreTwo(context, scoreTwo, canvas){
 	context.shadowOffsetX = -1;
 	context.shadowOffsetY = 0;
 	context.shadowBlur = 3;
-	context.fillText(scoreTwo, canvas.width / 2 + 70, 30);
+	context.fillText(scoreTwo, (canvas.width / 2) + (canvas.width / 4) , 30);
 	resetStyle(context);
 }
 

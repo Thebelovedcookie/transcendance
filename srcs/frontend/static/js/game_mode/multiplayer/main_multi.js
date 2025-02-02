@@ -383,10 +383,6 @@ class GameWebSocket {
 	manageScore()
 	{
 		const angleBall = this.getAngleOfBall() + Math.PI;
-		console.log("angleBall =", angleBall);
-		console.log("player1 =", this.gameState.player1.startZone, this.gameState.player1.endZone);
-		console.log("player2 =", this.gameState.player2.startZone, this.gameState.player2.endZone);
-		console.log("player3 =", this.gameState.player3.startZone, this.gameState.player3.endZone);
 
 		if (this.lastTouch == "player1" && angleBall > this.gameState.player1.endZone)
 			this.gameState.scores.playerOne++;
@@ -460,8 +456,8 @@ class GameWebSocket {
 	}
 
 	cleanup() {
-		window.removeEventListener('keydown');
-		window.removeEventListener('keyup');
+		window.removeEventListener('keydown', this.keyDownHandler);
+		window.removeEventListener('keyup', this.keyUpHandler);
 	}
 }
 
