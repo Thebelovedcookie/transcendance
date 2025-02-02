@@ -104,6 +104,7 @@ def get_profile(request):
 	return JsonResponse({
 		'status': 'success',
 		'data' : {
+			'friends' : request.user.friends,
 			'username': request.user.username,
 			'email': request.user.email,
 			'profile_image': profile_image_url,

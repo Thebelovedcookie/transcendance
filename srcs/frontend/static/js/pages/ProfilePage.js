@@ -18,10 +18,10 @@ export class ProfilePage {
             { opponent: "PongKing", result: "Win", date: "2024-03-18", score: "11-7" }
         ];
         this.friends = [
-            { id: 1, name: "PongMaster", online: true, lastSeen: "Now" },
-            { id: 2, name: "GamePro", online: false, lastSeen: "2 hours ago" },
-            { id: 3, name: "Champion", online: true, lastSeen: "Now" },
-            { id: 4, name: "PongKing", online: false, lastSeen: "1 day ago" }
+            { userName: "PongMaster", online: true, lastSeen: "Now" },
+            { userName: "GamePro", online: false, lastSeen: "2 hours ago" },
+            { userName: "Champion", online: true, lastSeen: "Now" },
+            { userName: "PongKing", online: false, lastSeen: "1 day ago" }
         ];
     }
 
@@ -147,14 +147,14 @@ export class ProfilePage {
     }
 
     renderFriendsList() {
-        return this.friends.map(friend => `
+        return this.userData.friends.map(friend => `
             <div class="friend-card">
                 <div class="friend-avatar-container">
-                    <img src="/static/img/anonymous.webp" alt="${friend.name}" class="friend-avatar">
+                    <img src="${friend.profile_image || '/static/img/anonymous.webp'}" alt="${friend.userName}" class="friend-avatar">
                     <span class="online-status ${friend.online ? 'online' : ''}"></span>
                 </div>
                 <div class="friend-info">
-                    <h3>${friend.name}</h3>
+                    <h3>${friend.userName}</h3>
                     <p>${friend.online ? 'Online' : `Last seen ${friend.lastSeen}`}</p>
                 </div>
             </div>
@@ -283,7 +283,7 @@ export class ProfilePage {
                     console.log('message');
                     console.log(result.message);
                     // user data has been updated but page needs to be reloaded
-                    
+
                     //this.userData.username = data.username;
                     //this.userData.email = data.email;
                     //this.userData.profile_image = data.profile_image;
