@@ -75,7 +75,7 @@ export class RegisterPage {
 
         try {
             // sending a post request to the backend -> (email, username, password)
-            //Who will allow us to register a new account
+            //Who will allow us to register a new account 
             /*---------------------------REQUEST-----------------------------*/
             const response = await fetch('/api/register', {
                 method: 'POST',

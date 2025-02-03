@@ -67,40 +67,33 @@ def update_profile(request):
 		}, status=405)
 
 	try:
-		# profile_image = request.FILES.get('profile_image')
-		# if (profile_image):
-		# 	request.user.profile_image = profile_image
+		data = json.load(request)
+		username = data.get('username')
+		email = data.get('email')
+		image = data.get('image')
 
-		data = json.loads(request.POST.get('data', '{}'))
-		print(data['username'])
-		print(data['email'])
-		if ('username' in data):
-			request.user.username = data['username']
-		if ('email' in data):
-			request.user.email = data['email']
+		#load user data based on request.user email
+		u = CustomUser.objects.get(email=request.user.email)
 
-		print(request.user.username)
-		print(request.user.email)
-
-		request.user.save()
+		# this will save the new user data to the database
+		u.username = username
+		u.email = email
+		u.profile_image = image
+		u.save()
 
 		return JsonResponse({
 			'status': 'success',
-			'message': 'Profile updated',
-			'data' : {
-				'username': request.user.username,
-				'email': request.user.email,
-				'profile_image': profile_image_url,
-				'wins': request.user.wins,
-				'totalGames': request.user.totalGames,
-				'losses': request.user.losses,
-				'join_date': request.user.date_joined.strftime('%Y-%m-%d')
-			},
+			'message': 'update made',
+			#'data' : {
+			#	'username': u.username,
+			#	'email': u.email,
+			#	'profile_image': u.profile_image
+			#}
 		}, status=200)
 	except Exception as e:
 		return JsonResponse({
 			'status': 'success',
-			'message': str("test")
+			'message': str("failed update")
 		}, status=200)
 
 @login_required
