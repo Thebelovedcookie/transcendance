@@ -3,7 +3,6 @@ export class ProfilePage {
         this.container = document.getElementById('dynamicPage');
         this.chartLoaded = false;
         this.userData = null;
-        // テストデータ
         this.userData = {
             username: "Player123",
             email: "player123@example.com",
@@ -278,25 +277,12 @@ export class ProfilePage {
                      })
                 });
 
-				console.log('CSRF Token:', csrfToken);
-            	console.log('Response status:', response.status);
-				console.log('Response:', response);
-
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
                 const result = await response.json();
                 if (result.status === 'success') {
-					console.log(response);
-                    console.log('message');
-                    console.log(result.message);
-                    // user data has been updated but page needs to be reloaded
-
-                    //this.userData.username = data.username;
-                    //this.userData.email = data.email;
-                    //this.userData.profile_image = data.profile_image;
-
                     this.render();
                     modal.classList.add('fade-out');
                     setTimeout(() => modal.remove(), 300);
@@ -353,50 +339,72 @@ export class ProfilePage {
             const searchTerm = searchInput.value.trim();
             if (!searchTerm) return;
 
-			const result = await fetch('/api/search_user', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'X-CSRFToken': window.csrfToken,
-				},
-				body: JSON.stringify({ 'search': searchTerm })
-			});
+            const csrfToken = document.cookie
+                .split('; ')
+                .find(row => row.startsWith('csrftoken='))
+                ?.split('=')[1];
 
-			const users = [];
-			for (const user of result.data) {
-				users.push({
-					username: user.username,
-					profile_image: user.profile_image,
-					status: 'online'
-				});
-			}
-
-            resultsContainer.innerHTML = users.map(user => `
-                <div class="search-result-item">
-                    <div class="user-info">
-                        <img src="${user.profile_image || '/static/img/anonymous.webp'}" alt="${user.username}" class="user-avatar">
-                        <div class="user-details">
-                            <h3>${user.username}</h3>
-                            <span class="status ${user.status}">${user.status}</span>
-                        </div>
-                    </div>
-                    <button class="add-friend-btn" data-username="${user.username}">
-                        <i class="fas fa-user-plus"></i> Add Friend
-                    </button>
-                </div>
-            `).join('');
-
-            // Add friend button handlers
-            const addFriendBtns = resultsContainer.querySelectorAll('.add-friend-btn');
-            addFriendBtns.forEach(btn => {
-                btn.addEventListener('click', async () => {
-                    const username = btn.dataset.username;
-                    // ここにフレンド追加のAPI呼び出しを実装
-                    console.log(`Adding friend: ${username}`);
-                    btn.disabled = true;
-                    btn.innerHTML = '<i class="fas fa-check"></i> Friend Request Sent';
+            try {
+                const response = await fetch('/api/search_user', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken,
+                    },
+                    body: JSON.stringify({ 'search_term': searchTerm })  // キーを'search_term'に修正
                 });
-            });
+
+                const result = await response.json();
+
+				console.log(result.data);
+
+                if (result.status === 'success' && Array.isArray(result.data)) {
+                    resultsContainer.innerHTML = result.data.map(user => `
+                        <div class="search-result-item">
+                            <div class="user-info">
+                                <img src="${user.profile_image || '/static/img/anonymous.webp'}" alt="${user.username}" class="user-avatar">
+                                <div class="user-details">
+                                    <h3>${user.username}</h3>
+                                    <span class="status ${user.is_online ? 'online' : ''}">${user.is_online ? 'Online' : 'Offline'}</span>
+                                </div>
+                            </div>
+                            <button class="add-friend-btn" data-userid="${user.id}" ${user.is_friend ? 'disabled' : ''}>
+                                ${user.is_friend ? '<i class="fas fa-check"></i> Friends' : '<i class="fas fa-user-plus"></i> Add Friend'}
+                            </button>
+                        </div>
+                    `).join('');
+                } else {
+                    resultsContainer.innerHTML = '<p>No users found</p>';
+                }
+				const addFriendButtons = document.querySelectorAll('.add-friend-btn');
+				addFriendButtons.forEach(async (btn) => {
+					btn.addEventListener('click', async () => {
+						try {
+							const response = await fetch('/api/add_friend', {
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json',
+									'X-CSRFToken': csrfToken,
+								},
+								body: JSON.stringify({ 'userid': btn.dataset.userid })
+							});
+
+							const result = await response.json();
+
+							console.log(result);
+							if (result.status === 'success') {
+								btn.disabled = true;
+								btn.textContent = 'Friends';
+							}
+						} catch (error) {
+							console.error('Failed to add friend:', error);
+						}
+					});
+				});
+            } catch (error) {
+                console.error('Search failed:', error);
+                resultsContainer.innerHTML = '<p>Error searching for users</p>';
+            }
         };
 
         searchButton.addEventListener('click', handleSearch);

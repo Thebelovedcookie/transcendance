@@ -34,9 +34,9 @@ RUN django-admin startproject backend_project project
 RUN cd /project && python3.11 manage.py startapp backend_app && python3.11 manage.py startapp usrman_app
 
 #config des urls
-COPY ./backendApp/* /project/backend_app/
-COPY ./usrmanApp/* /project/usrman_app/
-COPY ./backendProject/* /project/backend_project/
+COPY ./backendApp /project/backend_app/
+COPY ./usrmanApp /project/usrman_app/
+COPY ./backendProject /project/backend_project/
 
 COPY /tools/setups_backend.sh /setups_backend.sh
 RUN chmod +x /setups_backend.sh

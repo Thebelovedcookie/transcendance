@@ -143,26 +143,69 @@ def get_user(request):
 		})
 
 def search_user(request):
-	data = json.loads(request.body)
-	search_term = data.get('search_term', '')
+	try:
+		data = json.loads(request.body)
+		search_term = data.get('search_term', '')
 
-	users = CustomUser.objects.filter(
-		username__icontains=search_term
-	).exclude(
-		username=request.user.username
-	)
+		if not search_term:
+			return JsonResponse({
+				'status': 'success',
+				'data': []
+			})
 
-	users_data = [
-		{
-			'username': user.username,
-			'profile_image': user.profile_image.url if user.profile_image else None,
-			'is_online': user.is_online if hasattr(user, 'is_online') else False,
-			'is_friend': request.user.friends.filter(id=user.id).exists()
-		}
-		for user in users
-	]
+		users = CustomUser.objects.filter(
+			username__icontains=search_term
+		).exclude(
+			username=request.user.username
+		)
 
-	return JsonResponse({
-		'status': 'success',
-		'data': users_data
-	})
+		users_data = [
+			{
+				'id' : user.id,
+				'username': user.username,
+				'profile_image': user.profile_image.url if user.profile_image else None,
+				'is_online': False,
+				'is_friend': request.user.friends.filter(id=user.id).exists()
+			}
+			for user in users
+		]
+
+		return JsonResponse({
+			'status': 'success',
+			'data': users_data
+		})
+
+	except json.JSONDecodeError:
+		return JsonResponse({
+			'status': 'error',
+			'message': 'Invalid JSON data'
+		}, status=400)
+	except Exception as e:
+		return JsonResponse({
+			'status': 'error',
+			'message': str(e)
+		}, status=500)
+
+def add_friend(request):
+	try:
+		data = json.loads(request.body)
+		friend_id = data.get('userid')
+
+		friend = CustomUser.objects.get(id=friend_id)
+		request.user.friends.add(friend)
+		request.user.save()
+
+		return JsonResponse({
+			'status': 'success',
+			'message': 'friend added'
+		}, status=200)
+	except CustomUser.DoesNotExist:
+		return JsonResponse({
+			'status': 'error',
+			'message': 'User not found'
+		}, status=404)
+	except Exception as e:
+		return JsonResponse({
+			'status': 'error',
+			'message': str(e)
+		}, status=500)
