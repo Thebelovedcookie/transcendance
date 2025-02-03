@@ -22,6 +22,7 @@ export class ProfilePage {
             { userName: "Champion", online: true, lastSeen: "Now" },
             { userName: "PongKing", online: false, lastSeen: "1 day ago" }
         ];
+        this.chart = null;  // Add property to store chart instance
     }
 
     async handle() {
@@ -70,10 +71,10 @@ export class ProfilePage {
     }
 
     render() {
-        var win_percent = 0;
-        if (this.userData.totalGames != 0) {
-            win_percent = Math.round(this.userData.wins / this.userData.totalGames * 100);
-        }
+        const win_percent = this.userData.totalGames > 0
+            ? Math.round((this.userData.wins / this.userData.totalGames) * 100)
+            : 0;
+
         const content = `
             <div class="profile-container">
                 <div class="profile-header">
@@ -133,6 +134,10 @@ export class ProfilePage {
         `;
 
         this.container.innerHTML = content;
+
+        // Setup event listeners after rendering content
+        this.setupEventListeners();
+        this.initializeCharts();
     }
 
     renderMatchHistory() {
@@ -152,10 +157,10 @@ export class ProfilePage {
 
     renderFriendsList() {
         return this.userData.friends.map(friend => `
-            <div class="friend-card">
+            <div class="friend-card" data-userid="${friend.id}">
                 <div class="friend-avatar-container">
-                    <img src="${friend.profile_image || '/static/img/anonymous.webp'}" alt="${friend.userName}" class="friend-avatar">
-                    <span class="online-status ${friend.online ? 'online' : ''}"></span>
+                    <img src="${friend.profile_image || '/static/img/anonymous.webp'}" alt="${friend.username}" class="friend-avatar">
+                    <span class="online-status ${friend.is_online ? 'online' : ''}"></span>
                 </div>
                 <div class="friend-info">
                     <h3>${friend.username}</h3>
@@ -166,12 +171,55 @@ export class ProfilePage {
     }
 
     setupEventListeners() {
-        const editBtn = document.querySelector('.edit-profile-btn');
-        editBtn.addEventListener('click', () => this.showEditModal());
+        // Remove all existing event listeners by cloning elements
+        const elementsToClone = [
+            '.friend-card',
+            '.edit-profile-btn',
+            '.search-friends-btn'
+        ];
 
-        // Add friend search button listener
+        elementsToClone.forEach(selector => {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(element => {
+                const newElement = element.cloneNode(true);
+                element.parentNode.replaceChild(newElement, element);
+            });
+        });
+
+        // Add new event listeners for friend cards
+        document.querySelectorAll('.friend-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const userId = card.dataset.userid;
+                const username = card.querySelector('h3').textContent;
+                const profileImage = card.querySelector('img').src;
+                const isOnline = card.querySelector('.online-status').classList.contains('online');
+                const lastSeen = card.querySelector('p').textContent;
+
+                const friendInfo = {
+                    id: userId,
+                    username: username,
+                    profile_image: profileImage,
+                    is_online: isOnline,
+                    lastSeen: lastSeen
+                };
+
+                this.showFriendInfoModal(friendInfo);
+            });
+        });
+
+        // Add new event listener for edit profile button
+        const editBtn = document.querySelector('.edit-profile-btn');
+        if (editBtn) {
+            editBtn.addEventListener('click', () => this.showEditModal());
+        }
+
+        // Add new event listener for search friends button
         const searchFriendsBtn = document.querySelector('.search-friends-btn');
-        searchFriendsBtn.addEventListener('click', () => this.showFriendSearchModal());
+        if (searchFriendsBtn) {
+            searchFriendsBtn.addEventListener('click', () => this.showFriendSearchModal());
+        }
+
+        // ... other event listeners if any ...
     }
 
     showEditModal() {
@@ -386,7 +434,7 @@ export class ProfilePage {
 									'Content-Type': 'application/json',
 									'X-CSRFToken': csrfToken,
 								},
-								body: JSON.stringify({ 'userid': btn.dataset.userid })
+								body: JSON.stringify({ 'friend_id': btn.dataset.userid })
 							});
 
 							const result = await response.json();
@@ -413,9 +461,113 @@ export class ProfilePage {
         });
     }
 
+    showFriendInfoModal(friendInfo) {
+        const modal = document.createElement('div');
+        modal.className = 'friend-info-modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <h2>Friend Info</h2>
+                <div class="friend-profile">
+                    <div class="friend-avatar-large">
+                        <img src="${friendInfo.profile_image}" alt="${friendInfo.username}">
+                        <span class="online-status ${friendInfo.is_online ? 'online' : ''}"></span>
+                    </div>
+                    <div class="friend-details">
+                        <h3>${friendInfo.username}</h3>
+                        <p class="status-text">${friendInfo.lastSeen}</p>
+                    </div>
+                    <button class="remove-friend-btn danger-btn">
+                        <i class="fas fa-user-minus"></i> Remove Friend
+                    </button>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="close-btn">Close</button>
+                </div>
+                <button class="modal-close">&times;</button>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Setup modal event listeners
+        const closeBtn = modal.querySelector('.modal-close');
+        const cancelBtn = modal.querySelector('.close-btn');
+        const removeFriendBtn = modal.querySelector('.remove-friend-btn');
+
+        [closeBtn, cancelBtn].forEach(btn => {
+            btn.addEventListener('click', () => {
+                modal.classList.add('fade-out');
+                setTimeout(() => modal.remove(), 300);
+            });
+        });
+
+        removeFriendBtn.addEventListener('click', () => {
+            this.showRemoveFriendConfirmModal(modal, friendInfo.id, friendInfo.username);
+        });
+    }
+
+    showRemoveFriendConfirmModal(parentModal, userId, username) {
+        const modal = document.createElement('div');
+        modal.className = 'confirm-modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <h2>Remove Friend</h2>
+                <p class="warning-text">Are you sure you want to remove ${username} from your friends list? This action cannot be undone.</p>
+                <div class="modal-actions">
+                    <button type="button" class="cancel-btn">Cancel</button>
+                    <button type="button" class="confirm-btn danger-btn">Remove Friend</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Setup confirmation modal event listeners
+        const cancelBtn = modal.querySelector('.cancel-btn');
+        const confirmBtn = modal.querySelector('.confirm-btn');
+
+        cancelBtn.addEventListener('click', () => {
+            modal.classList.add('fade-out');
+            setTimeout(() => modal.remove(), 300);
+        });
+
+        confirmBtn.addEventListener('click', async () => {
+            try {
+                const csrfToken = document.cookie
+                    .split('; ')
+                    .find(row => row.startsWith('csrftoken='))
+                    ?.split('=')[1];
+
+                const response = await fetch('/api/remove_friend', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken,
+                    },
+                    body: JSON.stringify({ 'userid': userId })
+                });
+
+                const result = await response.json();
+                if (result.status === 'success') {
+                    modal.remove();
+                    parentModal.remove();
+                    await this.loadUserData();
+                    this.render();
+                }
+            } catch (error) {
+                console.error('Failed to remove friend:', error);
+            }
+        });
+    }
+
     initializeCharts() {
+        // Destroy existing chart if it exists
+        if (this.chart) {
+            this.chart.destroy();
+        }
+
         const ctx = document.getElementById('performanceChart').getContext('2d');
-        new Chart(ctx, {
+        this.chart = new Chart(ctx, {
             type: 'doughnut',
             data: {
                 labels: ['Wins', 'Losses'],

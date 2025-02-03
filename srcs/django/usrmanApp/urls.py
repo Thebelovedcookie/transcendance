@@ -12,4 +12,5 @@ urlpatterns = [
 	path('user', views.get_user, name='get_user'),
 	path('search_user', views.search_user, name='search_user'),
 	path('add_friend', views.add_friend, name='add_friend'),
+	path('remove_friend', views.remove_friend, name='remove_friend'),
 ]

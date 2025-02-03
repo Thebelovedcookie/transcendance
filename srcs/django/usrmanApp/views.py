@@ -103,6 +103,7 @@ def get_profile(request):
 	# Convert ManyToMany field to list of usernames or IDs
 	friends_data = [
 		{
+			'id': friend.id,
 			'username': friend.username,
 			'profile_image': friend.profile_image.url if friend.profile_image else None,
 			'is_online': "true",
@@ -189,7 +190,7 @@ def search_user(request):
 def add_friend(request):
 	try:
 		data = json.loads(request.body)
-		friend_id = data.get('userid')
+		friend_id = data.get('friend_id')
 
 		friend = CustomUser.objects.get(id=friend_id)
 		request.user.friends.add(friend)
@@ -198,6 +199,30 @@ def add_friend(request):
 		return JsonResponse({
 			'status': 'success',
 			'message': 'friend added'
+		}, status=200)
+	except CustomUser.DoesNotExist:
+		return JsonResponse({
+			'status': 'error',
+			'message': 'User not found'
+		}, status=404)
+	except Exception as e:
+		return JsonResponse({
+			'status': 'error',
+			'message': str(e)
+		}, status=500)
+
+def remove_friend(request):
+	try:
+		data = json.loads(request.body)
+		friend_id = data.get('userid')
+
+		friend = CustomUser.objects.get(id=friend_id)
+		request.user.friends.remove(friend)
+		request.user.save()
+
+		return JsonResponse({
+			'status': 'success',
+			'message': 'friend removed'
 		}, status=200)
 	except CustomUser.DoesNotExist:
 		return JsonResponse({
