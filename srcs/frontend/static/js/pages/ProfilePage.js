@@ -125,7 +125,7 @@ export class ProfilePage {
                                 <i class="fas fa-search"></i> Search Friends
                             </button>
                         </div>
-                        <div class="friends-list">
+                        <div id="friends-list">
                             ${this.renderFriendsList()}
                         </div>
                     </div>
@@ -404,8 +404,6 @@ export class ProfilePage {
 
                 const result = await response.json();
 
-				console.log(result.data);
-
                 if (result.status === 'success' && Array.isArray(result.data)) {
                     resultsContainer.innerHTML = result.data.map(user => `
                         <div class="search-result-item">
@@ -439,10 +437,14 @@ export class ProfilePage {
 
 							const result = await response.json();
 
-							console.log(result);
 							if (result.status === 'success') {
 								btn.disabled = true;
 								btn.textContent = 'Friends';
+								await this.loadUserData();
+								const friendsList = document.getElementById('friends-list');
+								if (friendsList) {
+									friendsList.innerHTML = this.renderFriendsList();
+								}
 							}
 						} catch (error) {
 							console.error('Failed to add friend:', error);
