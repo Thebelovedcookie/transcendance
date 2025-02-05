@@ -3,9 +3,6 @@ import { firstPaddleSolo, ballSoloStyle, drawDashedLineSolo, drawWallsSolo } fro
 //----------------------GLOBAL GAME ELEMENT----------------------------//
 let canvasSolo;
 let contextSolo;
-let ratioWidthSolo;
-let ratioHeightSolo;
-// let playerOneSolo;
 let playerOneSolo;
 let ballSolo;
 let controllerSolo;
@@ -104,28 +101,6 @@ function movePaddleDownP2Solo() {
 
 
 //----------------------------METHOD--------------------------------//
-
-// //if we move the window, we resize object on the canvasSolo
-// window.addEventListener('resize', resizeCanvasSolo);
-
-// function resizeCanvasSolo() {
-// 	const ratioWidthSolo = window.innerWidth / canvasSolo.width;
-// 	const ratioHeightSolo = window.innerHeight / canvasSolo.height;
-// 	canvasSolo.width = window.innerWidth;
-// 	canvasSolo.height = window.innerHeight * 0.94;
-// 	playerOneSolo.update({
-// 		x: canvasSolo.width - 20,
-// 		y: canvasSolo.height * 0.4,
-// 		width: canvasSolo.width / 80,
-// 		height: canvasSolo.height / 6,
-// 	})
-// 	ballSolo.update({
-// 		width: 15 * ratioWidthSolo,
-// 		height: 15 * ratioHeightSolo,
-// 	})
-
-// 	ballSoloBounce();
-// }
 
 //draw elements
 function drawElement(element){
