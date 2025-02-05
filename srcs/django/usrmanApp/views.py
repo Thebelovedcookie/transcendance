@@ -7,10 +7,6 @@ import json
 import datetime
 # experiemnting from here
 from PIL import Image
-from io import BytesIO
-from django.core.files.base import File, ContentFile
-from os.path import basename
-from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 
 def login_user(request):
@@ -74,47 +70,29 @@ def update_profile(request):
 		}, status=405)
 
 	try:
-		data = json.load(request)
-		username = data.get('username')
-		email = data.get('email')
-		image_file = data.get('image')
-
-		#load user data based on request.user email
+		# retreive data from POST
+		username = request.POST.get('username')
+		email = request.POST.get('email')
+		uploaded_image = request.FILES.get('image')
+			
+		# fetch the user info based on surrent request.user.email
 		u = CustomUser.objects.get(email=request.user.email)
+
+		if uploaded_image:
+			#delete current profile image
+			if u.profile_image:
+				u.profile_image.delete()
+			# store new profile image
+			u.profile_image = uploaded_image
+
+		# save new username and email
 		u.username = username
 		u.email = email
-
-		fs = FileSystemStorage(location='profile_images/')
-		filename = fs.save(image_file.name, image_file)
-		file_url = fs.url(filename)
-		
-		#try to load image
-		#try:
-			#img = Image.open(image_file)
-			#img.verify()
-			#img = Image.open(image_file)
-			#temp_img = BytesIO()
-			#img.save(temp_img, format="JPEG", quality=70, optimize=True)
-			#temp_img.seek(0)
-			#original_name, _ = image_file.name.lower().split(".")
-			#img = f"{original_name}.jpg"
-			#u.profile_image.save(img, ContentFile(temp_img.read()), save=False)
-		#	u.profile_image.save(file_url, content=File(open(file_url, 'rb')))
-
-		#	u.profile_image.save('test.jpg', content=image_file)
-
-		#except Exception as e:
-		#	return JsonResponse({
-		#		'status': 'success',
-		#		'message': 'image save baaad...'
-		#	}, status=200)
-
-		#try to save changes
 		u.save()
 
 		return JsonResponse({
 			'status': 'success',
-			'message': 'update made'
+			'message': 'profile updated'
 		}, status=200)
 	except Exception as e:
 		return JsonResponse({
@@ -133,7 +111,6 @@ def get_profile(request):
 			'username': request.user.username,
 			'email': request.user.email,
 			'image_path': profile_image_url,
-			'image': request.user.profile_image.name,
 			'wins': request.user.wins,
 			'totalGames': request.user.totalGames,
 			'losses': request.user.losses,

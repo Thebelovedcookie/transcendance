@@ -9,7 +9,6 @@ export class ProfilePage {
             username: "Player123",
             email: "player123@example.com",
             image_path: null,
-            image: 'deer.jpg',
             join_date: "2024-01-15",
             totalGames: 150,
             wins: 89,
@@ -58,10 +57,6 @@ export class ProfilePage {
             const data = await response.json();
             if (data.status === 'success') {
                 this.userData = data.data;
-                console.log('load'); 
-                console.log(this.userData.image);
-                console.log(this.userData.image_path);
-                this.file_path = 'static/img/' + this.userData.image;
             }
         } catch (error) {
             console.error('Failed to load user data:', error);
@@ -250,20 +245,12 @@ export class ProfilePage {
             .find(row => row.startsWith('csrftoken='))
             ?.split('=')[1];
 
-            const formData = new FormData();
             const avatarInput = modal.querySelector('#avatarInput');
-            console.log('image');
-            console.log(avatarInput.files[0])
-            console.log('after image')
-            const profileData = {
-                username: modal.querySelector('input[type="text"]').value,
-                email: modal.querySelector('input[type="email"]').value
-            };
 
-            if (avatarInput.files[0]) {
-                formData.append('image', avatarInput.files[0]);
-            }
-            formData.append('data', JSON.stringify(profileData));
+            const formData = new FormData();
+            formData.append("username", modal.querySelector('input[type="text"]').value);
+            formData.append("email", modal.querySelector('input[type="email"]').value);
+            formData.append("image", avatarInput.files[0]);
 
             try {
                 const response = await fetch('/api/profile/update', {
@@ -271,13 +258,8 @@ export class ProfilePage {
                     credentials: 'include',
 					headers: {
 						'X-CSRFToken': csrfToken,
-						'Content-Type': 'application/json',
 					},
-                    //body: formData
-                    body: JSON.stringify({ 'username': modal.querySelector('input[type="text"]').value,
-                        'email': modal.querySelector('input[type="email"]').value,
-                        'image': avatarInput.files[0]
-                     })
+                    body: formData
                 });
 
 				console.log('CSRF Token:', csrfToken);
@@ -293,12 +275,6 @@ export class ProfilePage {
 					console.log(response);
                     console.log('message');
                     console.log(result.message);
-                    // user data has been updated but page needs to be reloaded
-                    
-                    //this.userData.username = data.username;
-                    //this.userData.email = data.email;
-                    //this.userData.image = data.image;
-
                     this.render();
                     modal.classList.add('fade-out');
                     setTimeout(() => modal.remove(), 300);
