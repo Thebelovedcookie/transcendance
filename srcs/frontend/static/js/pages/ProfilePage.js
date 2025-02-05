@@ -444,6 +444,8 @@ export class ProfilePage {
 								const friendsList = document.getElementById('friends-list');
 								if (friendsList) {
 									friendsList.innerHTML = this.renderFriendsList();
+									// setup event listeners for new friend
+									this.setupEventListeners();
 								}
 							}
 						} catch (error) {
