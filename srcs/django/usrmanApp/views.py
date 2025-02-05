@@ -5,9 +5,13 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 import json
 import datetime
+# experiemnting from here
 from PIL import Image
 from io import BytesIO
-from django.core.files.base import ContentFile
+from django.core.files.base import File, ContentFile
+from os.path import basename
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 
 def login_user(request):
 	data = json.load(request)
@@ -79,9 +83,13 @@ def update_profile(request):
 		u = CustomUser.objects.get(email=request.user.email)
 		u.username = username
 		u.email = email
+
+		fs = FileSystemStorage(location='profile_images/')
+		filename = fs.save(image_file.name, image_file)
+		file_url = fs.url(filename)
 		
 		#try to load image
-		try:
+		#try:
 			#img = Image.open(image_file)
 			#img.verify()
 			#img = Image.open(image_file)
@@ -91,14 +99,15 @@ def update_profile(request):
 			#original_name, _ = image_file.name.lower().split(".")
 			#img = f"{original_name}.jpg"
 			#u.profile_image.save(img, ContentFile(temp_img.read()), save=False)
+		#	u.profile_image.save(file_url, content=File(open(file_url, 'rb')))
 
-			u.profile_image.save('test.jpg', ContentFile(image_file.read()))
-		except Exception as e:
-			u.save()
-			return JsonResponse({
-				'status': 'success',
-				'message': 'image baaad...'
-			}, status=200)
+		#	u.profile_image.save('test.jpg', content=image_file)
+
+		#except Exception as e:
+		#	return JsonResponse({
+		#		'status': 'success',
+		#		'message': 'image save baaad...'
+		#	}, status=200)
 
 		#try to save changes
 		u.save()

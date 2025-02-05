@@ -58,7 +58,7 @@ export class ProfilePage {
             const data = await response.json();
             if (data.status === 'success') {
                 this.userData = data.data;
-                console.log('load');
+                console.log('load'); 
                 console.log(this.userData.image);
                 console.log(this.userData.image_path);
                 this.file_path = 'static/img/' + this.userData.image;
