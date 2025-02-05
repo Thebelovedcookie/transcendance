@@ -33,9 +33,6 @@ RUN django-admin startproject backend_project project
 
 RUN cd /project && python3.11 manage.py startapp backend_app && python3.11 manage.py startapp usrman_app && python3.11 manage.py startapp pong_history_app
 
-COPY /tools/setups_backend.sh /setups_backend.sh
-RUN chmod +x /setups_backend.sh
-
 EXPOSE 8000
 RUN apt update && apt install -y postgresql-client
 RUN pip install psycopg[binary] channels[daphne] django-cors-headers Pillow
@@ -45,6 +42,9 @@ COPY ./backendApp /project/backend_app/
 COPY ./usrmanApp /project/usrman_app/
 COPY ./pongHistoryApp /project/pong_history_app/
 COPY ./backendProject /project/backend_project/
+
+COPY /tools/setups_backend.sh /setups_backend.sh
+RUN chmod +x /setups_backend.sh
 
 WORKDIR /project
 

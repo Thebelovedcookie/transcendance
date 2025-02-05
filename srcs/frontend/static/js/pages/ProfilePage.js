@@ -3,7 +3,28 @@ export class ProfilePage {
         this.container = document.getElementById('dynamicPage');
         this.chartLoaded = false;
         this.userData = null;
-        this.matchHistory = [];
+        this.default_path = 'static/img/deer.jpg';
+        this.userData = {
+            username: "Player123",
+            email: "player123@example.com",
+            image_path: null,
+            join_date: "2024-01-15",
+            totalGames: 150,
+            wins: 89,
+            losses: 61,
+            online: true
+        };
+        this.matchHistory = [
+            { opponent: "User456", result: "Win", date: "2024-03-20", score: "11-5" },
+            { opponent: "GameMaster", result: "Loss", date: "2024-03-19", score: "8-11" },
+            { opponent: "PongKing", result: "Win", date: "2024-03-18", score: "11-7" }
+        ];
+        this.friends = [
+            { userName: "PongMaster", online: true, lastSeen: "Now" },
+            { userName: "GamePro", online: false, lastSeen: "2 hours ago" },
+            { userName: "Champion", online: true, lastSeen: "Now" },
+            { userName: "PongKing", online: false, lastSeen: "1 day ago" }
+        ];
         this.chart = null;  // Add property to store chart instance
     }
 
@@ -62,7 +83,7 @@ export class ProfilePage {
                 <div class="profile-header">
                     <div class="profile-info">
                         <div class="profile-avatar-container">
-                            <img src="${this.userData.profile_image || '/static/img/anonymous.webp'}" alt="Profile" class="profile-avatar">
+                            <img src="${this.userData.image_path || this.default_path}" alt="Profile" class="profile-avatar">
                             <span class="online-status ${this.userData.online ? 'online' : ''}"></span>
                         </div>
                         <div class="profile-details">
@@ -217,7 +238,7 @@ export class ProfilePage {
                 <form id="editProfileForm">
                     <div class="avatar-upload">
                         <div class="avatar-preview">
-                            <img src="${this.userData.profile_image || '/static/img/anonymous.webp'}" alt="Profile" id="avatarPreview">
+                            <img src="${this.userData.image_path || this.default_path}" alt="Profile" id="avatarPreview">
                         </div>
                         <div class="avatar-edit">
                             <input type="file" id="avatarInput" accept="image/*">
@@ -284,17 +305,12 @@ export class ProfilePage {
             .find(row => row.startsWith('csrftoken='))
             ?.split('=')[1];
 
-            const formData = new FormData();
             const avatarInput = modal.querySelector('#avatarInput');
-            const profileData = {
-                username: modal.querySelector('input[type="text"]').value,
-                email: modal.querySelector('input[type="email"]').value
-            };
 
-            if (avatarInput.files[0]) {
-                formData.append('profile_image', avatarInput.files[0]);
-            }
-            formData.append('data', JSON.stringify(profileData));
+            const formData = new FormData();
+            formData.append("username", modal.querySelector('input[type="text"]').value);
+            formData.append("email", modal.querySelector('input[type="email"]').value);
+            formData.append("image", avatarInput.files[0]);
 
             try {
                 const response = await fetch('/api/profile/update', {
@@ -302,13 +318,8 @@ export class ProfilePage {
                     credentials: 'include',
 					headers: {
 						'X-CSRFToken': csrfToken,
-						'Content-Type': 'application/json',
 					},
-                    //body: formData
-                    body: JSON.stringify({ 'username': modal.querySelector('input[type="text"]').value,
-                        'email': modal.querySelector('input[type="email"]').value,
-                        'image': avatarInput.files[0]
-                     })
+                    body: formData
                 });
 
                 if (!response.ok) {
@@ -317,6 +328,9 @@ export class ProfilePage {
 
                 const result = await response.json();
                 if (result.status === 'success') {
+					console.log(response);
+                    console.log('message');
+                    console.log(result.message);
                     this.render();
                     modal.classList.add('fade-out');
                     setTimeout(() => modal.remove(), 300);
