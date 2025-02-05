@@ -1,5 +1,5 @@
 import { EndNormalGamePage } from '../../pages/EndNormalGamePage.js';
-import { firstPaddle, ballStyle, drawDashedLine, displayScoreOne, displayScoreTwo, displayScoreThree, drawWalls } from './style_multi.js';
+import { multiPaddle, ballStyle, drawDashedLine, displayScoreOne, displayScoreTwo, displayScoreThree, displayPlayerName, drawWalls } from './style_multi.js';
 let canvas = null;
 let context = null;
 let theme = "base";
@@ -9,7 +9,7 @@ class GameWebSocket {
 		canvas = document.getElementById("pongGame");
 		context = canvas.getContext("2d");
 		canvas.height = window.innerHeight * 0.8;
-		canvas.width = canvas.height * (16/9);
+		canvas.width = canvas.height;
 		context.clearRect(0, 0, canvas.width, canvas.height);
 
 		//arena
@@ -28,8 +28,8 @@ class GameWebSocket {
 			s: false,
 			b: false,
 			n: false,
-			ArrowUp: false,
-			ArrowDown: false
+			ArrowRight: false,
+			ArrowLeft: false
 		};
 		this.setupKeyboardControls();
 		this.connect();
@@ -63,8 +63,8 @@ class GameWebSocket {
 			return Math.max(min, Math.min(max, value));
 		}
 	
-		// Player 1 (W et S)
-		if (this.keys.ArrowUp) {
+		// Player 1 (Flèches)
+		if (this.keys.ArrowRight) {
 			this.gameState.player1.startAngle = clampAngle(
 				this.gameState.player1.startAngle - angleSpeed,
 				0,
@@ -76,7 +76,7 @@ class GameWebSocket {
 				2 * Math.PI / 3
 			);
 		}
-		if (this.keys.ArrowDown) {
+		if (this.keys.ArrowLeft) {
 			this.gameState.player1.startAngle = clampAngle(
 				this.gameState.player1.startAngle + angleSpeed,
 				0,
@@ -89,7 +89,7 @@ class GameWebSocket {
 			);
 		}
 	
-		// Player 2 (Flèches)
+		// Player 2 (W et S)
 		if (this.keys.s) {
 			this.gameState.player2.startAngle = clampAngle(
 				this.gameState.player2.startAngle - angleSpeed,
@@ -329,7 +329,7 @@ class GameWebSocket {
 		const distanceBall = this.getBallDistanceFromCenter();
 
 		if (distanceBall >= this.gameState.player1.radius - 25 && distanceBall <= this.gameState.player1.radius - 10
-			&& (angleBall >= this.gameState.player1.startAngle && angleBall <= this.gameState.player1.endAngle) 
+			&& (angleBall >= this.gameState.player1.startAngle - (Math.PI * 0.01) && angleBall <= this.gameState.player1.endAngle + (Math.PI * 0.01)) 
 				&& this.getBallNextDistanceFromCenter() >= distanceBall)
 		{
 			const paddleCenter = (this.gameState.player1.endAngle - this.gameState.player1.startAngle) / 2;
@@ -343,7 +343,7 @@ class GameWebSocket {
 			this.lastTouch = "player1";
 		}
 		else if ((distanceBall >= this.gameState.player2.radius - 15 && distanceBall <= this.gameState.player2.radius
-			&& angleBall >= this.gameState.player2.startAngle && angleBall <= this.gameState.player2.endAngle)
+			&& angleBall >= this.gameState.player2.startAngle - (Math.PI * 0.01) && angleBall <= this.gameState.player2.endAngle + (Math.PI * 0.01))
 			&& this.getBallNextDistanceFromCenter() >= distanceBall)
 		{
 			const paddleCenter = (this.gameState.player2.endAngle - this.gameState.player2.startAngle) / 2;
@@ -359,7 +359,7 @@ class GameWebSocket {
 			this.lastTouch = "player2";
 		}
 		else if ((distanceBall >= this.gameState.player3.radius - 25 && distanceBall <= this.gameState.player3.radius - 10
-			&& angleBall >= this.gameState.player3.startAngle && angleBall <= this.gameState.player3.endAngle)
+			&& angleBall >= this.gameState.player3.startAngle - (Math.PI * 0.01) && angleBall <= this.gameState.player3.endAngle + (Math.PI * 0.01))
 			&& this.getBallNextDistanceFromCenter() >= distanceBall)
 		{
 			const paddleCenter = (this.gameState.player3.endAngle - this.gameState.player3.startAngle) / 2;
@@ -386,12 +386,25 @@ class GameWebSocket {
 
 		if (this.lastTouch == "player1" && angleBall > this.gameState.player1.endZone)
 			this.gameState.scores.playerOne++;
+		else if ((this.lastTouch == "player1" || this.lastTouch == 'none')&& angleBall < this.gameState.player1.endZone) {
+			this.gameState.scores.playerTwo++;
+			this.gameState.scores.playerThree++;
+		}
 		else if (this.lastTouch == "player2" && (angleBall < this.gameState.player2.startZone || angleBall > this.gameState.player2.endZone))
 			this.gameState.scores.playerTwo++;
+		else if ((this.lastTouch == "player2" || this.lastTouch == 'none') && (angleBall > this.gameState.player2.startZone || angleBall < this.gameState.player2.endZone)) {
+			this.gameState.scores.playerOne++;
+			this.gameState.scores.playerThree++;
+		}
 		else if (this.lastTouch == "player3" && angleBall < this.gameState.player3.startZone)
 			this.gameState.scores.playerThree++;
+		else if ((this.lastTouch == "player3" || this.lastTouch == 'none')&& angleBall < this.gameState.player3.startZone) {
+			this.gameState.scores.playerOne++;
+			this.gameState.scores.playerTwo++;
+		}
 		else
-			console.log("no one touch the ball");
+			console.log("no one touched the ball");
+		this.checkScore();
 		this.resetBall();
 	}
 
@@ -407,19 +420,19 @@ class GameWebSocket {
 			if (this.gameState.scores.playerOne == 10)
 			{
 				stopGame();
-				const end = new EndNormalGamePage("PlayerOne");
+				const end = new EndNormalGamePage("PlayerOne", "PlayerTwo and PlayerThree");
 				end.handle();
 			}
 			else if (this.gameState.scores.playerTwo == 10)
 			{
 				stopGame();
-				const end = new EndNormalGamePage("PlayerTwo");
+				const end = new EndNormalGamePage("PlayerTwo", "PlayerOne and PlayerThree");
 				end.handle();
 			}
 			else
 			{
 				stopGame();
-				const end = new EndNormalGamePage("PlayerThree");
+				const end = new EndNormalGamePage("PlayerThree", "PlayerOne and PlayerTwo");
 				end.handle();
 			}
 		}
@@ -439,9 +452,9 @@ class GameWebSocket {
 
 	drawGame() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
-		firstPaddle(context, this.gameState.player1);
-		firstPaddle(context, this.gameState.player2);
-		firstPaddle(context, this.gameState.player3);
+		multiPaddle(context, this.gameState.player1);
+		multiPaddle(context, this.gameState.player2);
+		multiPaddle(context, this.gameState.player3);
 		ballStyle(context, this.gameState.ball);
 		drawDashedLine(context, canvas);
 		drawWalls(context, canvas)
@@ -453,6 +466,8 @@ class GameWebSocket {
 		displayScoreOne(context, scoreOne, canvas);
 		displayScoreTwo(context, scoreTwo, canvas);
 		displayScoreThree(context, scoreThree, canvas);
+		
+		displayPlayerName(context, canvas);
 	}
 
 	cleanup() {
