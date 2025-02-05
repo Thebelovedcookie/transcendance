@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'usrman_app',
 	'pong_history_app',
+    'backend_gameconsapp',
 ]
 
 MIDDLEWARE = [
