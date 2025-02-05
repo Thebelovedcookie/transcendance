@@ -16,6 +16,7 @@ class CustomUser(AbstractUser):
 		blank=True,
 	)
 
+	friends = models.ManyToManyField('self', blank=True)
 	wins = models.IntegerField(default=0)
 	totalGames = models.IntegerField(default=0)
 	losses = models.IntegerField(default=0)
