@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'channels',
     'corsheaders',
     'usrman_app',
+	'pong_history_app',
 ]
 
 MIDDLEWARE = [

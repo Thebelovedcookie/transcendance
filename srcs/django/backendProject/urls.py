@@ -19,7 +19,11 @@ from django.urls import include, path
 
 urlpatterns = [
 	path("", include("backend_app.urls")),
-	path("backend_app/", include("backend_app.urls")),
     path('admin/', admin.site.urls),
+	path("backend_app/", include("backend_app.urls")),
     path('api/', include("usrman_app.urls")),
+	path("api/matches/", include("pong_history_app.urls")),
 ]
+
+# api/ -> api/auth/
+# backend_app/ -> api/pong/

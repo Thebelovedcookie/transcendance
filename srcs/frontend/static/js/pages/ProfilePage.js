@@ -3,25 +3,7 @@ export class ProfilePage {
         this.container = document.getElementById('dynamicPage');
         this.chartLoaded = false;
         this.userData = null;
-        this.userData = {
-            username: "Player123",
-            email: "player123@example.com",
-            join_date: "2024-01-15",
-            totalGames: 150,
-            wins: 89,
-            losses: 61
-        };
-        this.matchHistory = [
-            { opponent: "User456", result: "Win", date: "2024-03-20", score: "11-5" },
-            { opponent: "GameMaster", result: "Loss", date: "2024-03-19", score: "8-11" },
-            { opponent: "PongKing", result: "Win", date: "2024-03-18", score: "11-7" }
-        ];
-        this.friends = [
-            { userName: "PongMaster", online: true, lastSeen: "Now" },
-            { userName: "GamePro", online: false, lastSeen: "2 hours ago" },
-            { userName: "Champion", online: true, lastSeen: "Now" },
-            { userName: "PongKing", online: false, lastSeen: "1 day ago" }
-        ];
+        this.matchHistory = [];
         this.chart = null;  // Add property to store chart instance
     }
 
@@ -94,11 +76,11 @@ export class ProfilePage {
                     <div class="profile-stats">
                         <div class="stat-card">
                             <h3>Total Games</h3>
-                            <p>${this.userData.totalGames}</p>
+                            <p>${this.userData.match_history.total_games}</p>
                         </div>
                         <div class="stat-card">
                             <h3>Win Rate</h3>
-                            <p>${win_percent}%</p>
+                            <p>${this.userData.match_history.win_rate}%</p>
                         </div>
                     </div>
                 </div>
@@ -141,18 +123,22 @@ export class ProfilePage {
     }
 
     renderMatchHistory() {
-        return this.matchHistory.map(match => `
-            <div class="match-card ${match.result.toLowerCase()}">
-                <div class="match-info">
-                    <span class="match-opponent">${match.opponent}</span>
-                    <span class="match-score">${match.score}</span>
-                </div>
-                <div class="match-details">
-                    <span class="match-result">${match.result}</span>
-                    <span class="match-date">${match.date}</span>
-                </div>
-            </div>
-        `).join('');
+		if (this.userData.match_history.matches && this.userData.match_history.matches.length === 0) {
+			return '<p>No match history found</p>';
+		}
+		console.log(this.userData.match_history);
+        // return this.userData.match_history.matches.map(match => `
+        //     <div class="match-card ${match.result.toLowerCase()}">
+        //         <div class="match-info">
+        //             <span class="match-opponent">${match.opponent}</span>
+        //             <span class="match-score">${match.user_score} - ${match.opponent_score}</span>
+        //         </div>
+        //         <div class="match-details">
+        //             <span class="match-result">${match.result}</span>
+        //             <span class="match-date">${match.played_at}</span>
+        //         </div>
+        //     </div>
+        // `).join('');
     }
 
     renderFriendsList() {
