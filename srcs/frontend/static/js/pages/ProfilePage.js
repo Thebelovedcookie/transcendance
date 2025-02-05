@@ -3,14 +3,18 @@ export class ProfilePage {
         this.container = document.getElementById('dynamicPage');
         this.chartLoaded = false;
         this.userData = null;
+        this.default_path = 'static/img/deer.jpg';
         // テストデータ
         this.userData = {
             username: "Player123",
             email: "player123@example.com",
+            image_path: null,
+            image: 'deer.jpg',
             join_date: "2024-01-15",
             totalGames: 150,
             wins: 89,
-            losses: 61
+            losses: 61,
+            online: true
         };
         this.matchHistory = [
             { opponent: "User456", result: "Win", date: "2024-03-20", score: "11-5" },
@@ -54,6 +58,10 @@ export class ProfilePage {
             const data = await response.json();
             if (data.status === 'success') {
                 this.userData = data.data;
+                console.log('load');
+                console.log(this.userData.image);
+                console.log(this.userData.image_path);
+                this.file_path = 'static/img/' + this.userData.image;
             }
         } catch (error) {
             console.error('Failed to load user data:', error);
@@ -80,7 +88,7 @@ export class ProfilePage {
                 <div class="profile-header">
                     <div class="profile-info">
                         <div class="profile-avatar-container">
-                            <img src="${this.userData.profile_image || '/static/img/anonymous.webp'}" alt="Profile" class="profile-avatar">
+                            <img src="${this.userData.image_path || this.default_path}" alt="Profile" class="profile-avatar">
                             <span class="online-status ${this.userData.online ? 'online' : ''}"></span>
                         </div>
                         <div class="profile-details">
@@ -175,7 +183,7 @@ export class ProfilePage {
                 <form id="editProfileForm">
                     <div class="avatar-upload">
                         <div class="avatar-preview">
-                            <img src="${this.userData.profile_image || '/static/img/anonymous.webp'}" alt="Profile" id="avatarPreview">
+                            <img src="${this.userData.image_path || this.default_path}" alt="Profile" id="avatarPreview">
                         </div>
                         <div class="avatar-edit">
                             <input type="file" id="avatarInput" accept="image/*">
@@ -244,13 +252,16 @@ export class ProfilePage {
 
             const formData = new FormData();
             const avatarInput = modal.querySelector('#avatarInput');
+            console.log('image');
+            console.log(avatarInput.files[0])
+            console.log('after image')
             const profileData = {
                 username: modal.querySelector('input[type="text"]').value,
                 email: modal.querySelector('input[type="email"]').value
             };
 
             if (avatarInput.files[0]) {
-                formData.append('profile_image', avatarInput.files[0]);
+                formData.append('image', avatarInput.files[0]);
             }
             formData.append('data', JSON.stringify(profileData));
 
@@ -286,7 +297,7 @@ export class ProfilePage {
                     
                     //this.userData.username = data.username;
                     //this.userData.email = data.email;
-                    //this.userData.profile_image = data.profile_image;
+                    //this.userData.image = data.image;
 
                     this.render();
                     modal.classList.add('fade-out');

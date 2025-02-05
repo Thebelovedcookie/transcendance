@@ -1,6 +1,7 @@
 from django.urls import path
 from django.conf import settings
 from . import views
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('register', views.register_user),
@@ -11,3 +12,7 @@ urlpatterns = [
 	path('profile/get', views.get_profile, name='get_profile'),
 	path('user', views.get_user, name='get_user'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+	

@@ -5,6 +5,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 import json
 import datetime
+from PIL import Image
+from io import BytesIO
+from django.core.files.base import ContentFile
 
 def login_user(request):
 	data = json.load(request)
@@ -70,25 +73,39 @@ def update_profile(request):
 		data = json.load(request)
 		username = data.get('username')
 		email = data.get('email')
-		image = data.get('image')
+		image_file = data.get('image')
 
 		#load user data based on request.user email
 		u = CustomUser.objects.get(email=request.user.email)
-
-		# this will save the new user data to the database
 		u.username = username
 		u.email = email
-		u.profile_image = image
+		
+		#try to load image
+		try:
+			#img = Image.open(image_file)
+			#img.verify()
+			#img = Image.open(image_file)
+			#temp_img = BytesIO()
+			#img.save(temp_img, format="JPEG", quality=70, optimize=True)
+			#temp_img.seek(0)
+			#original_name, _ = image_file.name.lower().split(".")
+			#img = f"{original_name}.jpg"
+			#u.profile_image.save(img, ContentFile(temp_img.read()), save=False)
+
+			u.profile_image.save('test.jpg', ContentFile(image_file.read()))
+		except Exception as e:
+			u.save()
+			return JsonResponse({
+				'status': 'success',
+				'message': 'image baaad...'
+			}, status=200)
+
+		#try to save changes
 		u.save()
 
 		return JsonResponse({
 			'status': 'success',
-			'message': 'update made',
-			#'data' : {
-			#	'username': u.username,
-			#	'email': u.email,
-			#	'profile_image': u.profile_image
-			#}
+			'message': 'update made'
 		}, status=200)
 	except Exception as e:
 		return JsonResponse({
@@ -106,7 +123,8 @@ def get_profile(request):
 		'data' : {
 			'username': request.user.username,
 			'email': request.user.email,
-			'profile_image': profile_image_url,
+			'image_path': profile_image_url,
+			'image': request.user.profile_image.name,
 			'wins': request.user.wins,
 			'totalGames': request.user.totalGames,
 			'losses': request.user.losses,
