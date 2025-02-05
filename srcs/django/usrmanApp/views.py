@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 import json
 import datetime
+from pong_history_app import views as pong_history_app
 # experiemnting from here
 from PIL import Image
 from django.core.files.storage import FileSystemStorage
@@ -74,7 +75,7 @@ def update_profile(request):
 		username = request.POST.get('username')
 		email = request.POST.get('email')
 		uploaded_image = request.FILES.get('image')
-			
+
 		# fetch the user info based on surrent request.user.email
 		u = CustomUser.objects.get(email=request.user.email)
 
@@ -104,6 +105,11 @@ def update_profile(request):
 def get_profile(request):
 	user = request.user
 
+	match_response = pong_history_app.get_user_matches(request)
+	match_data = {}
+	if match_response.status_code == 200:
+		match_data = match_response.json()['data']
+
 	# Convert ManyToMany field to list of usernames or IDs
 	friends_data = [
 		{
@@ -126,7 +132,8 @@ def get_profile(request):
 			'wins': user.wins,
 			'losses': user.losses,
 			'image_path': user.profile_image.url if user.profile_image else None,
-			'friends': friends_data
+			'friends': friends_data,
+			'match_history': match_data
 		}
 	})
 
