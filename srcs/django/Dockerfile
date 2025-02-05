@@ -38,9 +38,9 @@ RUN apt update && apt install -y postgresql-client
 RUN pip install psycopg[binary] channels[daphne] django-cors-headers Pillow
 
 #config des urls
-COPY ./backendApp/* /project/backend_app/
-COPY ./usrmanApp/* /project/usrman_app/
-COPY ./backendProject/* /project/backend_project/
+COPY ./backendApp /project/backend_app/
+COPY ./usrmanApp /project/usrman_app/
+COPY ./backendProject /project/backend_project/
 
 COPY /tools/setups_backend.sh /setups_backend.sh
 RUN chmod +x /setups_backend.sh

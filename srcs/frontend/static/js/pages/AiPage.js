@@ -1,4 +1,4 @@
-import { aiMode } from "../ai_opponent/main_ai.js";
+import { aiMode } from "../game_mode/ai_opponent/main_ai.js";
 
 export class AiPage {
 	constructor() {
