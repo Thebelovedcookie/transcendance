@@ -42,8 +42,9 @@ COPY ./backendApp /project/backend_app/
 COPY ./usrmanApp /project/usrman_app/
 COPY ./pongHistoryApp /project/pong_history_app/
 COPY ./backendProject /project/backend_project/
-
 COPY /tools/setups_backend.sh /setups_backend.sh
+COPY ./usrmanApp /project/usrman_app/
+
 RUN chmod +x /setups_backend.sh
 
 WORKDIR /project

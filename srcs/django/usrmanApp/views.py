@@ -131,7 +131,7 @@ def get_profile(request):
 			'totalGames': user.totalGames,
 			'wins': user.wins,
 			'losses': user.losses,
-			'profile_image': user.profile_image.url if user.profile_image else None,
+			'image_path': user.profile_image.url if user.profile_image else None,
 			'friends': friends_data,
 			'match_history': match_data
 		}
