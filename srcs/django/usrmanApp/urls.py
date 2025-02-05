@@ -1,6 +1,7 @@
 from django.urls import path
 from django.conf import settings
 from . import views
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('register', views.register_user),
@@ -14,3 +15,7 @@ urlpatterns = [
 	path('add_friend', views.add_friend, name='add_friend'),
 	path('remove_friend', views.remove_friend, name='remove_friend'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+	

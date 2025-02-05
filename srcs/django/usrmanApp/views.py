@@ -5,6 +5,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 import json
 import datetime
+# experiemnting from here
+from PIL import Image
+from django.core.files.storage import FileSystemStorage
 
 def login_user(request):
 	data = json.load(request)
@@ -67,28 +70,29 @@ def update_profile(request):
 		}, status=405)
 
 	try:
-		data = json.load(request)
-		username = data.get('username')
-		email = data.get('email')
-		image = data.get('image')
-
-		#load user data based on request.user email
+		# retreive data from POST
+		username = request.POST.get('username')
+		email = request.POST.get('email')
+		uploaded_image = request.FILES.get('image')
+			
+		# fetch the user info based on surrent request.user.email
 		u = CustomUser.objects.get(email=request.user.email)
 
-		# this will save the new user data to the database
+		if uploaded_image:
+			#delete current profile image
+			if u.profile_image:
+				u.profile_image.delete()
+			# store new profile image
+			u.profile_image = uploaded_image
+
+		# save new username and email
 		u.username = username
 		u.email = email
-		u.profile_image = image
 		u.save()
 
 		return JsonResponse({
 			'status': 'success',
-			'message': 'update made',
-			#'data' : {
-			#	'username': u.username,
-			#	'email': u.email,
-			#	'profile_image': u.profile_image
-			#}
+			'message': 'profile updated'
 		}, status=200)
 	except Exception as e:
 		return JsonResponse({

@@ -33,6 +33,7 @@ down:
 	@docker compose -f $(DC) down $(c)
 
 destroy:
+	@clear
 	@echo 'destroy - down'
 	@docker compose -f $(DC) down -v $(c)
 
@@ -63,6 +64,10 @@ clean: destroy
 	@sudo rm -rf /home/user/ecole_42/transcendence/data/django_volume
 	@sudo rm -rf /home/user/ecole_42/transcendence/data/frontend_volume
 
+prune:
+	@echo 'prune unused docker stuff to clear memory'
+	@sudo docker system prune --volumes -af
+
 help:
 	@echo    "build  : Services are built once and then tagged, by default as project-service."
 	@echo    "up     : Builds, (re)creates, starts, and attaches to containers for a service."
@@ -75,4 +80,4 @@ help:
 	@echo    "ps     : Lists containers for a Compose project, with current status and exposed ports."
 	@echo    "login  : This is the equivalent of docker exec targeting a Compose service."
 
-.PHONY: help build up start down destroy stop restart logs logs-api ps login-timescale login-api db-shell
+.PHONY: prune help build up start down destroy stop restart logs logs-api ps login-timescale login-api db-shell
