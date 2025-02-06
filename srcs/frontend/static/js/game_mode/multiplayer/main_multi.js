@@ -326,9 +326,11 @@ class GameWebSocket {
 	bounceBall() {
 		
 		const angleBall = this.getAngleOfBall() + Math.PI;
+		const width = 2 * this.gameState.player1.width;
+
 		const distanceBall = this.getBallDistanceFromCenter() + 0.04 * this.gameState.ball.width * ((1 +  Math.cos(angleBall - Math.PI  / 4) / 2));
 
-		if (distanceBall >= this.radius - 25 && distanceBall <= this.radius
+		if (distanceBall >= this.radius - width && distanceBall <= this.radius
 			&& (angleBall >= this.gameState.player1.startAngle - (Math.PI * 0.01) && angleBall <= this.gameState.player1.endAngle + (Math.PI * 0.01)) 
 				&& this.getBallNextDistanceFromCenter() >= distanceBall)
 		{
@@ -372,7 +374,7 @@ class GameWebSocket {
 			this.gameState.ball.vy = speed * Math.sin(bounceAngle);
 			this.lastTouch = "player3";
 		}
-		else if (distanceBall >= this.radius)
+		else if (distanceBall >= this.radius * 1.4)
 		{
 			this.manageScore();
 		}
@@ -398,12 +400,10 @@ class GameWebSocket {
 		}
 		else if (this.lastTouch == "player3" && angleBall < this.gameState.player3.startZone)
 			this.gameState.scores.playerThree++;
-		else if ((this.lastTouch == "player3" || this.lastTouch == 'none')&& angleBall < this.gameState.player3.startZone) {
+		else if ((this.lastTouch == "player3" || this.lastTouch == 'none') && angleBall > this.gameState.player3.startZone) {
 			this.gameState.scores.playerOne++;
 			this.gameState.scores.playerTwo++;
 		}
-		else
-			console.log("no one touched the ball");
 		//this.checkScore();
 		this.resetBall();
 	}
