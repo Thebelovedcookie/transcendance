@@ -75,7 +75,8 @@ export function drawDashedLine(context, canvas) {
 
 //PlayerOne score Text
 export function displayScoreOne(context, scoreOne, canvas) {
-	context.font = "90px 'Press Start 2P'";
+	const size = Math.round(canvas.width / 10);
+	context.font = size + "px 'Press Start 2P'";
 	context.fillStyle = "red";
 	context.textAlign = "right"
 	context.textBaseline = "bottom";
@@ -89,7 +90,8 @@ export function displayScoreOne(context, scoreOne, canvas) {
 
 //PlayerTwo score Text
 export function displayScoreTwo(context, scoreTwo, canvas){
-	context.font = "90px 'Press Start 2P'";
+	const size = Math.round(canvas.width / 10);
+	context.font = size + "px 'Press Start 2P'";
 	context.fillStyle = "blue";
 	context.textBaseline = "bottom";
 	context.textAlign = "left"
@@ -103,7 +105,8 @@ export function displayScoreTwo(context, scoreTwo, canvas){
 
 //PlayerThree score Text
 export function displayScoreThree(context, scoreThree, canvas){
-	context.font = "90px 'Press Start 2P'";
+	const size = Math.round(canvas.width / 10);
+	context.font = size + "px 'Press Start 2P'";
 	context.fillStyle = "green";
 	context.textBaseline = "top";
 	context.textAlign = "right"
@@ -117,7 +120,8 @@ export function displayScoreThree(context, scoreThree, canvas){
 
 export function displayPlayerName(context, canvas)
 {
-	context.font = "20px 'Press Start 2P'";
+	const size = Math.round(canvas.width / 40);
+	context.font = size + "px 'Press Start 2P'";
 	context.textBaseline = "top";
 	context.shadowColor = "rgba(0, 0, 0, 0.7)";
 	context.shadowOffsetX = -1;

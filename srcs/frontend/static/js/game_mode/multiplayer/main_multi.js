@@ -326,9 +326,9 @@ class GameWebSocket {
 	bounceBall() {
 		
 		const angleBall = this.getAngleOfBall() + Math.PI;
-		const distanceBall = this.getBallDistanceFromCenter();
+		const distanceBall = this.getBallDistanceFromCenter() + 0.04 * this.gameState.ball.width * ((1 +  Math.cos(angleBall - Math.PI  / 4) / 2));
 
-		if (distanceBall >= this.radius - 45 && distanceBall <= this.radius - 10
+		if (distanceBall >= this.radius - 25 && distanceBall <= this.radius
 			&& (angleBall >= this.gameState.player1.startAngle - (Math.PI * 0.01) && angleBall <= this.gameState.player1.endAngle + (Math.PI * 0.01)) 
 				&& this.getBallNextDistanceFromCenter() >= distanceBall)
 		{
@@ -358,7 +358,7 @@ class GameWebSocket {
 			this.gameState.ball.vy = speed * Math.sin(bounceAngle);
 			this.lastTouch = "player2";
 		}
-		else if ((distanceBall >= this.radius - 25 && distanceBall <= this.radius - 10
+		else if ((distanceBall >= this.radius - 15 && distanceBall <= this.radius
 			&& angleBall >= this.gameState.player3.startAngle - (Math.PI * 0.01) && angleBall <= this.gameState.player3.endAngle + (Math.PI * 0.01))
 			&& this.getBallNextDistanceFromCenter() >= distanceBall)
 		{
@@ -442,12 +442,14 @@ class GameWebSocket {
 		this.gameState.ball.x = this.centerX;
 		this.gameState.ball.y = this.centerY;
 	
-		if (!this.gameState.ball.speed) this.gameState.ball.speed = 5;
-		if (!this.gameState.ball.gravity) this.gameState.ball.gravity = 2;
-	
-		this.gameState.ball.vx = Math.abs(this.gameState.ball.speed) * (Math.random() > 0.5 ? 1 : -1);
-		this.gameState.ball.vy = Math.abs(this.gameState.ball.gravity) * (Math.random() > 0.5 ? 1 : -1);
-		this.lastTouch = "none";
+		if (!this.gameState.ball.speed) this.gameState.ball.speed = 3;
+		if (!this.gameState.ball.gravity) this.gameState.ball.gravity = 3;
+
+		const angle = Math.random() * 2 * Math.PI
+
+		// no longer using gravity
+		this.gameState.ball.vx = this.gameState.ball.speed * Math.cos(angle);
+		this.gameState.ball.vy = this.gameState.ball.speed * Math.sin(angle);
 	}
 
 	drawGame() {
