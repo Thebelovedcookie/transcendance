@@ -41,11 +41,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'backend_app',
+    'backend_gamecons_app',
     'channels',
     'corsheaders',
     'usrman_app',
 	'pong_history_app',
-    'backend_gameconsapp',
+    'backend_tour_app',
+    
 ]
 
 MIDDLEWARE = [

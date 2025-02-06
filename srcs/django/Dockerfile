@@ -31,14 +31,18 @@ RUN mkdir project
 
 RUN django-admin startproject backend_project project
 
-RUN cd /project && python3.11 manage.py startapp backend_app && python3.11 manage.py startapp backend_gameconsapp && python3.11 manage.py startapp usrman_app
+RUN cd /project && python3.11 manage.py startapp backend_app \
+     && python3.11 manage.py startapp backend_gamecons_app \
+     && python3.11 manage.py startapp backend_tour_app \
+     && python3.11 manage.py startapp usrman_app
 
 #config des urls
 COPY ./backendApp /project/backend_app/
 COPY ./pongHistoryApp /project/pong_history_app/
 COPY ./usrmanApp /project/usrman_app/
 COPY ./backendProject /project/backend_project/
-COPY ./backend_GameConsApp /project/backend_gameconsapp/
+COPY ./backendGameConsApp /project/backend_gamecons_app/
+COPY ./backendTourApp /project/backend_tour_app/
 
 COPY /tools/setups_backend.sh /setups_backend.sh
 RUN chmod +x /setups_backend.sh
