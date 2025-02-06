@@ -328,10 +328,16 @@ class GameWebSocket {
 		const angleBall = this.getAngleOfBall() + Math.PI;
 		const width = 2 * this.gameState.player1.width;
 
-		const distanceBall = this.getBallDistanceFromCenter() + 0.04 * this.gameState.ball.width * ((1 +  Math.cos(angleBall - Math.PI  / 4) / 2));
+		const fudge = 2. * this.gameState.ball.width * ((1 +  Math.cos(2 * angleBall - Math.PI  / 2) / 2))
+		console.log(fudge);
+		const angleFudge = Math.PI* 0.01;
+		if (this.gameState.ball.y < this.gameState.width  / 2)
+			width = width * fudge;
+
+		const distanceBall = this.getBallDistanceFromCenter();
 
 		if (distanceBall >= this.radius - width && distanceBall <= this.radius
-			&& (angleBall >= this.gameState.player1.startAngle - (Math.PI * 0.01) && angleBall <= this.gameState.player1.endAngle + (Math.PI * 0.01)) 
+			&& (angleBall >= this.gameState.player1.startAngle - angleFudge && angleBall <= this.gameState.player1.endAngle + angleFudge) 
 				&& this.getBallNextDistanceFromCenter() >= distanceBall)
 		{
 			const paddleCenter = (this.gameState.player1.endAngle - this.gameState.player1.startAngle) / 2;
@@ -344,8 +350,8 @@ class GameWebSocket {
 			this.gameState.ball.vy = speed * Math.sin(bounceAngle);
 			this.lastTouch = "player1";
 		}
-		else if ((distanceBall >= this.radius - 15 && distanceBall <= this.radius
-			&& angleBall >= this.gameState.player2.startAngle - (Math.PI * 0.01) && angleBall <= this.gameState.player2.endAngle + (Math.PI * 0.01))
+		else if ((distanceBall >= this.radius - width && distanceBall <= this.radius
+			&& angleBall >= this.gameState.player2.startAngle - angleFudge && angleBall <= this.gameState.player2.endAngle + angleFudge)
 			&& this.getBallNextDistanceFromCenter() >= distanceBall)
 		{
 			const paddleCenter = (this.gameState.player2.endAngle - this.gameState.player2.startAngle) / 2;
@@ -360,8 +366,8 @@ class GameWebSocket {
 			this.gameState.ball.vy = speed * Math.sin(bounceAngle);
 			this.lastTouch = "player2";
 		}
-		else if ((distanceBall >= this.radius - 15 && distanceBall <= this.radius
-			&& angleBall >= this.gameState.player3.startAngle - (Math.PI * 0.01) && angleBall <= this.gameState.player3.endAngle + (Math.PI * 0.01))
+		else if ((distanceBall >= this.radius - width && distanceBall <= this.radius
+			&& angleBall >= this.gameState.player3.startAngle - angleFudge && angleBall <= this.gameState.player3.endAngle + angleFudge)
 			&& this.getBallNextDistanceFromCenter() >= distanceBall)
 		{
 			const paddleCenter = (this.gameState.player3.endAngle - this.gameState.player3.startAngle) / 2;
@@ -442,8 +448,8 @@ class GameWebSocket {
 		this.gameState.ball.x = this.centerX;
 		this.gameState.ball.y = this.centerY;
 	
-		if (!this.gameState.ball.speed) this.gameState.ball.speed = 3;
-		if (!this.gameState.ball.gravity) this.gameState.ball.gravity = 3;
+		if (!this.gameState.ball.speed) this.gameState.ball.speed = 4;
+		if (!this.gameState.ball.gravity) this.gameState.ball.gravity = 2;
 
 		const angle = Math.random() * 2 * Math.PI
 
@@ -454,12 +460,12 @@ class GameWebSocket {
 
 	drawGame() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
+		drawDashedLine(context, canvas);
+		drawWalls(context, canvas)
 		multiPaddle(context, this.gameState.player1);
 		multiPaddle(context, this.gameState.player2);
 		multiPaddle(context, this.gameState.player3);
 		ballStyle(context, this.gameState.ball);
-		drawDashedLine(context, canvas);
-		drawWalls(context, canvas)
 
 		const scoreOne = this.gameState.scores.playerOne ?? 0;
 		const scoreTwo = this.gameState.scores.playerTwo ?? 0;
