@@ -27,6 +27,7 @@ def get_user_matches(request):
 		total_games = PongMatchHistory.objects.filter(user=user).count()
 		wins = PongMatchHistory.objects.filter(user=user, user_score__gt=models.F('opponent_score')).count()
 		losses = PongMatchHistory.objects.filter(user=user, user_score__lt=models.F('opponent_score')).count()
+		win_percent = round((wins / total_games) * 100) if total_games > 0 else 0
 
 		return JsonResponse({
 			'status': 'success',
@@ -34,7 +35,8 @@ def get_user_matches(request):
 				'matches': matches_data,
 				'total_games': total_games,
 				'wins': wins,
-				'losses': losses
+				'losses': losses,
+				'win_percent': win_percent
 			}
 		})
 

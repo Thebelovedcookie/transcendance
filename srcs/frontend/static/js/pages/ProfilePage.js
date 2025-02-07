@@ -75,9 +75,10 @@ export class ProfilePage {
     }
 
     render() {
-        const win_percent = this.userData.totalGames > 0
-            ? Math.round((this.userData.wins / this.userData.totalGames) * 100)
-            : 0;
+        // const win_percent = this.userData.totalGames > 0
+        //     ? Math.round((this.userData.wins / this.userData.totalGames) * 100): 0;
+
+		// console.log(Math.round((this.userData.wins / this.userData.totalGames) * 100));
 
         const content = `
             <div class="profile-container">
@@ -102,7 +103,7 @@ export class ProfilePage {
                         </div>
                         <div class="stat-card">
                             <h3>Win Rate</h3>
-                            <p>${win_percent}%</p>
+                            <p>${this.userData.win_percent}%</p>
                         </div>
                     </div>
                 </div>
