@@ -1,10 +1,10 @@
 export class LogoutPage {
-    constructor() {
-        this.container = document.getElementById('dynamicPage');
-    }
+	constructor() {
+		this.container = document.getElementById('dynamicPage');
+	}
 
-    async handle() {
-        try {
+	async handle() {
+		try {
 			const csrfToken = document.cookie
 				.split('; ')
 				.find(row => row.startsWith('csrftoken='))
@@ -29,5 +29,5 @@ export class LogoutPage {
 		} catch (error) {
 			console.error('Logout failed:', error);
 		}
-    }
+	}
 }

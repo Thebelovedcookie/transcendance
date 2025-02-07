@@ -1,19 +1,19 @@
 FROM debian:11
 
 RUN apt update && apt install -y \
-    tar gzip build-essential \
-    zlib1g-dev \
-    libncurses5-dev \
-    libgdbm-dev \
-    libnss3-dev \
-    libssl-dev \
-    libreadline-dev \
-    libffi-dev \
-    libsqlite3-dev \
-    wget \
-    libbz2-dev \
-    python3 \
-    && apt clean && rm -rf /var/lib/apt/lists/*
+	tar gzip build-essential \
+	zlib1g-dev \
+	libncurses5-dev \
+	libgdbm-dev \
+	libnss3-dev \
+	libssl-dev \
+	libreadline-dev \
+	libffi-dev \
+	libsqlite3-dev \
+	wget \
+	libbz2-dev \
+	python3 \
+	&& apt clean && rm -rf /var/lib/apt/lists/*
 
 RUN wget https://www.python.org/ftp/python/3.11.1/Python-3.11.1.tgz
 
@@ -32,10 +32,10 @@ RUN mkdir project
 RUN django-admin startproject backend_project project
 
 RUN cd /project && python3.11 manage.py startapp backend_app \
-     && python3.11 manage.py startapp backend_gamecons_app \
-     && python3.11 manage.py startapp backend_tour_app \
-     && python3.11 manage.py startapp usrman_app \
-     && python3.11 manage.py startapp pong_history_app
+	 && python3.11 manage.py startapp backend_gamecons_app \
+	 && python3.11 manage.py startapp backend_tour_app \
+	 && python3.11 manage.py startapp usrman_app \
+	 && python3.11 manage.py startapp pong_history_app
 
 
 EXPOSE 8000

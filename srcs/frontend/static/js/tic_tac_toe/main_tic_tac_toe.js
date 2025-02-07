@@ -21,14 +21,14 @@ export class TicTacToe {
 		this.initGame();
 	}
 
-	
+
 	cellClicked(event) {
 		const cell = event.target;
 		const cellIndex = cell.getAttribute("cellIndex");
 
 		if (this.option[cellIndex] != "" || !this.running)
 			return ;
-	
+
 		this.updateCell(cell, cellIndex);
 		this.checkWinner();
 	}
@@ -45,13 +45,13 @@ export class TicTacToe {
 
 	checkWinner(){
 		let roundWon = false;
-	
+
 		for (let i = 0; i < this.winCondition.length; i++) {
 			const condition = this.winCondition[i];
 			const cellA = this.option[condition[0]];
 			const cellB = this.option[condition[1]];
 			const cellC = this.option[condition[2]];
-	
+
 			if (cellA == "" || cellB == "" || cellC == "" )
 				continue;
 			if (cellA == cellB && cellB == cellC)
@@ -60,7 +60,7 @@ export class TicTacToe {
 				break;
 			}
 		}
-	
+
 		if (roundWon) {
 			this.statusText.textContent = `${this.currentPlayer} wins!`;
 			this.running = false;
@@ -77,14 +77,14 @@ export class TicTacToe {
 		this.currentPlayer = "X";
 		this.option = ["", "", "", "", "", "", "", "", ""];
 		this.statusText.textContent = `${this.currentPlayer}'s turn`;
-	
+
 		this.cells.forEach(cell => cell.textContent = "")
 		this.running = true;
 	}
 
 	initGame(){
 		// this.cells.forEach(cell => cell.addEventListener("click", this.cellClicked));
-		this.cells.forEach(cell => 
+		this.cells.forEach(cell =>
 			cell.addEventListener("click", (event) => this.cellClicked(event))
 		);
 		this.restartButton.addEventListener('click', this.restartGame.bind(this));

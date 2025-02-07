@@ -163,10 +163,10 @@ function ballSoloWallCollision(){
 }
 
 function resetBallSolo() {
-    ballSolo.x = canvasSolo.width / 2;
-    ballSolo.y = canvasSolo.height / 2;
-    ballSolo.speed = Math.abs(ballSolo.speed) * (Math.random() > 0.5 ? 1 : -1); // Changer la direction aléatoirement
-    ballSolo.gravity = Math.abs(ballSolo.gravity) * (Math.random() > 0.5 ? 1 : -1);
+	ballSolo.x = canvasSolo.width / 2;
+	ballSolo.y = canvasSolo.height / 2;
+	ballSolo.speed = Math.abs(ballSolo.speed) * (Math.random() > 0.5 ? 1 : -1); // Changer la direction aléatoirement
+	ballSolo.gravity = Math.abs(ballSolo.gravity) * (Math.random() > 0.5 ? 1 : -1);
 }
 
 function drawElementsSolo(){
@@ -193,7 +193,7 @@ export function resetGameSolo()
 	ballSolo.height = 15;
 	ballSolo.speed = 8;
 	ballSolo.gravity = 3;
-	
+
 	controllerSolo = {
 		"o": {pressedSolo: false, func: movePaddleUpP2Solo},
 		"l": {pressedSolo: false, func: movePaddleDownP2Solo},

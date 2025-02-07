@@ -1,7 +1,7 @@
 #!/bin/bash
 cleanup() {
-    echo "Cleaning up..."
-    exit 0
+	echo "Cleaning up..."
+	exit 0
 }
 trap cleanup SIGINT SIGTERM
 

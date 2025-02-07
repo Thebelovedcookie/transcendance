@@ -29,46 +29,46 @@ export function ballStyle(context, element)
 	context.shadowBlur = 6;
 
 	context.beginPath();
-    context.arc(
-        element.x + element.width / 2, // Centre X
-        element.y + element.height / 2, // Centre Y
-        element.width / 1.50, // Rayon
-        0, // Début de l'angle
-        Math.PI * 2 // Fin de l'angle (cercle complet)
-    );
-    context.fill();
+	context.arc(
+		element.x + element.width / 2, // Centre X
+		element.y + element.height / 2, // Centre Y
+		element.width / 1.50, // Rayon
+		0, // Début de l'angle
+		Math.PI * 2 // Fin de l'angle (cercle complet)
+	);
+	context.fill();
 	// resetStyle(context);
 }
 
 export function drawDashedLine(context, canvas) {
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-    const radius = canvas.height / 2;  // Rayon du cercle
-    const dashLength = 15;  // Longueur des segments
-    const spaceLength = 10; // Longueur des espaces
+	const centerX = canvas.width / 2;
+	const centerY = canvas.height / 2;
+	const radius = canvas.height / 2;  // Rayon du cercle
+	const dashLength = 15;  // Longueur des segments
+	const spaceLength = 10; // Longueur des espaces
 
-    context.strokeStyle = "black";//'blue";  
-    context.lineWidth = 2;  
-    context.setLineDash([dashLength, spaceLength]); // Activer les pointillés
+	context.strokeStyle = "black";//'blue";
+	context.lineWidth = 2;
+	context.setLineDash([dashLength, spaceLength]); // Activer les pointillés
 
-    // Dessiner les 3 lignes à 120° d'écart
-    for (let i = 0; i < 3; i++) {
+	// Dessiner les 3 lignes à 120° d'écart
+	for (let i = 0; i < 3; i++) {
 		if (i == 1)
 			context.strokeStyle = "black";//"red";
 		if (i == 2)
 			context.strokeStyle = "black";//"green";
-        const angle = (i * 2 * Math.PI) / 3;  // 0°, 120°, 240°
-        const endX = centerX + Math.cos(angle) * radius;
-        const endY = centerY + Math.sin(angle) * radius;
+		const angle = (i * 2 * Math.PI) / 3;  // 0°, 120°, 240°
+		const endX = centerX + Math.cos(angle) * radius;
+		const endY = centerY + Math.sin(angle) * radius;
 
-        context.beginPath();
-        context.moveTo(centerX, centerY);
-        context.lineTo(endX, endY);
-        context.stroke();
-    }
+		context.beginPath();
+		context.moveTo(centerX, centerY);
+		context.lineTo(endX, endY);
+		context.stroke();
+	}
 
-    // Réinitialiser les pointillés pour éviter d'affecter d'autres dessins
-    context.setLineDash([]);
+	// Réinitialiser les pointillés pour éviter d'affecter d'autres dessins
+	context.setLineDash([]);
 }
 
 //----------------------------TEXTE--------------------------------//
@@ -130,17 +130,17 @@ export function displayPlayerName(context, canvas)
 	context.textAlign = "right";
 	context.textBaseline = "bottom";
 	context.fillStyle = "red";
-    context.fillText('P1: ← (left) → (right)', canvas.width - size, canvas.width - size);
+	context.fillText('P1: ← (left) → (right)', canvas.width - size, canvas.width - size);
 
 	context.textAlign = "left";
 	context.textBaseline = "bottom";
 	context.fillStyle = "blue";
-    context.fillText("P2: w (up) s (down)", size, canvas.width - size);
+	context.fillText("P2: w (up) s (down)", size, canvas.width - size);
 
-    context.textAlign = "right";
+	context.textAlign = "right";
 	context.textBaseline = "top";
 	context.fillStyle = "green";
-    context.fillText("P3: b (left) n (right)", canvas.width - size, size);
+	context.fillText("P3: b (left) n (right)", canvas.width - size, size);
 
 	resetStyle(context);
 }

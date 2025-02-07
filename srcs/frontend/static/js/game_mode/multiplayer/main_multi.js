@@ -44,25 +44,25 @@ class GameWebSocket {
 				e.preventDefault();
 			}
 		};
-	
+
 		this.keyUpHandler = (e) => {
 			if (this.keys.hasOwnProperty(e.key)) {
 				this.keys[e.key] = false;
 				e.preventDefault();
 			}
 		};
-	
+
 		window.addEventListener('keydown', this.keyDownHandler);
 		window.addEventListener('keyup', this.keyUpHandler);
 	}
 
 	updatePlayerPositions() {
 		const angleSpeed = 0.05;  // Vitesse de rotation en radians
-	
+
 		function clampAngle(value, min, max) {
 			return Math.max(min, Math.min(max, value));
 		}
-	
+
 		// Player 1 (Flèches)
 		if (this.keys.ArrowRight) {
 			this.gameState.player1.startAngle = clampAngle(
@@ -88,7 +88,7 @@ class GameWebSocket {
 				2 * Math.PI / 3
 			);
 		}
-	
+
 		// Player 2 (W et S)
 		if (this.keys.s) {
 			this.gameState.player2.startAngle = clampAngle(
@@ -114,7 +114,7 @@ class GameWebSocket {
 				4 * Math.PI / 3
 			);
 		}
-	
+
 		// Player 3 (B et N)
 		if (this.keys.b) {
 			this.gameState.player3.startAngle = clampAngle(
@@ -322,9 +322,9 @@ class GameWebSocket {
 		this.gameState.ball.x += this.gameState.ball.vx;
 		this.gameState.ball.y += this.gameState.ball.vy;
 	}
-	
+
 	bounceBall() {
-		
+
 		const angleBall = this.getAngleOfBall() + Math.PI;
 		const width = 2 * this.gameState.player1.width;
 
@@ -337,7 +337,7 @@ class GameWebSocket {
 		const distanceBall = this.getBallDistanceFromCenter();
 
 		if (distanceBall >= this.radius - width && distanceBall <= this.radius
-			&& (angleBall >= this.gameState.player1.startAngle - angleFudge && angleBall <= this.gameState.player1.endAngle + angleFudge) 
+			&& (angleBall >= this.gameState.player1.startAngle - angleFudge && angleBall <= this.gameState.player1.endAngle + angleFudge)
 				&& this.getBallNextDistanceFromCenter() >= distanceBall)
 		{
 			const paddleCenter = (this.gameState.player1.endAngle - this.gameState.player1.startAngle) / 2;
@@ -361,7 +361,7 @@ class GameWebSocket {
 			const bounceAngle = (relativeIntersectY * (Math.PI / 3));
 
 			const speed = (Math.sqrt(this.gameState.ball.vx * this.gameState.ball.vx + this.gameState.ball.vy * this.gameState.ball.vy));
-			
+
 			this.gameState.ball.vx = -speed * Math.cos(bounceAngle);
 			this.gameState.ball.vy = speed * Math.sin(bounceAngle);
 			this.lastTouch = "player2";
@@ -447,7 +447,7 @@ class GameWebSocket {
 	resetBall() {
 		this.gameState.ball.x = this.centerX;
 		this.gameState.ball.y = this.centerY;
-	
+
 		if (!this.gameState.ball.speed) this.gameState.ball.speed = 4;
 		if (!this.gameState.ball.gravity) this.gameState.ball.gravity = 2;
 
@@ -474,7 +474,7 @@ class GameWebSocket {
 		displayScoreOne(context, scoreOne, canvas);
 		displayScoreTwo(context, scoreTwo, canvas);
 		displayScoreThree(context, scoreThree, canvas);
-		
+
 		displayPlayerName(context, canvas);
 	}
 
