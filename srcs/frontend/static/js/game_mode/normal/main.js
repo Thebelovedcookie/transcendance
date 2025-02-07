@@ -44,14 +44,14 @@ class GameWebSocket {
 				e.preventDefault();
 			}
 		};
-	
+
 		this.keyUpHandler = (e) => {
 			if (this.keys.hasOwnProperty(e.key)) {
 				this.keys[e.key] = false;
 				e.preventDefault();
 			}
 		};
-	
+
 		window.addEventListener('keydown', this.keyDownHandler);
 		window.addEventListener('keyup', this.keyUpHandler);
 	}
@@ -75,7 +75,7 @@ class GameWebSocket {
 			this.gameState.player2.y += moveSpeed;
 		}
 	}
-	
+
 	connect() {
 		try {
 			const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -150,7 +150,7 @@ class GameWebSocket {
 				"typeOfMatch": this.typeOfMatch,
 			}
 		};
-	
+
 		if (this.isConnected && this.socket) {
 			this.socket.send(JSON.stringify(data));
 		} else {
@@ -261,7 +261,7 @@ class GameWebSocket {
 	ballWallCollision(){
 		if (this.gameState.ball.y + this.gameState.ball.gravity <= this.gameState.player2.y + this.gameState.player2.height
 			&& this.gameState.ball.x + this.gameState.ball.width + this.gameState.ball.speed >= this.gameState.player2.x
-			&& this.gameState.ball.y + this.gameState.ball.gravity > this.gameState.player2.y) 
+			&& this.gameState.ball.y + this.gameState.ball.gravity > this.gameState.player2.y)
 		{
 			const paddleCenter = this.gameState.player2.y + this.gameState.player2.height / 2;
 			const ballCenter = this.gameState.ball.y + this.gameState.ball.height / 2;

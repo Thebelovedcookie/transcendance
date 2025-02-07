@@ -9,6 +9,17 @@ from pong_history_app import views as pong_history_app
 from PIL import Image
 from django.core.files.storage import FileSystemStorage
 
+def require_login(view_func):
+	def wrapper(request, *args, **kwargs):
+		if not request.user.is_authenticated:
+			return JsonResponse({
+				'status': 'error',
+				'message': 'Authentication required',
+				'code': 'not_authenticated'
+			}, status=401)
+		return view_func(request, *args, **kwargs)
+	return wrapper
+
 def login_user(request):
 	data = json.load(request)
 	email = data.get('email')
@@ -100,7 +111,7 @@ def update_profile(request):
 			'message': str("failed update")
 		}, status=200)
 
-@login_required
+@require_login
 def get_profile(request):
 	user = request.user
 

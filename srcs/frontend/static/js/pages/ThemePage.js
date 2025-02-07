@@ -39,10 +39,10 @@ export class HomePage {
 				<style>
 					.carousel-control-prev-icon,
 					.carousel-control-next-icon {
-						background-color: transparent; 
-						background-image: none; 
-						border: solid gray; 
-						border-width: 0 4px 4px 0; 
+						background-color: transparent;
+						background-image: none;
+						border: solid gray;
+						border-width: 0 4px 4px 0;
 						display: inline-block;
 						padding: 10px;
 					}

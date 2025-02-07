@@ -36,7 +36,7 @@ class GameAISocket {
 		let predictionY = this.gameState.ball.y;
 		let predictionSpeedX = this.gameState.ball.speed;
 		let predictionSpeedY = this.gameState.ball.gravity;
-  
+
 		for (let i = 0; i < 60; i++) { // Simulate x step
 			predictionX += predictionSpeedX;
 			predictionY += predictionSpeedY;
@@ -49,10 +49,10 @@ class GameAISocket {
 				predictionSpeedY *= -1; // Inverser direction Y
 				predictionY = predictionY + this.gameState.ball.height > canvas.height ? canvas.height - this.gameState.ball.height : predictionY;
 			}
-			
+
 			this.directionY = (predictionY + this.gameState.ball.height / 2);
 		}
-		
+
 		this.positionP1 = this.gameState.player1.y;
 	}
 
@@ -83,7 +83,7 @@ class GameAISocket {
 			return;
 		//prend la decision d'envoyer la balle a l'oppose du joueur en face
 		if (this.positionP1 != 0 && this.keys.ArrowUp
-			&& this.positionP1 > this.directionY  
+			&& this.positionP1 > this.directionY
 				&& this.directionY > this.gameState.player2.y
 					&& this.directionY <= this.gameState.player2.y + 15)
 		{
@@ -106,7 +106,7 @@ class GameAISocket {
 		}
 		//prend la decision d'envoyer la balle a l'oppose du joueur en face
 		if (this.positionP1 != 0 && this.keys.ArrowDown
-			&& this.positionP1 < this.directionY 
+			&& this.positionP1 < this.directionY
 				&& this.directionY > this.gameState.player2.y
 					&& this.directionY + 15 <= this.gameState.player2.y)
 		{
@@ -136,14 +136,14 @@ class GameAISocket {
 				e.preventDefault();
 			}
 		};
-	
+
 		this.keyUpHandler = (e) => {
 			if (this.keys.hasOwnProperty(e.key)) {
 				this.keys[e.key] = false;
 				e.preventDefault();
 			}
 		};
-	
+
 		window.addEventListener('keydown', this.keyDownHandler);
 		window.addEventListener('keyup', this.keyUpHandler);
 	}
@@ -166,7 +166,7 @@ class GameAISocket {
 			this.gameState.player2.y += moveSpeed;
 		}
 	}
-	
+
 	connect() {
 		try {
 			const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -353,7 +353,7 @@ class GameAISocket {
 	ballWallCollision(){
 		if (this.gameState.ball.y + this.gameState.ball.gravity <= this.gameState.player2.y + this.gameState.player2.height
 			&& this.gameState.ball.x + this.gameState.ball.width + this.gameState.ball.speed >= this.gameState.player2.x
-			&& this.gameState.ball.y + this.gameState.ball.gravity > this.gameState.player2.y) 
+			&& this.gameState.ball.y + this.gameState.ball.gravity > this.gameState.player2.y)
 		{
 			const paddleCenter = this.gameState.player2.y + this.gameState.player2.height / 2;
 			const ballCenter = this.gameState.ball.y + this.gameState.ball.height / 2;
@@ -367,7 +367,7 @@ class GameAISocket {
 			this.gameState.ball.gravity = speed * Math.sin(bounceAngle);
 
 			this.gameState.ball.x = this.gameState.player2.x - this.gameState.ball.width;
-			
+
 		}
 		else if (this.gameState.ball.y + this.gameState.ball.gravity >= this.gameState.player1.y &&
 				this.gameState.ball.y + this.gameState.ball.gravity <= this.gameState.player1.y + this.gameState.player1.height &&

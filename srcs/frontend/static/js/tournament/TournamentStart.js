@@ -59,7 +59,7 @@ export class TournamentStart {
 				"players": this.playerName,
 			}
 		};
-	
+
 		if (this.isConnected && this.socket) {
 			this.socket.send(JSON.stringify(data));
 		} else {
@@ -90,7 +90,7 @@ export class TournamentStart {
 			playerOne: data.player1,
 			playerTwo: data.player2,
 		}
-		
+
 		const game = new NextGamePage("base", "tournament", this.socket, this.infoMatch);
 		game.handle();
 	}
