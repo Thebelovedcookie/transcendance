@@ -1,7 +1,7 @@
 //----------------------------COLOR/STYLE--------------------------------//
 
 //raquette playerOne
-export function firstPaddle(context, element)
+export function multiPaddle(context, element)
 {
 	context.strokeStyle = element.color;
 	context.lineWidth = element.width; // Largeur de la raquette
@@ -47,16 +47,16 @@ export function drawDashedLine(context, canvas) {
     const dashLength = 15;  // Longueur des segments
     const spaceLength = 10; // Longueur des espaces
 
-    context.strokeStyle = "blue";  
+    context.strokeStyle = "black";//'blue";  
     context.lineWidth = 2;  
     context.setLineDash([dashLength, spaceLength]); // Activer les pointillés
 
     // Dessiner les 3 lignes à 120° d'écart
     for (let i = 0; i < 3; i++) {
 		if (i == 1)
-			context.strokeStyle = "red";
+			context.strokeStyle = "black";//"red";
 		if (i == 2)
-			context.strokeStyle = "green";
+			context.strokeStyle = "black";//"green";
         const angle = (i * 2 * Math.PI) / 3;  // 0°, 120°, 240°
         const endX = centerX + Math.cos(angle) * radius;
         const endY = centerY + Math.sin(angle) * radius;
@@ -66,7 +66,6 @@ export function drawDashedLine(context, canvas) {
         context.lineTo(endX, endY);
         context.stroke();
     }
-	
 
     // Réinitialiser les pointillés pour éviter d'affecter d'autres dessins
     context.setLineDash([]);
@@ -76,61 +75,72 @@ export function drawDashedLine(context, canvas) {
 
 //PlayerOne score Text
 export function displayScoreOne(context, scoreOne, canvas) {
-	context.font = "90px 'Press Start 2P'";
-	context.fillStyle = "black";
+	const size = Math.round(canvas.width / 15);
+	context.font = size + "px 'Press Start 2P'";
+	context.fillStyle = "red";
 	context.textAlign = "right"
 	context.textBaseline = "bottom";
 	context.shadowColor = "rgba(0, 0, 0, 0.7)";
 	context.shadowOffsetX = 1;
 	context.shadowOffsetY = 0;
 	context.shadowBlur = 3;
-	context.fillText(scoreOne, (canvas.width / 2) + (canvas.width / 4), canvas.height - 20);
+	context.fillText(scoreOne, (canvas.width * 0.95), canvas.height - size);
 	resetStyle(context);
 }
 
 //PlayerTwo score Text
 export function displayScoreTwo(context, scoreTwo, canvas){
-	context.font = "90px 'Press Start 2P'";
-	context.fillStyle = "black";
+	const size = Math.round(canvas.width / 15);
+	context.font = size + "px 'Press Start 2P'";
+	context.fillStyle = "blue";
 	context.textBaseline = "bottom";
 	context.textAlign = "left"
 	context.shadowColor = "rgba(0, 0, 0, 0.7";
 	context.shadowOffsetX = -1;
 	context.shadowOffsetY = 0;
 	context.shadowBlur = 3;
-	context.fillText(scoreTwo, (canvas.width / 2) - (canvas.width / 4) , canvas.height - 20);
+	context.fillText(scoreTwo, (canvas.width * 0.05) , canvas.height - size);
 	resetStyle(context);
 }
 
-//PlayerTwo score Text
+//PlayerThree score Text
 export function displayScoreThree(context, scoreThree, canvas){
-	context.font = "90px 'Press Start 2P'";
-	context.fillStyle = "black";
+	const size = Math.round(canvas.width / 15);
+	context.font = size + "px 'Press Start 2P'";
+	context.fillStyle = "green";
 	context.textBaseline = "top";
+	context.textAlign = "right"
 	context.shadowColor = "rgba(0, 0, 0, 0.7";
 	context.shadowOffsetX = -1;
 	context.shadowOffsetY = 0;
 	context.shadowBlur = 3;
-	context.fillText(scoreThree, (canvas.width / 2) + (canvas.width / 4) , 30);
+	context.fillText(scoreThree, (canvas.width * 0.95) , size);
 	resetStyle(context);
 }
 
-
-export function displayPlayerName(context, canvas, infoMatch)
+export function displayPlayerName(context, canvas)
 {
-	context.font = "30px 'Press Start 2P'";
-	context.fillStyle = "black";
-	context.textBaseline = "top";
+	const size = Math.round(canvas.width / 40);
+	context.font = size + "px 'Press Start 2P'";
 	context.shadowColor = "rgba(0, 0, 0, 0.7)";
 	context.shadowOffsetX = -1;
 	context.shadowOffsetY = 0;
 	context.shadowBlur = 3;
 
-    context.textAlign = "left";
-    context.fillText(infoMatch.playerOne, 30, 30);
+	context.textAlign = "right";
+	context.textBaseline = "bottom";
+	context.fillStyle = "red";
+    context.fillText('P1: ← (left) → (right)', canvas.width - size, canvas.width - size);
+
+	context.textAlign = "left";
+	context.textBaseline = "bottom";
+	context.fillStyle = "blue";
+    context.fillText("P2: w (up) s (down)", size, canvas.width - size);
 
     context.textAlign = "right";
-    context.fillText(infoMatch.playerTwo, canvas.width - 30, 30);
+	context.textBaseline = "top";
+	context.fillStyle = "green";
+    context.fillText("P3: b (left) n (right)", canvas.width - size, size);
 
 	resetStyle(context);
 }

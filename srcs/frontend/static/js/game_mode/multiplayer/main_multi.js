@@ -1,5 +1,5 @@
 import { EndNormalGamePage } from '../../pages/EndNormalGamePage.js';
-import { firstPaddle, ballStyle, drawDashedLine, displayScoreOne, displayScoreTwo, displayScoreThree, drawWalls } from './style_multi.js';
+import { multiPaddle, ballStyle, drawDashedLine, displayScoreOne, displayScoreTwo, displayScoreThree, displayPlayerName, drawWalls } from './style_multi.js';
 let canvas = null;
 let context = null;
 let theme = "base";
@@ -9,7 +9,7 @@ class GameWebSocket {
 		canvas = document.getElementById("pongGame");
 		context = canvas.getContext("2d");
 		canvas.height = window.innerHeight * 0.8;
-		canvas.width = canvas.height * (16/9);
+		canvas.width = canvas.height;
 		context.clearRect(0, 0, canvas.width, canvas.height);
 
 		//arena
@@ -28,8 +28,8 @@ class GameWebSocket {
 			s: false,
 			b: false,
 			n: false,
-			ArrowUp: false,
-			ArrowDown: false
+			ArrowRight: false,
+			ArrowLeft: false
 		};
 		this.setupKeyboardControls();
 		this.connect();
@@ -63,8 +63,8 @@ class GameWebSocket {
 			return Math.max(min, Math.min(max, value));
 		}
 	
-		// Player 1 (W et S)
-		if (this.keys.ArrowUp) {
+		// Player 1 (Flèches)
+		if (this.keys.ArrowRight) {
 			this.gameState.player1.startAngle = clampAngle(
 				this.gameState.player1.startAngle - angleSpeed,
 				0,
@@ -76,7 +76,7 @@ class GameWebSocket {
 				2 * Math.PI / 3
 			);
 		}
-		if (this.keys.ArrowDown) {
+		if (this.keys.ArrowLeft) {
 			this.gameState.player1.startAngle = clampAngle(
 				this.gameState.player1.startAngle + angleSpeed,
 				0,
@@ -89,7 +89,7 @@ class GameWebSocket {
 			);
 		}
 	
-		// Player 2 (Flèches)
+		// Player 2 (W et S)
 		if (this.keys.s) {
 			this.gameState.player2.startAngle = clampAngle(
 				this.gameState.player2.startAngle - angleSpeed,
@@ -326,10 +326,18 @@ class GameWebSocket {
 	bounceBall() {
 		
 		const angleBall = this.getAngleOfBall() + Math.PI;
+		const width = 2 * this.gameState.player1.width;
+
+		const fudge = 2. * this.gameState.ball.width * ((1 +  Math.cos(2 * angleBall - Math.PI  / 2) / 2))
+		console.log(fudge);
+		const angleFudge = Math.PI* 0.01;
+		if (this.gameState.ball.y < this.gameState.width  / 2)
+			width = width * fudge;
+
 		const distanceBall = this.getBallDistanceFromCenter();
 
-		if (distanceBall >= this.gameState.player1.radius - 25 && distanceBall <= this.gameState.player1.radius - 10
-			&& (angleBall >= this.gameState.player1.startAngle && angleBall <= this.gameState.player1.endAngle) 
+		if (distanceBall >= this.radius - width && distanceBall <= this.radius
+			&& (angleBall >= this.gameState.player1.startAngle - angleFudge && angleBall <= this.gameState.player1.endAngle + angleFudge) 
 				&& this.getBallNextDistanceFromCenter() >= distanceBall)
 		{
 			const paddleCenter = (this.gameState.player1.endAngle - this.gameState.player1.startAngle) / 2;
@@ -342,8 +350,8 @@ class GameWebSocket {
 			this.gameState.ball.vy = speed * Math.sin(bounceAngle);
 			this.lastTouch = "player1";
 		}
-		else if ((distanceBall >= this.gameState.player2.radius - 15 && distanceBall <= this.gameState.player2.radius
-			&& angleBall >= this.gameState.player2.startAngle && angleBall <= this.gameState.player2.endAngle)
+		else if ((distanceBall >= this.radius - width && distanceBall <= this.radius
+			&& angleBall >= this.gameState.player2.startAngle - angleFudge && angleBall <= this.gameState.player2.endAngle + angleFudge)
 			&& this.getBallNextDistanceFromCenter() >= distanceBall)
 		{
 			const paddleCenter = (this.gameState.player2.endAngle - this.gameState.player2.startAngle) / 2;
@@ -358,8 +366,8 @@ class GameWebSocket {
 			this.gameState.ball.vy = speed * Math.sin(bounceAngle);
 			this.lastTouch = "player2";
 		}
-		else if ((distanceBall >= this.gameState.player3.radius - 25 && distanceBall <= this.gameState.player3.radius - 10
-			&& angleBall >= this.gameState.player3.startAngle && angleBall <= this.gameState.player3.endAngle)
+		else if ((distanceBall >= this.radius - width && distanceBall <= this.radius
+			&& angleBall >= this.gameState.player3.startAngle - angleFudge && angleBall <= this.gameState.player3.endAngle + angleFudge)
 			&& this.getBallNextDistanceFromCenter() >= distanceBall)
 		{
 			const paddleCenter = (this.gameState.player3.endAngle - this.gameState.player3.startAngle) / 2;
@@ -372,7 +380,7 @@ class GameWebSocket {
 			this.gameState.ball.vy = speed * Math.sin(bounceAngle);
 			this.lastTouch = "player3";
 		}
-		else if (distanceBall >= this.radius)
+		else if (distanceBall >= this.radius * 1.4)
 		{
 			this.manageScore();
 		}
@@ -386,12 +394,23 @@ class GameWebSocket {
 
 		if (this.lastTouch == "player1" && angleBall > this.gameState.player1.endZone)
 			this.gameState.scores.playerOne++;
+		else if ((this.lastTouch == "player1" || this.lastTouch == 'none')&& angleBall < this.gameState.player1.endZone) {
+			this.gameState.scores.playerTwo++;
+			this.gameState.scores.playerThree++;
+		}
 		else if (this.lastTouch == "player2" && (angleBall < this.gameState.player2.startZone || angleBall > this.gameState.player2.endZone))
 			this.gameState.scores.playerTwo++;
+		else if ((this.lastTouch == "player2" || this.lastTouch == 'none') && (angleBall > this.gameState.player2.startZone || angleBall < this.gameState.player2.endZone)) {
+			this.gameState.scores.playerOne++;
+			this.gameState.scores.playerThree++;
+		}
 		else if (this.lastTouch == "player3" && angleBall < this.gameState.player3.startZone)
 			this.gameState.scores.playerThree++;
-		else
-			console.log("no one touch the ball");
+		else if ((this.lastTouch == "player3" || this.lastTouch == 'none') && angleBall > this.gameState.player3.startZone) {
+			this.gameState.scores.playerOne++;
+			this.gameState.scores.playerTwo++;
+		}
+		//this.checkScore();
 		this.resetBall();
 	}
 
@@ -407,19 +426,19 @@ class GameWebSocket {
 			if (this.gameState.scores.playerOne == 10)
 			{
 				stopGame();
-				const end = new EndNormalGamePage("PlayerOne");
+				const end = new EndNormalGamePage("PlayerOne", "PlayerTwo and PlayerThree");
 				end.handle();
 			}
 			else if (this.gameState.scores.playerTwo == 10)
 			{
 				stopGame();
-				const end = new EndNormalGamePage("PlayerTwo");
+				const end = new EndNormalGamePage("PlayerTwo", "PlayerOne and PlayerThree");
 				end.handle();
 			}
 			else
 			{
 				stopGame();
-				const end = new EndNormalGamePage("PlayerThree");
+				const end = new EndNormalGamePage("PlayerThree", "PlayerOne and PlayerTwo");
 				end.handle();
 			}
 		}
@@ -429,22 +448,24 @@ class GameWebSocket {
 		this.gameState.ball.x = this.centerX;
 		this.gameState.ball.y = this.centerY;
 	
-		if (!this.gameState.ball.speed) this.gameState.ball.speed = 5;
+		if (!this.gameState.ball.speed) this.gameState.ball.speed = 4;
 		if (!this.gameState.ball.gravity) this.gameState.ball.gravity = 2;
-	
-		this.gameState.ball.vx = Math.abs(this.gameState.ball.speed) * (Math.random() > 0.5 ? 1 : -1);
-		this.gameState.ball.vy = Math.abs(this.gameState.ball.gravity) * (Math.random() > 0.5 ? 1 : -1);
-		this.lastTouch = "none";
+
+		const angle = Math.random() * 2 * Math.PI
+
+		// no longer using gravity
+		this.gameState.ball.vx = this.gameState.ball.speed * Math.cos(angle);
+		this.gameState.ball.vy = this.gameState.ball.speed * Math.sin(angle);
 	}
 
 	drawGame() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
-		firstPaddle(context, this.gameState.player1);
-		firstPaddle(context, this.gameState.player2);
-		firstPaddle(context, this.gameState.player3);
-		ballStyle(context, this.gameState.ball);
 		drawDashedLine(context, canvas);
 		drawWalls(context, canvas)
+		multiPaddle(context, this.gameState.player1);
+		multiPaddle(context, this.gameState.player2);
+		multiPaddle(context, this.gameState.player3);
+		ballStyle(context, this.gameState.ball);
 
 		const scoreOne = this.gameState.scores.playerOne ?? 0;
 		const scoreTwo = this.gameState.scores.playerTwo ?? 0;
@@ -453,6 +474,8 @@ class GameWebSocket {
 		displayScoreOne(context, scoreOne, canvas);
 		displayScoreTwo(context, scoreTwo, canvas);
 		displayScoreThree(context, scoreThree, canvas);
+		
+		displayPlayerName(context, canvas);
 	}
 
 	cleanup() {

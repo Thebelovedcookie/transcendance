@@ -36,20 +36,24 @@ RUN cd /project && python3.11 manage.py startapp backend_app \
      && python3.11 manage.py startapp backend_tour_app \
      && python3.11 manage.py startapp usrman_app
 
+
+EXPOSE 8000
+
+RUN apt update && apt install -y postgresql-client
+RUN pip install psycopg[binary] channels[daphne] django-cors-headers Pillow
+
+
 #config des urls
 COPY ./backendApp /project/backend_app/
 COPY ./pongHistoryApp /project/pong_history_app/
-COPY ./usrmanApp /project/usrman_app/
 COPY ./backendProject /project/backend_project/
 COPY ./backendGameConsApp /project/backend_gamecons_app/
 COPY ./backendTourApp /project/backend_tour_app/
-
 COPY /tools/setups_backend.sh /setups_backend.sh
+COPY ./usrmanApp /project/usrman_app/
+
 RUN chmod +x /setups_backend.sh
 
-EXPOSE 8000
-RUN apt update && apt install -y postgresql-client
-RUN pip install psycopg[binary] channels[daphne] django-cors-headers Pillow
 
 WORKDIR /project
 
