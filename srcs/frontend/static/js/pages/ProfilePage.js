@@ -57,6 +57,7 @@ export class ProfilePage {
             const data = await response.json();
             if (data.status === 'success') {
                 this.userData = data.data;
+				console.log(this.userData);
             }
         } catch (error) {
             console.error('Failed to load user data:', error);
@@ -97,11 +98,11 @@ export class ProfilePage {
                     <div class="profile-stats">
                         <div class="stat-card">
                             <h3>Total Games</h3>
-                            <p>${this.userData.match_history.total_games}</p>
+                            <p>${this.userData.total_games}</p>
                         </div>
                         <div class="stat-card">
                             <h3>Win Rate</h3>
-                            <p>${this.userData.match_history.win_rate}%</p>
+                            <p>${win_percent}%</p>
                         </div>
                     </div>
                 </div>
@@ -144,22 +145,21 @@ export class ProfilePage {
     }
 
     renderMatchHistory() {
-		if (this.userData.match_history.matches && this.userData.match_history.matches.length === 0) {
+		if (this.userData.match_history && this.userData.match_history.length === 0) {
 			return '<p>No match history found</p>';
 		}
-		console.log(this.userData.match_history);
-        // return this.userData.match_history.matches.map(match => `
-        //     <div class="match-card ${match.result.toLowerCase()}">
-        //         <div class="match-info">
-        //             <span class="match-opponent">${match.opponent}</span>
-        //             <span class="match-score">${match.user_score} - ${match.opponent_score}</span>
-        //         </div>
-        //         <div class="match-details">
-        //             <span class="match-result">${match.result}</span>
-        //             <span class="match-date">${match.played_at}</span>
-        //         </div>
-        //     </div>
-        // `).join('');
+        return this.userData.match_history.map(match => `
+            <div class="match-card ${match.result.toLowerCase()}">
+                <div class="match-info">
+                    <span class="match-opponent">${match.opponent.username}</span>
+                    <span class="match-score">${match.user_score} - ${match.opponent_score}</span>
+                </div>
+                <div class="match-details">
+                    <span class="match-result">${match.result}</span>
+                    <span class="match-date">${match.played_at.split('T')[0]}</span>
+                </div>
+            </div>
+        `).join('');
     }
 
     renderFriendsList() {

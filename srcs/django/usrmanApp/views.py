@@ -4,7 +4,6 @@ from . models import CustomUser
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 import json
-import datetime
 from pong_history_app import views as pong_history_app
 # experiemnting from here
 from PIL import Image
@@ -106,18 +105,15 @@ def get_profile(request):
 	user = request.user
 
 	match_response = pong_history_app.get_user_matches(request)
-	match_data = {}
-	if match_response.status_code == 200:
-		match_data = match_response.json()['data']
+	match_data = json.loads(match_response.content)['data']
 
-	# Convert ManyToMany field to list of usernames or IDs
 	friends_data = [
 		{
 			'id': friend.id,
 			'username': friend.username,
 			'profile_image': friend.profile_image.url if friend.profile_image else None,
 			'is_online': "true",
-			'lastSeen': "Now"
+			'lastSeen': "Now",
 		}
 		for friend in user.friends.all()
 	]
@@ -128,7 +124,7 @@ def get_profile(request):
 			'username': user.username,
 			'email': user.email,
 			'join_date': user.date_joined,
-			'totalGames': user.totalGames,
+			'total_games': user.totalGames,
 			'wins': user.wins,
 			'losses': user.losses,
 			'image_path': user.profile_image.url if user.profile_image else None,

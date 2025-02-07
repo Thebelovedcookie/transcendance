@@ -23,18 +23,9 @@ def get_user_matches(request):
 			for match in match_history
 		]
 
-		match_stats = {
-			'total_games': PongMatchHistory.objects.filter(user=user).count(),
-			'wins': PongMatchHistory.objects.filter(
-				user=user,
-				user_score__gt=models.F('opponent_score')
-			).count(),
-			'matches': matches_data
-		}
-
 		return JsonResponse({
 			'status': 'success',
-			'data': match_stats
+			'data': matches_data
 		})
 
 	except Exception as e:
