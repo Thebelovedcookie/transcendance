@@ -64,6 +64,17 @@
 			"opponent_score": 12,
 			"played_at": "2024-01-01 12:00:00"
 		}
+	},
+	{
+		"model": "pong_history_app.pongmatchhistory",
+		"pk": 7,
+		"fields": {
+			"user": 1,
+			"opponent": 2,
+			"user_score": 0,
+			"opponent_score": 10,
+			"played_at": "2024-01-01 12:00:00"
+		}
 	}
 ]
 

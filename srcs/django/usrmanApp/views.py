@@ -124,12 +124,12 @@ def get_profile(request):
 			'username': user.username,
 			'email': user.email,
 			'join_date': user.date_joined,
-			'total_games': user.totalGames,
-			'wins': user.wins,
-			'losses': user.losses,
+			'total_games': match_data['total_games'],
+			'wins': match_data['wins'],
+			'losses': match_data['losses'],
 			'image_path': user.profile_image.url if user.profile_image else None,
 			'friends': friends_data,
-			'match_history': match_data
+			'match_history': match_data['matches']
 		}
 	})
 

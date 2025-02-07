@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from .models import PongMatchHistory
+from django.db import models
 
 def get_user_matches(request):
 	try:
@@ -23,9 +24,18 @@ def get_user_matches(request):
 			for match in match_history
 		]
 
+		total_games = PongMatchHistory.objects.filter(user=user).count()
+		wins = PongMatchHistory.objects.filter(user=user, user_score__gt=models.F('opponent_score')).count()
+		losses = PongMatchHistory.objects.filter(user=user, user_score__lt=models.F('opponent_score')).count()
+
 		return JsonResponse({
 			'status': 'success',
-			'data': matches_data
+			'data': {
+				'matches': matches_data,
+				'total_games': total_games,
+				'wins': wins,
+				'losses': losses
+			}
 		})
 
 	except Exception as e:
