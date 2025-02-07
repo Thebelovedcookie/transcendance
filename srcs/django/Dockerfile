@@ -34,7 +34,8 @@ RUN django-admin startproject backend_project project
 RUN cd /project && python3.11 manage.py startapp backend_app \
      && python3.11 manage.py startapp backend_gamecons_app \
      && python3.11 manage.py startapp backend_tour_app \
-     && python3.11 manage.py startapp usrman_app
+     && python3.11 manage.py startapp usrman_app \
+     && python3.11 manage.py startapp pong_history_app
 
 
 EXPOSE 8000
