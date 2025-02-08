@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'backend_app',
+	'remotePlayer_app',
     'channels',
     'corsheaders',
     'usrman_app',

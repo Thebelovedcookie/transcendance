@@ -63,6 +63,9 @@ clean: destroy
 	@sudo rm -rf /home/user/ecole_42/transcendence/data/django_volume
 	@sudo rm -rf /home/user/ecole_42/transcendence/data/frontend_volume
 
+specialClean:
+	docker system prune
+
 help:
 	@echo    "build  : Services are built once and then tagged, by default as project-service."
 	@echo    "up     : Builds, (re)creates, starts, and attaches to containers for a service."

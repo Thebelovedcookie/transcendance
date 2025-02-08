@@ -31,11 +31,12 @@ RUN mkdir project
 
 RUN django-admin startproject backend_project project
 
-RUN cd /project && python3.11 manage.py startapp backend_app && python3.11 manage.py startapp usrman_app
+RUN cd /project && python3.11 manage.py startapp backend_app && python3.11 manage.py startapp usrman_app && python3.11 manage.py startapp remotePlayer_app
 
 #config des urls
 COPY ./backendApp/* /project/backend_app/
 COPY ./usrmanApp/* /project/usrman_app/
+COPY ./remotePlayerapp/* /project/remotePlayer_app/
 COPY ./backendProject/* /project/backend_project/
 
 COPY /tools/setups_backend.sh /setups_backend.sh

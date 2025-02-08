@@ -57,14 +57,20 @@ export class PongMenuPage {
                 </div>
 
                 <div class="game-modes">
-                    <div class="mode-card" data-path="/pong/normal">
+                    <div class="mode-card" data-path="/pong/remote">
                         <div class="mode-icon">🏓</div>
                         <h3>Normal Mode</h3>
                         <p>Classic 2-player battle</p>
                         <div class="mode-hover">PLAY</div>
                     </div>
-                    <div class="mode-card" data-path="/pong/multi">
+                    <div class="mode-card" data-path="/pong/normal">
                         <div class="mode-icon">🏓🏓</div>
+                        <h3>Normal Mode</h3>
+                        <p>Classic 2-player battle(same keyboard)</p>
+                        <div class="mode-hover">PLAY</div>
+                    </div>
+                    <div class="mode-card" data-path="/pong/multi">
+                        <div class="mode-icon">🏓🏓🏓</div>
                         <h3>Multi Mode</h3>
                         <p>Play against your friends</p>
                         <div class="mode-hover">PLAY</div>
