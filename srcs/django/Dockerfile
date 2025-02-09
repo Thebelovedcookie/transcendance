@@ -26,22 +26,36 @@ RUN cd Python-3.11.1 && ./configure --enable-optimizations && make -j 2 && make 
 RUN wget https://bootstrap.pypa.io/get-pip.py && python3.11 get-pip.py
 
 RUN pip3.11 install django && pip install python-decouple
-
+RUN apt-get update && apt-get install -y gettext
 RUN mkdir project
-
+RUN mkdir -p /project/django/locale
 RUN django-admin startproject backend_project project
 
 RUN cd /project && python3.11 manage.py startapp backend_app \
 	 && python3.11 manage.py startapp backend_gamecons_app \
 	 && python3.11 manage.py startapp backend_tour_app \
 	 && python3.11 manage.py startapp usrman_app \
-	 && python3.11 manage.py startapp pong_history_app
+	 && python3.11 manage.py startapp pong_history_app \
+	 && python3.11 manage.py makemessages -l fr
+
 
 
 EXPOSE 8000
 
 RUN apt update && apt install -y postgresql-client
 RUN pip install psycopg[binary] channels[daphne] django-cors-headers Pillow
+
+# fichiers de traduction des langues 
+
+
+
+RUN for lang in fr ; do \
+    django-admin makemessages -l $lang --verbosity 2 --keep-pot \
+    --settings=backend_project.settings -d django --extension=html,py \
+    --ignore=venv --no-location --no-wrap --locale=$lang; \
+done
+
+RUN django-admin compilemessages -i venv --settings=backend_project.settings
 
 
 #config des urls
@@ -56,6 +70,6 @@ COPY ./usrmanApp /project/usrman_app/
 RUN chmod +x /setups_backend.sh
 
 
-WORKDIR /project
+
 
 ENTRYPOINT [ "/setups_backend.sh" ]

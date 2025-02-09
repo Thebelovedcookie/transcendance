@@ -8,14 +8,15 @@ from pong_history_app import views as pong_history_app
 # experiemnting from here
 from PIL import Image
 from django.core.files.storage import FileSystemStorage
+from django.utils.translation import gettext as _
 
 def require_login(view_func):
 	def wrapper(request, *args, **kwargs):
 		if not request.user.is_authenticated:
 			return JsonResponse({
-				'status': 'error',
-				'message': 'Authentication required',
-				'code': 'not_authenticated'
+				'status': _('error'),
+				'message': _('Authentication required'),
+				'code': _('not_authenticated')
 			}, status=401)
 		return view_func(request, *args, **kwargs)
 	return wrapper
