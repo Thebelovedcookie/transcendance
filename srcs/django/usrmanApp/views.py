@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 import json
 from pong_history_app import views as pong_history_app
+from online_status_app.models import OnlineStatus
 # experiemnting from here
 from PIL import Image
 from django.core.files.storage import FileSystemStorage
@@ -123,8 +124,8 @@ def get_profile(request):
 			'id': friend.id,
 			'username': friend.username,
 			'profile_image': friend.profile_image.url if friend.profile_image else None,
-			'is_online': "true",
-			'lastSeen': "Now",
+			'is_online': OnlineStatus.objects.get(user_id=friend.id).is_online if OnlineStatus.objects.filter(user_id=friend.id).exists() else False,
+			'lastSeen': friend.last_login,
 		}
 		for friend in user.friends.all()
 	]

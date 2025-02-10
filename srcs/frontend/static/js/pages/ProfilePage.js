@@ -336,6 +336,7 @@ export class ProfilePage {
 					console.log(response);
 					console.log('message');
 					console.log(result.message);
+					await this.loadUserData();
 					this.render();
 					modal.classList.add('fade-out');
 					setTimeout(() => modal.remove(), 300);

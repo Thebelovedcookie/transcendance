@@ -26,11 +26,43 @@ class Router {
 		this.header = new Header();
 		this.routes = new Map();
 		this.container = document.getElementById('dynamicPage');
+		this.onlineSocket = null;
 
+		this.initializeOnlineStatus();
 		this.initializeCsrfToken();
 		this.initializeRoutes();
 		this.setupEventListeners();
 		this.handleLocation();
+	}
+
+	async initializeOnlineStatus() {
+		try {
+			const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+			const host = window.location.host;
+			const wsUrl = `${protocol}//${host}/ws/user_status/`;
+
+			console.log("Attempting to connect:", wsUrl);
+			this.onlineSocket = new WebSocket(wsUrl);
+
+			this.onlineSocket.onopen = () => {
+				console.log("WebSocket connection established");
+			};
+
+			this.onlineSocket.onmessage = (event) => {
+				console.log('Online status message received:', event.data);
+			};
+
+			this.onlineSocket.onerror = (error) => {
+				console.error("WebSocket error:", error);
+			};
+
+			this.onlineSocket.onclose = (event) => {
+				console.log("WebSocket connection closed:", event);
+			};
+
+		} catch (error) {
+			console.error("WebSocket connection error:", error);
+		}
 	}
 
 	async initializeCsrfToken() {
