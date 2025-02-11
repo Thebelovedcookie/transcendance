@@ -12,7 +12,7 @@ export class ProfilePage {
 			totalGames: 150,
 			wins: 89,
 			losses: 61,
-			online: true
+			is_online: true
 		};
 		this.matchHistory = [
 			{ opponent: "User456", result: "Win", date: "2024-03-20", score: "11-5" },
@@ -90,7 +90,7 @@ export class ProfilePage {
 					<div class="profile-info">
 						<div class="profile-avatar-container">
 							<img src="${this.userData.image_path || this.default_path}" alt="Profile" class="profile-avatar">
-							<span class="online-status ${this.userData.online ? 'online' : ''}"></span>
+							<span class="online-status ${this.userData.is_online ? 'online' : ''}"></span>
 						</div>
 						<div class="profile-details">
 							<h1>${this.userData.username}</h1>
