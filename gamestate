@@ -28,3 +28,7 @@ scores: {scoreMax: 10}
 type: "game.starting"
 [[Prototype]]: Object
 type: "game_state"
+
+
+django      | 2025-02-08 13:17:07,764 INFO     {'player_id': '20dbf4e6-c45b-49eb-8fef-eeafcf9739af', 'client': ['172.18.0.4', 33296]}
+django      | 2025-02-08 13:17:48,814 INFO     {'player_id': '3e3b550b-b7cc-418a-92a2-55493cdc0f99', 'client': ['172.18.0.4', 33390]}

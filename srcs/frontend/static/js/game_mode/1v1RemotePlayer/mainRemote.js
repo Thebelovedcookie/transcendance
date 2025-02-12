@@ -1,4 +1,6 @@
-import { EndNormalGamePage } from '../../pages/EndNormalGamePage.js';
+import { WinnerRemoteGamePage } from '../../pages/WinnerRemoteGamePage.js';
+import { LoserRemoteGamePage } from '../../pages/LoserRemoteGamePage.js';
+import { ForfaitRemoteGamePage } from '../../pages/ForfaitRemoteGamePage.js';
 import { firstPaddle, secondPaddle, ballStyle, drawDashedLine, displayScoreOne, displayScoreTwo, drawWalls} from './style.js';
 let canvas = null;
 let context = null;
@@ -49,12 +51,10 @@ class RemoteGameWebSocket {
 
 	updatePlayerPositions() {
 		if (this.keys[this.ctrlUp] && this.gameState.me.y > 0) {
-			// this.gameState.me.y -= moveSpeed;
 			this.sendMove("up");
 		}
 		if (this.keys[this.ctrlDown] && this.gameState.me.y < canvas.height - this.gameState.me.height) {
 			this.sendMove("down");
-			// this.gameState.me.y += moveSpeed;
 		}
 	}
 	
@@ -101,11 +101,8 @@ class RemoteGameWebSocket {
 		if (this.gameLoopInterval) return;
 
 		this.gameLoopInterval = setInterval(() => {
-			// Update player positions based on key states
 			this.updatePlayerPositions();
 
-			// Draw every frame (60 FPS)
-			// this.ballBounce();
 			this.drawGame();
 
 			this.frameCount++;
@@ -164,6 +161,7 @@ class RemoteGameWebSocket {
 	}
 
 	handleMessage(data) {
+		console.log(data.type);
 		switch (data.type) {
 			case "playerId":
 				this.playerId = data.playerId;
@@ -171,13 +169,15 @@ class RemoteGameWebSocket {
 			case "game.init":
 				this.isItForMe(data);
 				break;
-			// case "game.starting":
-			// 	this.getInPosition(data);
-			// 	this.startGameLoop();
-			// 	break;
 			case "game_state":
 				this.updateGame(data);
 				this.startGameLoop();
+				break;
+			case "game_result":
+				this.getResult(data);
+				break;
+			case "forfait":
+				this.winByForfait(data);
 				break;
 			case "error":
 				console.log(data);
@@ -188,7 +188,34 @@ class RemoteGameWebSocket {
 		}
 	}
 
+	getResult(data) {
+		if (data.message.matchId != this.matchId)
+			return;
+		if (data.message.winner.id == this.playerId)
+		{
+			const victory = new WinnerRemoteGamePage();
+			victory.handle();
+			this.stopGameLoop();
+		}
+		else if (data.message.loser.id == this. playerId)
+		{
+			const defeat = new LoserRemoteGamePage();
+			defeat.handle();
+			this.stopGameLoop();
+		}
+	}
+
+	winByForfait(data) {
+		if (data.message.matchId != this.matchId)
+			return ;
+		const end = new ForfaitRemoteGamePage();
+		end.handle();
+		this.stopGameLoop();
+	}
+
 	updateGame(data) {
+		if (data.message.matchId != this.matchId)
+			return;
 		this.gameState = {
 			me: {
 				x: data.message.playerOne.x,

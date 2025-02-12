@@ -28,6 +28,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         await self.accept()
         obj = {
             'player_id': self.player_id,
+            'client': self.scope["client"]
         }
         self.infoPlayer['players'].append(obj)
         await self.channel_layer.group_add(self.game_group_name, self.channel_name)
@@ -46,11 +47,44 @@ class PongConsumer(AsyncWebsocketConsumer):
                 })
             )
             
-
     async def disconnect(self, close_code):
-        async_to_sync(self.channel_layer.group_discard)(
-            self.game_group_name, self.channel_name
-        )
+        client = self.scope["client"]
+        toRemove = next((c for c in self.infoPlayer["players"] if c["client"] == client), None)
+
+        if (toRemove):
+            findMatch = next(
+            (m for m in self.infoMatch["match"] 
+             if m["playerOne"]["id"] == toRemove["player_id"] 
+             or m["playerTwo"]["id"] == toRemove["player_id"]), 
+            None)
+
+            if (findMatch and (findMatch["playerOne"]["score"] != 10 and findMatch["playerTwo"]["score"] != 10)):
+                findMatch["status"] = False
+                self.infoPlayer["players"].remove(toRemove)
+                self.winByForfait(findMatch["matchId"])
+
+    async def winByForfait(self, matchId):
+        matchPlayed = next((m for m in self.infoMatch["match"] if m["matchId"] == matchId), None)
+
+        if matchPlayed:
+            # logger.info(f"Sending game state for match {matchId}")
+            response = {
+                "type": "game.starting",
+                "matchId": matchPlayed["matchId"],
+                "victory": True
+            }
+            await self.channel_layer.group_send(
+            self.game_group_name,
+            {
+                "type": "forfait",
+                "message": response
+            })
+    
+    async def forfait(self, event):
+        await self.send(text_data=json.dumps({
+            "type": "forfait",
+            "message": event["message"]
+        }))
 
     async def receive(self, text_data):
         # logger.info(f"Received WebSocket data: {text_data}")
@@ -82,32 +116,13 @@ class PongConsumer(AsyncWebsocketConsumer):
                 "message": "Invalid JSON format"
             }))
 
-    ####################################################
+    ####################### INIT MATCH ############################
 
-    async def moveChange(self, data):
-        matchId = data.get("matchId", None)
-        ma = next((m for m in self.infoMatch["match"] if m["matchId"] == matchId), None)
-
-        if ma:
-            playerId = data.get("playerId")
-            if (ma["playerOne"]["id"] == playerId):
-                direction = data.get("direction")
-                if (direction == "up" and ma["playerOne"]["y"] > 0):
-                    ma["playerOne"]["y"] -= 10
-                elif (direction == "down" and ma["playerOne"]["y"] < ma["canvas"]["canvas_height"] - ma["playerOne"]["height"]):
-                    ma["playerOne"]["y"] += 10
-            elif (ma["playerTwo"]["id"] == playerId):
-                direction = data.get("direction")
-                if (direction == "up" and ma["playerTwo"]["y"] > 0):
-                    ma["playerTwo"]["y"] -= 10
-                elif (direction == "down" and ma["playerTwo"]["y"] < ma["canvas"]["canvas_height"] - ma["playerOne"]["height"]):
-                    ma["playerTwo"]["y"] += 10
-
-    ####################################################
     #send to all of our players
     async def createGame(self):
         newPlayers = self.infoPlayer["players"][-2:]
         obj = {
+            'status': True,
             'matchId' : str(uuid.uuid4()),
             'playerOne': {
                 "id": newPlayers[0]['player_id'],
@@ -136,34 +151,26 @@ class PongConsumer(AsyncWebsocketConsumer):
             "type": "game.init",
             "message": event["message"]
         }))
-
-    ####################################################
-    async def initialisation(self, data):
-        matchId = data.get("matchId", None)
-        matchPlaying = next((m for m in self.infoMatch["match"] if m["matchId"] == matchId), None)
-
-        if matchPlaying:
-            canvas = data.get("canvas", {})
-            playerId = data.get("playerId")
-            canvas_height = canvas.get("canvasHeight", 0)
-            canvas_width = canvas.get("canvasWidth", 0)
-
-            matchPlaying["canvas"] = {"canvas_height": canvas_height, "canvas_width": canvas_width}
-            if (matchPlaying["playerOne"]["id"] == playerId):
-                matchPlaying["playerOne"].update({"id": playerId, "side": "left", "x": 5, "y": canvas_height * 0.4, "width": canvas_width / 80, "height": canvas_height / 6, "color": "black", "gravity": 2, "score": 0})
-            elif (matchPlaying["playerTwo"]["id"] == playerId):
-                matchPlaying["playerTwo"].update({"id": playerId, "side": "right", "x": canvas_width - 20, "y": canvas_height * 0.4, "width": canvas_width / 80, "height": canvas_height / 6, "color": "black", "gravity": 2, "score": 0})
-            matchPlaying["ball"] = { "x": canvas_width / 2, "y": canvas_height / 2, "width": 15, "height": 15, "color": "black", "speed": 5, "gravity": 2 }
-
-            return matchId
         
+    ######################## GAME LOOP #############################
+
+    async def loop(self, matchId):
+        # logger.info(f"Loop started for match {matchId}")
+        m = next((m for m in self.infoMatch["match"] if m["matchId"] == matchId), None)
+
+        while (m["status"]):
+            await asyncio.sleep(1 / 60)
+            await self.calculBallMovement(matchId)
+            await self.send_gamestate(matchId)
+
+    ################### GAME SEND GAMESTATE ########################
+
     async def send_gamestate(self, matchId):
         matchPlayed = next((m for m in self.infoMatch["match"] if m["matchId"] == matchId), None)
 
         if matchPlayed:
             # logger.info(f"Sending game state for match {matchId}")
             response = {
-                "type": "game.starting",
                 "matchId": matchPlayed["matchId"],
                 "playerOne": matchPlayed["playerOne"],
                 "playerTwo": matchPlayed["playerTwo"],
@@ -184,13 +191,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             "message": event["message"]
         }))
 
-    async def loop(self, matchId):
-        # logger.info(f"Loop started for match {matchId}")
-        while (True):
-            await asyncio.sleep(1 / 60)
-            await self.calculBallMovement(matchId)
-            await self.send_gamestate(matchId)
-
+    ####################### GAME LOGIC #############################
     #m = match
     async def calculBallMovement(self, matchId):
         m = next((m for m in self.infoMatch["match"] if m["matchId"] == matchId), None)
@@ -211,6 +212,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         if (m["ball"]["y"] + m["ball"]["gravity"] <= m["playerTwo"]["y"] + m["playerTwo"]["height"] 
             and m["ball"]["x"] + m["ball"]["width"] + m["ball"]["speed"] >= m["playerTwo"]["x"] 
             and m["ball"]["y"] + m["ball"]["gravity"] > m["playerTwo"]["y"]):
+
             paddleCenter = m["playerTwo"]["y"] + m["playerTwo"]["height"] / 2
             ballCenter = m["ball"]["y"] + m["ball"]["height"] / 2
             relativeIntersectY = (paddleCenter - ballCenter) / (m["playerTwo"]["height"] / 2)
@@ -221,16 +223,13 @@ class PongConsumer(AsyncWebsocketConsumer):
             m["ball"]["speed"] = -speed * math.cos(bounceAngle)
             m["ball"]["gravity"] = speed * math.sin(bounceAngle)
             m["ball"]["x"] = m["playerTwo"]["x"] - m["ball"]["width"]
-            logger.info("bounce right")
 
         elif (m["ball"]["y"] + m["ball"]["gravity"] >= m["playerOne"]["y"] 
             and m["ball"]["y"] + m["ball"]["gravity"] <= m["playerOne"]["y"] + m["playerOne"]["height"]
             and m["ball"]["x"] + m["ball"]["speed"] <= m["playerOne"]["x"] + m["playerOne"]["width"]):
 
             paddleCenter = m["playerOne"]["y"] + m["playerOne"]["height"] / 2
-
             ballCenter = m["ball"]["y"] + m["ball"]["height"] / 2
-
             relativeIntersectY = (paddleCenter - ballCenter) / (m["playerOne"]["height"] / 2)
 
             bounceAngle = relativeIntersectY * 0.75
@@ -239,12 +238,127 @@ class PongConsumer(AsyncWebsocketConsumer):
             m["ball"]["speed"] = speed * math.cos(bounceAngle)
             m["ball"]["gravity"] = speed * math.sin(bounceAngle)
             m["ball"]["x"] = m["playerOne"]["x"] + m["ball"]["width"]
-            logger.info("bounce left")
+
         elif (m["ball"]["x"] + m["ball"]["speed"] < m["playerOne"]["x"]):
             m["playerTwo"]["score"] += 1
             m["ball"]["x"] = m["canvas"]["canvas_width"] / 2
             m["ball"]["y"] = m["canvas"]["canvas_height"]  / 2
+            await self.checkScore(m)
+
         elif (m["ball"]["x"] + m["ball"]["speed"] > m["playerTwo"]["x"] + m["playerTwo"]["width"]):
             m["playerOne"]["score"] += 1
             m["ball"]["x"] = m["canvas"]["canvas_width"] / 2
             m["ball"]["y"] = m["canvas"]["canvas_height"]  / 2
+            await self.checkScore(m)
+
+    async def checkScore(self, m):
+        if (m["playerOne"]["score"] == 10):
+            m["status"] = False
+            await self.sendMatchResult(m, m["playerOne"], m["playerTwo"])
+            await self.cleanArray(m)
+        elif (m["playerTwo"]["score"] == 10):
+            m["status"] = False
+            await self.sendMatchResult(m, m["playerTwo"], m["playerOne"])
+            await self.cleanArray(m)
+
+    async def cleanArray(self, m):
+        p1 = next((p for p in self.infoPlayer["players"] if p["player_id"] == m["playerOne"]["id"]), None)
+        if p1:
+            self.infoPlayer["players"].remove(p1)
+        
+        p2 = next((p for p in self.infoPlayer["players"] if p["player_id"] == m["playerTwo"]["id"]), None)
+        if p2:
+            self.infoPlayer["players"].remove(p2)
+        self.infoMatch["match"].remove(m)
+
+    #################### SEND VICTORY ##########################
+
+    async def sendMatchResult(self, m, winner, loser):
+        response = {
+            "matchId": m["matchId"],
+            "winner": winner,
+            "loser": loser,
+        }
+        await self.channel_layer.group_send(
+        self.game_group_name,
+        {
+            "type": "game_result",
+            "message": response
+        })
+
+    async def game_result(self, event):
+        # logger.info(f"Game state received: {event['message']}")
+        await self.send(text_data=json.dumps({
+            "type": "game_result",
+            "message": event["message"]
+        }))
+
+    #################### PLAYER MOVE ##########################
+
+    async def moveChange(self, data):
+        matchId = data.get("matchId", None)
+        ma = next((m for m in self.infoMatch["match"] if m["matchId"] == matchId), None)
+
+        if ma:
+            playerId = data.get("playerId")
+            if (ma["playerOne"]["id"] == playerId):
+                direction = data.get("direction")
+                if (direction == "up" and ma["playerOne"]["y"] > 0):
+                    ma["playerOne"]["y"] -= 10
+                elif (direction == "down" and ma["playerOne"]["y"] < ma["canvas"]["canvas_height"] - ma["playerOne"]["height"]):
+                    ma["playerOne"]["y"] += 10
+            elif (ma["playerTwo"]["id"] == playerId):
+                direction = data.get("direction")
+                if (direction == "up" and ma["playerTwo"]["y"] > 0):
+                    ma["playerTwo"]["y"] -= 10
+                elif (direction == "down" and ma["playerTwo"]["y"] < ma["canvas"]["canvas_height"] - ma["playerOne"]["height"]):
+                    ma["playerTwo"]["y"] += 10
+
+    ##################### INITIALISATION ##########################
+
+    async def initialisation(self, data):
+        matchId = data.get("matchId", None)
+        matchPlaying = next((m for m in self.infoMatch["match"] if m["matchId"] == matchId), None)
+
+        if matchPlaying:
+            canvas = data.get("canvas", {})
+            playerId = data.get("playerId")
+            canvas_height = canvas.get("canvasHeight", 0)
+            canvas_width = canvas.get("canvasWidth", 0)
+
+            matchPlaying["canvas"] = {"canvas_height": canvas_height, "canvas_width": canvas_width}
+            if (matchPlaying["playerOne"]["id"] == playerId):
+                matchPlaying["playerOne"].update({
+                    "id": playerId,
+                    "side": "left",
+                    "x": 5,
+                    "y": canvas_height * 0.4,
+                    "width": canvas_width / 80,
+                    "height": canvas_height / 6,
+                    "color": "black",
+                    "gravity": 2,
+                    "score": 0
+                    })
+            elif (matchPlaying["playerTwo"]["id"] == playerId):
+                matchPlaying["playerTwo"].update({
+                    "id": playerId,
+                    "side": "right",
+                    "x": canvas_width - 20,
+                    "y": canvas_height * 0.4,
+                    "width": canvas_width / 80,
+                    "height": canvas_height / 6,
+                    "color": "black",
+                    "gravity": 2,
+                    "score": 0
+                    })
+            matchPlaying["ball"] = { 
+                "x": canvas_width / 2,
+                "y": canvas_height / 2,
+                "width": 15,
+                "height": 15,
+                "color": "black",
+                "speed": 5,
+                "gravity": 2
+                }
+
+            return matchId
