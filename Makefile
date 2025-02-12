@@ -79,5 +79,6 @@ help:
 	@echo    "logs   : Displays log output from services."
 	@echo    "ps     : Lists containers for a Compose project, with current status and exposed ports."
 	@echo    "login  : This is the equivalent of docker exec targeting a Compose service."
+	@echo    "prune	 : erase unused docker stuff(container, image, etc) to clear memory"
 
 .PHONY: prune help build up start down destroy stop restart logs logs-api ps login-timescale login-api db-shell

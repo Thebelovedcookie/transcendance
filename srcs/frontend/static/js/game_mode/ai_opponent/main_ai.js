@@ -1,5 +1,5 @@
 import { EndNormalGamePage } from '../../pages/EndNormalGamePage.js';
-import { firstPaddle, secondPaddle, ballStyle, drawDashedLine, displayScoreOne, displayScoreTwo } from './style_ai.js';
+import { firstPaddle, secondPaddle, ballStyle, drawDashedLine, displayScoreOne, displayScoreTwo, drawWalls } from './style_ai.js';
 let canvas = null;
 let context = null;
 let theme = "base";
@@ -428,6 +428,7 @@ class GameAISocket {
 
 	drawGame() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
+		drawWalls(context, canvas);
 		firstPaddle(context, this.gameState.player1);
 		secondPaddle(context, this.gameState.player2);
 		ballStyle(context, this.gameState.ball);
