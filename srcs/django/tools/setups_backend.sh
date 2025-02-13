@@ -15,6 +15,7 @@ python3.11 manage.py migrate
 python3.11 manage.py createsuperuser --noinput --username ${DJANGO_SUPERUSER_USERNAME} --email ${DJANGO_SUPERUSER_EMAIL}
 python3.11 /project/manage.py loaddata user
 python3.11 /project/manage.py loaddata pong_history
+python3.11 /project/manage.py loaddata online_status
 
 # for dev(socket not supported)
 # python3.11 /project/manage.py runserver 0.0.0.0:8000 &

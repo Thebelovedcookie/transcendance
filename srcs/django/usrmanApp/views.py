@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 import json
 from pong_history_app import views as pong_history_app
+from online_status_app.models import OnlineStatus
 # experiemnting from here
 from PIL import Image
 from django.core.files.storage import FileSystemStorage
@@ -118,13 +119,18 @@ def get_profile(request):
 	match_response = pong_history_app.get_user_matches(request)
 	match_data = json.loads(match_response.content)['data']
 
+	is_online = OnlineStatus.objects.get(user_id=user.id).is_online if OnlineStatus.objects.filter(user_id=user.id).exists() else False
+
 	friends_data = [
 		{
 			'id': friend.id,
 			'username': friend.username,
 			'profile_image': friend.profile_image.url if friend.profile_image else None,
-			'is_online': "true",
-			'lastSeen': "Now",
+			'is_online': OnlineStatus.objects.get(user_id=friend.id).is_online if OnlineStatus.objects.filter(user_id=friend.id).exists() else False,
+			'lastSeen': friend.last_login,
+			'wins': friend.wins,
+			'losses': friend.losses,
+			'totalGames': friend.totalGames
 		}
 		for friend in user.friends.all()
 	]
@@ -141,7 +147,8 @@ def get_profile(request):
 			'win_percent': match_data['win_percent'],
 			'image_path': user.profile_image.url if user.profile_image else None,
 			'friends': friends_data,
-			'match_history': match_data['matches']
+			'match_history': match_data['matches'],
+			'is_online': is_online
 		}
 	})
 
