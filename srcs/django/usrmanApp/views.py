@@ -128,6 +128,9 @@ def get_profile(request):
 			'profile_image': friend.profile_image.url if friend.profile_image else None,
 			'is_online': OnlineStatus.objects.get(user_id=friend.id).is_online if OnlineStatus.objects.filter(user_id=friend.id).exists() else False,
 			'lastSeen': friend.last_login,
+			'wins': friend.wins,
+			'losses': friend.losses,
+			'totalGames': friend.totalGames
 		}
 		for friend in user.friends.all()
 	]

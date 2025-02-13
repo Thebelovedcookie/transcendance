@@ -57,7 +57,6 @@ export class ProfilePage {
 			const data = await response.json();
 			if (data.status === 'success') {
 				this.userData = data.data;
-				console.log(this.userData);
 			}
 		} catch (error) {
 			// if 401, redirect to login page
@@ -94,7 +93,7 @@ export class ProfilePage {
 						</div>
 						<div class="profile-details">
 							<h1>${this.userData.username}</h1>
-							<p>Member since: ${this.userData.join_date}</p>
+							<p>Member since: ${new Date(this.userData.join_date).toLocaleDateString()}</p>
 							<button class="edit-profile-btn">
 								<i class="fas fa-edit"></i> Edit Profile
 							</button>
@@ -150,25 +149,51 @@ export class ProfilePage {
 	}
 
 	renderMatchHistory() {
-		if (this.userData.match_history && this.userData.match_history.length === 0) {
-			return '<p>No match history found</p>';
+		if (!this.userData.match_history || this.userData.match_history.length === 0) {
+			return '<div class="match-history-empty">No match history found</div>';
 		}
-		return this.userData.match_history.map(match => `
+
+		const MAX_VISIBLE_MATCHES = 3;
+		const allMatches = this.userData.match_history;
+		const visibleMatches = allMatches.slice(0, MAX_VISIBLE_MATCHES);
+		const remainingCount = allMatches.length - MAX_VISIBLE_MATCHES;
+
+		const matchesList = visibleMatches.map(match => `
 			<div class="match-card ${match.result.toLowerCase()}">
 				<div class="match-info">
-					<span class="match-opponent">${match.opponent.username}</span>
+					<span class="match-opponent">vs ${match.opponent.username}</span>
 					<span class="match-score">${match.user_score} - ${match.opponent_score}</span>
 				</div>
 				<div class="match-details">
 					<span class="match-result">${match.result}</span>
-					<span class="match-date">${match.played_at.split('T')[0]}</span>
+					<span class="match-date">${new Date(match.played_at).toLocaleDateString()}</span>
 				</div>
 			</div>
 		`).join('');
+
+		// Add "View All" button if there are more matches
+		const viewAllButton = remainingCount > 0 ? `
+			<button class="view-all-matches-btn">
+				<i class="fas fa-history"></i>
+				View All Matches (${remainingCount} more)
+			</button>
+		` : '';
+
+		return `
+			<div class="matches-list-container">
+				${matchesList}
+				${viewAllButton}
+			</div>
+		`;
 	}
 
 	renderFriendsList() {
-		return this.userData.friends.map(friend => `
+		const MAX_VISIBLE_FRIENDS = 2;
+		const allFriends = this.userData.friends;
+		const visibleFriends = allFriends.slice(0, MAX_VISIBLE_FRIENDS);
+		const remainingCount = allFriends.length - MAX_VISIBLE_FRIENDS;
+
+		const friendsList = visibleFriends.map(friend => `
 			<div class="friend-card" data-userid="${friend.id}">
 				<div class="friend-avatar-container">
 					<img src="${friend.profile_image || '/static/img/anonymous.webp'}" alt="${friend.username}" class="friend-avatar">
@@ -176,10 +201,49 @@ export class ProfilePage {
 				</div>
 				<div class="friend-info">
 					<h3>${friend.username}</h3>
-					<p>${friend.is_online ? 'Online' : `Last seen ${friend.lastSeen}`}</p>
+					<p class="last-seen">${friend.is_online ? 'Online' : `Last seen ${new Date(friend.lastSeen).toLocaleDateString()}`}</p>
+					<div class="game-stats">
+						<div class="stat-item">
+							<span class="stat-label">Wins:</span>
+							<span class="stat-value wins">${friend.wins}</span>
+						</div>
+						<div class="stat-item">
+							<span class="stat-label">Losses:</span>
+							<span class="stat-value losses">${friend.losses}</span>
+						</div>
+						<div class="stat-item">
+							<span class="stat-label">Total Games:</span>
+							<span class="stat-value totalGames">${friend.totalGames}</span>
+						</div>
+						<div class="stat-item">
+							<span class="stat-label">Win Rate:</span>
+							<span class="stat-value win-rate">${this.calculateWinRate(friend.wins, friend.totalGames)}%</span>
+						</div>
+					</div>
 				</div>
 			</div>
 		`).join('');
+
+		// Add "View All" button if there are more friends
+		const viewAllButton = remainingCount > 0 ? `
+			<button class="view-all-friends-btn">
+				<i class="fas fa-users"></i>
+				View All Friends (${remainingCount} more)
+			</button>
+		` : '';
+
+		return `
+			<div class="friends-list-container">
+				${friendsList}
+				${viewAllButton}
+			</div>
+		`;
+	}
+
+	// Win rate calculation helper
+	calculateWinRate(wins, totalGames) {
+		if (totalGames === 0) return 0;
+		return Math.round((wins / totalGames) * 100);
 	}
 
 	setupEventListeners() {
@@ -187,7 +251,9 @@ export class ProfilePage {
 		const elementsToClone = [
 			'.friend-card',
 			'.edit-profile-btn',
-			'.search-friends-btn'
+			'.search-friends-btn',
+			'.view-all-friends-btn',
+			'.view-all-matches-btn'
 		];
 
 		elementsToClone.forEach(selector => {
@@ -205,14 +271,20 @@ export class ProfilePage {
 				const username = card.querySelector('h3').textContent;
 				const profileImage = card.querySelector('img').src;
 				const isOnline = card.querySelector('.online-status').classList.contains('online');
-				const lastSeen = card.querySelector('p').textContent;
+				const lastSeen = card.querySelector('.last-seen').textContent;
+				const wins = card.querySelector('.wins').textContent;
+				const losses = card.querySelector('.losses').textContent;
+				const totalGames = card.querySelector('.totalGames').textContent;
 
 				const friendInfo = {
 					id: userId,
 					username: username,
 					profile_image: profileImage,
 					is_online: isOnline,
-					lastSeen: lastSeen
+					lastSeen: lastSeen,
+					wins: wins,
+					losses: losses,
+					totalGames: totalGames
 				};
 
 				this.showFriendInfoModal(friendInfo);
@@ -229,6 +301,16 @@ export class ProfilePage {
 		const searchFriendsBtn = document.querySelector('.search-friends-btn');
 		if (searchFriendsBtn) {
 			searchFriendsBtn.addEventListener('click', () => this.showFriendSearchModal());
+		}
+
+		const viewAllBtn = document.querySelector('.view-all-friends-btn');
+		if (viewAllBtn) {
+			viewAllBtn.addEventListener('click', () => this.showAllFriendsModal());
+		}
+
+		const viewAllMatchesBtn = document.querySelector('.view-all-matches-btn');
+		if (viewAllMatchesBtn) {
+			viewAllMatchesBtn.addEventListener('click', () => this.showAllMatchesModal());
 		}
 
 		// ... other event listeners if any ...
@@ -484,11 +566,33 @@ export class ProfilePage {
 					</div>
 					<div class="friend-details">
 						<h3>${friendInfo.username}</h3>
-						<p class="status-text">${friendInfo.lastSeen}</p>
+						<p class="status-text">
+							${friendInfo.is_online ? 'Online' : `Last seen ${new Date(friendInfo.lastSeen).toLocaleDateString()}`}
+						</p>
+						<div class="stats-container">
+							<div class="stat-box">
+								<span class="stat-title">Wins</span>
+								<span class="stat-number wins">${friendInfo.wins}</span>
+							</div>
+							<div class="stat-box">
+								<span class="stat-title">Losses</span>
+								<span class="stat-number losses">${friendInfo.losses}</span>
+							</div>
+							<div class="stat-box">
+								<span class="stat-title">Total Games</span>
+								<span class="stat-number total">${friendInfo.totalGames}</span>
+							</div>
+							<div class="stat-box">
+								<span class="stat-title">Win Rate</span>
+								<span class="stat-number win-rate">
+									${this.calculateWinRate(friendInfo.wins, friendInfo.totalGames)}%
+								</span>
+							</div>
+						</div>
+						<button class="remove-friend-btn danger-btn">
+							<i class="fas fa-user-minus"></i> Remove Friend
+						</button>
 					</div>
-					<button class="remove-friend-btn danger-btn">
-						<i class="fas fa-user-minus"></i> Remove Friend
-					</button>
 				</div>
 				<div class="modal-actions">
 					<button type="button" class="close-btn">Close</button>
@@ -606,6 +710,129 @@ export class ProfilePage {
 				},
 				cutout: '70%'
 			}
+		});
+	}
+
+	showAllFriendsModal() {
+		const modal = document.createElement('div');
+		modal.className = 'friend-info-modal';
+		modal.innerHTML = `
+			<div class="modal-content">
+				<h2>All Friends</h2>
+				<div class="friends-list-container">
+					${this.userData.friends.map(friend => `
+						<div class="friend-card" data-userid="${friend.id}">
+							<div class="friend-avatar-container">
+								<img src="${friend.profile_image || '/static/img/anonymous.webp'}" alt="${friend.username}" class="friend-avatar">
+								<span class="online-status ${friend.is_online ? 'online' : ''}"></span>
+							</div>
+							<div class="friend-info">
+								<h3>${friend.username}</h3>
+								<p class="last-seen">${friend.is_online ? 'Online' : `Last seen ${new Date(friend.lastSeen).toLocaleDateString()}`}</p>
+								<div class="game-stats">
+									<div class="stat-item">
+										<span class="stat-label">Wins:</span>
+										<span class="stat-value wins">${friend.wins}</span>
+									</div>
+									<div class="stat-item">
+										<span class="stat-label">Losses:</span>
+										<span class="stat-value losses">${friend.losses}</span>
+									</div>
+									<div class="stat-item">
+										<span class="stat-label">Total Games:</span>
+										<span class="stat-value totalGames">${friend.totalGames}</span>
+									</div>
+									<div class="stat-item">
+										<span class="stat-label">Win Rate:</span>
+										<span class="stat-value win-rate">${this.calculateWinRate(friend.wins, friend.totalGames)}%</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					`).join('')}
+				</div>
+				<div class="modal-actions">
+					<button type="button" class="close-btn">Close</button>
+				</div>
+				<button class="modal-close">&times;</button>
+			</div>
+		`;
+
+		document.body.appendChild(modal);
+
+		// Setup modal event listeners
+		const closeBtn = modal.querySelector('.modal-close');
+		const cancelBtn = modal.querySelector('.close-btn');
+
+		[closeBtn, cancelBtn].forEach(btn => {
+			btn.addEventListener('click', () => {
+				modal.classList.add('fade-out');
+				setTimeout(() => modal.remove(), 300);
+			});
+		});
+
+		// Setup friend card click events
+		const friendCards = modal.querySelectorAll('.friend-card');
+		friendCards.forEach(card => {
+			card.addEventListener('click', () => {
+				const userId = card.dataset.userid;
+				const friend = this.userData.friends.find(f => f.id === parseInt(userId));
+				if (friend) {
+					const friendInfo = {
+						id: friend.id,
+						username: friend.username,
+						profile_image: friend.profile_image || '/static/img/anonymous.webp',
+						is_online: friend.is_online,
+						lastSeen: friend.lastSeen,
+						wins: friend.wins || 0,
+						losses: friend.losses || 0,
+						totalGames: friend.totalGames || 0
+					};
+
+					this.showFriendInfoModal(friendInfo);
+				}
+			});
+		});
+	}
+
+	showAllMatchesModal() {
+		const modal = document.createElement('div');
+		modal.className = 'match-history-modal';
+		modal.innerHTML = `
+			<div class="modal-content">
+				<h2>Match History</h2>
+				<div class="matches-list-container">
+					${this.userData.match_history.map(match => `
+						<div class="match-card ${match.result.toLowerCase()}">
+							<div class="match-info">
+								<span class="match-opponent">vs ${match.opponent.username}</span>
+								<span class="match-score">${match.user_score} - ${match.opponent_score}</span>
+							</div>
+							<div class="match-details">
+								<span class="match-result">${match.result}</span>
+								<span class="match-date">${new Date(match.played_at).toLocaleDateString()}</span>
+							</div>
+						</div>
+					`).join('')}
+				</div>
+				<div class="modal-actions">
+					<button type="button" class="close-btn">Close</button>
+				</div>
+				<button class="modal-close">&times;</button>
+			</div>
+		`;
+
+		document.body.appendChild(modal);
+
+		// Setup modal event listeners
+		const closeBtn = modal.querySelector('.modal-close');
+		const cancelBtn = modal.querySelector('.close-btn');
+
+		[closeBtn, cancelBtn].forEach(btn => {
+			btn.addEventListener('click', () => {
+				modal.classList.add('fade-out');
+				setTimeout(() => modal.remove(), 300);
+			});
 		});
 	}
 }
