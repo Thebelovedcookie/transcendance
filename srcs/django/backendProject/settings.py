@@ -48,6 +48,7 @@ INSTALLED_APPS = [
 	'pong_history_app',
 	'backend_tour_app',
 	'remotePlayer_app',
+	'online_status_app',
 ]
 
 MIDDLEWARE = [
