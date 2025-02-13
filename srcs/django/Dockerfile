@@ -36,6 +36,7 @@ RUN cd /project && python3.11 manage.py startapp backend_app \
 	 && python3.11 manage.py startapp backend_tour_app \
 	 && python3.11 manage.py startapp usrman_app \
 	 && python3.11 manage.py startapp pong_history_app \
+	 && python3.11 manage.py startapp remotePlayer_app \
 	 && python3.11 manage.py startapp online_status_app
 
 
@@ -54,6 +55,7 @@ COPY ./backendGameConsApp /project/backend_gamecons_app/
 COPY ./backendTourApp /project/backend_tour_app/
 COPY /tools/setups_backend.sh /setups_backend.sh
 COPY ./usrmanApp /project/usrman_app/
+COPY ./remotePlayerapp/* /project/remotePlayer_app/
 COPY ./onlineStatusApp /project/online_status_app/
 RUN chmod +x /setups_backend.sh
 
