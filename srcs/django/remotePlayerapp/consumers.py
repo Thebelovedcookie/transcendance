@@ -30,6 +30,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             'player_id': self.player_id,
             'client': self.scope["client"]
         }
+        logger.info(self.scope["client"])
         self.infoPlayer['players'].append(obj)
         await self.channel_layer.group_add(self.game_group_name, self.channel_name)
         if len(self.infoPlayer["players"]) % 2 == 0:
@@ -60,31 +61,16 @@ class PongConsumer(AsyncWebsocketConsumer):
 
             if (findMatch and (findMatch["playerOne"]["score"] != 10 and findMatch["playerTwo"]["score"] != 10)):
                 findMatch["status"] = False
+                #for 10 second we are waiting for the disconnect player
+                    #if the player come's back
+                        #findMatch["status"] = True
+                        #return
+                #if he doesnt come back
                 self.infoPlayer["players"].remove(toRemove)
-                self.winByForfait(findMatch["matchId"])
-
-    async def winByForfait(self, matchId):
-        matchPlayed = next((m for m in self.infoMatch["match"] if m["matchId"] == matchId), None)
-
-        if matchPlayed:
-            # logger.info(f"Sending game state for match {matchId}")
-            response = {
-                "type": "game.starting",
-                "matchId": matchPlayed["matchId"],
-                "victory": True
-            }
-            await self.channel_layer.group_send(
-            self.game_group_name,
-            {
-                "type": "forfait",
-                "message": response
-            })
-    
-    async def forfait(self, event):
-        await self.send(text_data=json.dumps({
-            "type": "forfait",
-            "message": event["message"]
-        }))
+                for secondPlayer in self.infoPlayer["players"]:
+                    if secondPlayer["player_id"] == (findMatch["playerOne"]["id"] or findMatch["playerTwo"]["id"]):
+                        self.infoPlayer["players"].remove(secondPlayer)
+                await self.winByForfait(findMatch["matchId"])
 
     async def receive(self, text_data):
         # logger.info(f"Received WebSocket data: {text_data}")
@@ -94,7 +80,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 
             if message_type == "game.starting":
                 matchId = await self.initialisation(data)
-                # logger.info(f"Match initialized with ID: {matchId}")
                 asyncio.create_task(self.loop(matchId))
                 return
             elif message_type == "player.moved":
@@ -115,6 +100,32 @@ class PongConsumer(AsyncWebsocketConsumer):
                 "type": "error",
                 "message": "Invalid JSON format"
             }))
+
+    async def winByForfait(self, matchId):
+        #update Game History
+        matchPlayed = next((m for m in self.infoMatch["match"] if m["matchId"] == matchId), None)
+
+        logger.info(matchPlayed)
+        if matchPlayed:
+            # logger.info(f"Sending game state for match {matchId}")
+            response = {
+                "type": "game.starting",
+                "matchId": matchPlayed["matchId"],
+                "victory": True
+            }
+            await self.channel_layer.group_send(
+            self.game_group_name,
+            {
+                "type": "forfait",
+                "message": response
+            })
+            self.infoMatch["match"].remove(matchPlayed)
+        
+    async def forfait(self, event):
+        await self.send(text_data=json.dumps({
+            "type": "forfait",
+            "message": event["message"]
+        }))
 
     ####################### INIT MATCH ############################
 
@@ -155,7 +166,6 @@ class PongConsumer(AsyncWebsocketConsumer):
     ######################## GAME LOOP #############################
 
     async def loop(self, matchId):
-        # logger.info(f"Loop started for match {matchId}")
         m = next((m for m in self.infoMatch["match"] if m["matchId"] == matchId), None)
 
         while (m["status"]):
@@ -169,7 +179,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         matchPlayed = next((m for m in self.infoMatch["match"] if m["matchId"] == matchId), None)
 
         if matchPlayed:
-            # logger.info(f"Sending game state for match {matchId}")
             response = {
                 "matchId": matchPlayed["matchId"],
                 "playerOne": matchPlayed["playerOne"],
@@ -185,7 +194,6 @@ class PongConsumer(AsyncWebsocketConsumer):
             })
 
     async def game_state(self, event):
-        # logger.info(f"Game state received: {event['message']}")
         await self.send(text_data=json.dumps({
             "type": "game_state",
             "message": event["message"]
@@ -256,10 +264,12 @@ class PongConsumer(AsyncWebsocketConsumer):
             m["status"] = False
             await self.sendMatchResult(m, m["playerOne"], m["playerTwo"])
             await self.cleanArray(m)
+            #Update History Game
         elif (m["playerTwo"]["score"] == 10):
             m["status"] = False
             await self.sendMatchResult(m, m["playerTwo"], m["playerOne"])
             await self.cleanArray(m)
+            #Update History Game
 
     async def cleanArray(self, m):
         p1 = next((p for p in self.infoPlayer["players"] if p["player_id"] == m["playerOne"]["id"]), None)
@@ -287,7 +297,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         })
 
     async def game_result(self, event):
-        # logger.info(f"Game state received: {event['message']}")
         await self.send(text_data=json.dumps({
             "type": "game_result",
             "message": event["message"]
