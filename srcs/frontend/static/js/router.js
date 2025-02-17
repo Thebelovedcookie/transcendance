@@ -17,6 +17,7 @@ import { TicTacToeGamePage } from './tic_tac_toe/TicTacToeGamePage.js';
 import { AiPage } from './pages/AiPage.js';
 import { Header } from './pages/Header.js';
 import { MultiPage } from './pages/MultiPage.js';
+import { RemoteNormalGamePage } from './pages/RemoteNormalGamePage.js';
 
 
 //first step : Creation of a class Router which will allows to naviguates between pages and add an history
@@ -26,11 +27,43 @@ class Router {
 		this.header = new Header();
 		this.routes = new Map();
 		this.container = document.getElementById('dynamicPage');
+		this.onlineSocket = null;
 
+		this.initializeOnlineStatus();
 		this.initializeCsrfToken();
 		this.initializeRoutes();
 		this.setupEventListeners();
 		this.handleLocation();
+	}
+
+	async initializeOnlineStatus() {
+		try {
+			const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+			const host = window.location.host;
+			const wsUrl = `${protocol}//${host}/ws/user_status/`;
+
+			console.log("Attempting to connect:", wsUrl);
+			this.onlineSocket = new WebSocket(wsUrl);
+
+			this.onlineSocket.onopen = () => {
+				console.log("WebSocket connection established");
+			};
+
+			this.onlineSocket.onmessage = (event) => {
+				console.log('Online status message received:', event.data);
+			};
+
+			this.onlineSocket.onerror = (error) => {
+				console.error("WebSocket error:", error);
+			};
+
+			this.onlineSocket.onclose = (event) => {
+				console.log("WebSocket connection closed:", event);
+			};
+
+		} catch (error) {
+			console.error("WebSocket connection error:", error);
+		}
 	}
 
 	async initializeCsrfToken() {
@@ -47,22 +80,23 @@ class Router {
 		}
 	}
 
-	//add every path at our Container map "routes"
-	initializeRoutes() {
-		this.routes.set('/', new HomePage());
-		this.routes.set('/pong', new PongMenuPage());
-		this.routes.set('/pong/normal', new NormalGamePage("base", "normal", null, null));
-		this.routes.set('/pong/solo', new SoloGamePage());
-		this.routes.set('/pong/tournament', new TournamentPage());
-		this.routes.set('/login', new LoginPage());
-		this.routes.set('/register', new RegisterPage());
-		this.routes.set('/profile', new ProfilePage());
-		this.routes.set('/settings', new SettingPage());
-		this.routes.set('/logout', new LogoutPage());
-		this.routes.set('/tictactoe', new TicTacToeGamePage());
-		this.routes.set('/pong/solo/ai', new AiPage());
-		this.routes.set('/pong/multi', new MultiPage());
-	}
+    //add every path at our Container map "routes"
+    initializeRoutes() {
+        this.routes.set('/', new HomePage());
+        this.routes.set('/pong', new PongMenuPage());
+        this.routes.set('/pong/normal', new NormalGamePage("base", "normal", null, null));
+        this.routes.set('/pong/solo', new SoloGamePage());
+        this.routes.set('/pong/tournament', new TournamentPage());
+        this.routes.set('/login', new LoginPage());
+        this.routes.set('/register', new RegisterPage());
+        this.routes.set('/profile', new ProfilePage());
+        this.routes.set('/settings', new SettingPage());
+        this.routes.set('/logout', new LogoutPage());
+        this.routes.set('/tictactoe', new TicTacToeGamePage());
+        this.routes.set('/pong/solo/ai', new AiPage());
+        this.routes.set('/pong/multi', new MultiPage());
+        this.routes.set('/pong/remote', new RemoteNormalGamePage());
+    }
 
 	//add listeners popstate (backward/forward)
 	//The listeners will tell us if someone clicked on the backward or forward button

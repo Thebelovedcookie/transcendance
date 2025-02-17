@@ -47,6 +47,8 @@ INSTALLED_APPS = [
 	'usrman_app',
 	'pong_history_app',
 	'backend_tour_app',
+	'remotePlayer_app',
+	'online_status_app',
 ]
 # SO: ajout de LocaleMiddleware pour la langue
 MIDDLEWARE = [

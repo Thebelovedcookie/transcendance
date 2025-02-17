@@ -36,10 +36,18 @@ RUN cd /project && python3.11 manage.py startapp backend_app \
 	 && python3.11 manage.py startapp backend_gamecons_app \
 	 && python3.11 manage.py startapp backend_tour_app \
 	 && python3.11 manage.py startapp usrman_app \
-	 && python3.11 manage.py startapp pong_history_app 
-	
+	 && python3.11 manage.py startapp pong_history_app \
+	 && python3.11 manage.py startapp remotePlayer_app \
+	 && python3.11 manage.py startapp online_status_app
+
+
+EXPOSE 8000
+
 RUN apt update && apt install -y postgresql-client
 RUN pip install psycopg[binary] channels[daphne] django-cors-headers Pillow
+
+ENV DJANGO_SETTINGS_MODULE=backend_project.settings
+
 #config des urls
 COPY ./backendApp /project/backend_app/
 COPY ./pongHistoryApp /project/pong_history_app/
@@ -48,9 +56,10 @@ COPY ./backendGameConsApp /project/backend_gamecons_app/
 COPY ./backendTourApp /project/backend_tour_app/
 COPY ./tools/setups_backend.sh /setups_backend.sh
 COPY ./usrmanApp /project/usrman_app/
+COPY ./remotePlayerapp/* /project/remotePlayer_app/
+COPY ./onlineStatusApp /project/online_status_app/
 COPY ./locale /project/locale/
 
-# WORKDIR /project
 
 ENV PYTHONPATH=/project
 # Vérifier le chemin Python et la présence du module
@@ -67,19 +76,9 @@ ENV PYTHONPATH=/project
 RUN django-admin compilemessages -i venv --settings=backend_project.settings
 
 
-
-EXPOSE 8000
-
-
 RUN chmod +x /setups_backend.sh
 
 # fichiers de traduction des langues 
-
-
-
-
-
-
 
 
 ENTRYPOINT [ "/setups_backend.sh" ]
