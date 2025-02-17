@@ -48,6 +48,9 @@ export class PongMenuPage {
 	}
 
 	render() {
+		const authState = window.router.getAuthState();
+		const isLoggedIn = authState.isAuthenticated;
+
 		const menuContent = document.createElement('div');
 		menuContent.innerHTML = `
 			<div class="pong-menu-container">
@@ -56,25 +59,27 @@ export class PongMenuPage {
 					<p class="subtitle">Select Your Game Mode</p>
 				</div>
 
-                <div class="game-modes">
-                    <div class="mode-card" data-path="/pong/remote">
-                        <div class="mode-icon">🏓</div>
-                        <h3>Normal Mode</h3>
-                        <p>Classic 2-player battle</p>
-                        <div class="mode-hover">PLAY</div>
-                    </div>
-                    <div class="mode-card" data-path="/pong/normal">
-                        <div class="mode-icon">🏓🏓</div>
-                        <h3>Normal Mode</h3>
-                        <p>Classic 2-player battle(same keyboard)</p>
-                        <div class="mode-hover">PLAY</div>
-                    </div>
-                    <div class="mode-card" data-path="/pong/multi">
-                        <div class="mode-icon">🏓🏓🏓</div>
-                        <h3>Multi Mode</h3>
-                        <p>Play against your friends</p>
-                        <div class="mode-hover">PLAY</div>
-                    </div>
+				<div class="game-modes">
+				${isLoggedIn ? `
+					<div class="mode-card" data-path="/pong/remote">
+						<div class="mode-icon">🏓</div>
+						<h3>Normal Mode</h3>
+						<p>Classic 2-player battle</p>
+						<div class="mode-hover">PLAY</div>
+					</div>`
+					: ``}
+					<div class="mode-card" data-path="/pong/normal">
+						<div class="mode-icon">🏓🏓</div>
+						<h3>Normal Mode</h3>
+						<p>Classic 2-player battle(same keyboard)</p>
+						<div class="mode-hover">PLAY</div>
+					</div>
+					<div class="mode-card" data-path="/pong/multi">
+						<div class="mode-icon">🏓🏓🏓</div>
+						<h3>Multi Mode</h3>
+						<p>Play against your friends</p>
+						<div class="mode-hover">PLAY</div>
+					</div>
 
 					<div class="mode-card solo-mode">
 						<div class="mode-icon">🤖</div>
