@@ -7,9 +7,12 @@ export class NormalGamePage {
 		this.type = type;
 		this.socketTournament = socketTournament;
 		this.infoMatch = infoMatch;
+		this.game = null;
+		this.pause = false;
 	}
 
 	async handle() {
+		this.setupEventListeners()
 		this.render();
 	}
 
@@ -23,7 +26,28 @@ export class NormalGamePage {
 		this.container.innerHTML = '';
 		this.container.appendChild(gameContent);
 
-		normalMode(this.theme, this.type, this.socketTournament, this.infoMatch);
+		this.game = normalMode(this.theme, this.type, this.socketTournament, this.infoMatch);
+	}
+
+	setupEventListeners()
+	{
+		window.addEventListener('keydown', (e) => {
+			e.preventDefault();
+			console.log(e.key);
+			if (e.key == "Escape")
+			{
+				if (this.pause == false && this.game) {
+					this.game.stopGameLoop();
+					this.game.drawPause();
+					this.pause = true;
+				}
+				else if (this.game){
+					this.pause = false;
+					this.game.startGameLoop();
+				}
+
+			}
+		})
 	}
 }
 
