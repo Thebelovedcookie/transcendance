@@ -56,13 +56,16 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
 	'corsheaders.middleware.CorsMiddleware',
 	'django.middleware.security.SecurityMiddleware',
-	'django.contrib.sessions.middleware.SessionMiddleware',
+	# 'django.contrib.sessions.middleware.SessionMiddleware',
+	'usrman_app.middleware.CustomSessionMiddleware',
 	'django.middleware.common.CommonMiddleware',
 	'django.middleware.csrf.CsrfViewMiddleware',
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+JWT_SECRET_KEY = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 ROOT_URLCONF = 'backend_project.urls'
 
