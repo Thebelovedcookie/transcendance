@@ -6,6 +6,7 @@ let contextSolo;
 let playerOneSolo;
 let ballSolo;
 let controllerSolo;
+let isPaused = false;
 
 function init_canvasSolo(){
 	canvasSolo = document.getElementById("pongGame");
@@ -102,12 +103,6 @@ function movePaddleDownP2Solo() {
 
 //----------------------------METHOD--------------------------------//
 
-//draw elements
-function drawElement(element){
-	contextSolo.fillStyle = element.color;
-	contextSolo.fillRect(element.x, element.y, element.width, element.height);
-}
-
 //make ballSolo bounce
 function ballSoloBounce(){
 	let nextX = ballSolo.x + ballSolo.speed;
@@ -170,11 +165,18 @@ function resetBallSolo() {
 }
 
 function drawElementsSolo(){
-	contextSolo.clearRect(0, 0, canvasSolo.width, canvasSolo.height);
-	drawWallsSolo(contextSolo, canvasSolo);
-	firstPaddleSolo(contextSolo, playerOneSolo);
-	ballSoloStyle(contextSolo, ballSolo);
-	drawDashedLineSolo(contextSolo, canvasSolo);
+	if (isPaused)
+	{
+		contextSolo.clearRect(0, 0, canvasSolo.width, canvasSolo.height);
+		displayPauseScreen();
+	}
+	else {
+		contextSolo.clearRect(0, 0, canvasSolo.width, canvasSolo.height);
+		drawWallsSolo(contextSolo, canvasSolo);
+		firstPaddleSolo(contextSolo, playerOneSolo);
+		ballSoloStyle(contextSolo, ballSolo);
+		drawDashedLineSolo(contextSolo, canvasSolo);
+	}
 }
 
 export function resetGameSolo()
@@ -204,10 +206,29 @@ export function resetGameSolo()
 
 let animationId = null;
 
-function loopSolo(){
+export function loopSolo(){
 	ballSoloBounce();
 	executeMovesSolo();
 	animationId = requestAnimationFrame(loopSolo);
+}
+
+export function paused() {
+	if (animationId)
+	{
+		cancelAnimationFrame(animationId);
+		animationId = null;
+	}
+}
+
+export function drawPause() {
+
+	const rectWidth = 50;
+	const rectHeight = 200;
+	
+	contextSolo.fillStyle = "black";
+	contextSolo.fillRect(canvasSolo.width / 2 - 70, canvasSolo.height / 2 - 100, rectWidth, rectHeight);
+
+	contextSolo.fillRect(canvasSolo.width / 2 + 20, canvasSolo.height / 2 - 100, rectWidth, rectHeight);
 }
 
 export function soloMode(){

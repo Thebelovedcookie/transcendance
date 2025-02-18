@@ -233,6 +233,16 @@ class GameAISocket {
 		}
 	}
 
+	drawPause() {
+		const rectWidth = 50;
+		const rectHeight = 200;
+		
+		context.fillStyle = "black";
+		context.fillRect(canvas.width / 2 - 70, canvas.height / 2 - 100, rectWidth, rectHeight);
+	
+		context.fillRect(canvas.width / 2 + 20, canvas.height / 2 - 100, rectWidth, rectHeight);
+	}
+
 	sendInfoStarting()
 	{
 		const data = {
@@ -453,6 +463,8 @@ export function aiMode(themeReceived) {
 		theme = themeReceived;
 		gameSocket = new GameAISocket();
 	}
+	if (gameSocket)
+		return (gameSocket);
 }
 
 export function stopGameAi() {

@@ -1,11 +1,13 @@
-import { soloMode } from '../game_mode/solo/main_solo.js';
+import { soloMode, paused, loopSolo, drawPause } from '../game_mode/solo/main_solo.js';
 
 export class SoloGamePage {
 	constructor() {
 		this.container = document.getElementById('dynamicPage');
+		this.pause = false;
 	}
 
 	async handle() {
+		this.setupEventListeners();
 		this.render();
 	}
 
@@ -20,6 +22,27 @@ export class SoloGamePage {
 		this.container.appendChild(gameContent);
 
 		soloMode();
+	}
+
+	setupEventListeners()
+	{
+		window.addEventListener('keydown', (e) => {
+			e.preventDefault();
+			console.log(e.key);
+			if (e.key == "Escape")
+			{
+				if (this.pause == false) {
+					paused();
+					drawPause();
+					this.pause = true;
+				}
+				else {
+					this.pause = false;
+					loopSolo();
+				}
+
+			}
+		})
 	}
 }
 
