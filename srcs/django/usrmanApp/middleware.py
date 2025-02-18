@@ -25,8 +25,12 @@ class CustomSessionMiddleware(SessionMiddleware):
 				)
 				session_key = jwt_decode["session_key"]
 		except jwt.ExpiredSignatureError:
+			print("JWT expired")
+			session_key = None
 			pass
 		except jwt.exceptions.DecodeError:
+			print("JWT decode error")
+			session_key = None
 			pass
 		request.session = self.SessionStore(session_key)
 

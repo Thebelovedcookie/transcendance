@@ -43,7 +43,7 @@ RUN cd /project && python3.11 manage.py startapp backend_app \
 EXPOSE 8000
 
 RUN apt update && apt install -y postgresql-client
-RUN pip install psycopg[binary] channels[daphne] django-cors-headers Pillow
+RUN pip install psycopg[binary] channels[daphne] django-cors-headers Pillow pyjwt django-channels-jwt-auth-middleware
 
 ENV DJANGO_SETTINGS_MODULE=backend_project.settings
 

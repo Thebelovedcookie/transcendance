@@ -14,26 +14,19 @@ from backend_gamecons_app.routing import websocket_urlpatterns as backend_gameco
 from backend_tour_app.routing import websocket_urlpatterns as backend_tour_ws
 from remotePlayer_app.routing import websocket_urlpatterns as remote_player_app_ws
 from online_status_app.routing import websocket_urlpatterns as onlineStatus_ws
-from channels.auth import AuthMiddlewareStack
-
-# application = ProtocolTypeRouter({
-#     "http": get_asgi_application(),
-#     "websocket": AllowedHostsOriginValidator(
-#         URLRouter(websocket_urlpatterns)
-#     ),
-# })
+from backend_project.middleware import JWTAuthMiddlewareStack
 
 application = ProtocolTypeRouter({
 	"http": get_asgi_application(),
 	"websocket": AllowedHostsOriginValidator(
-		AuthMiddlewareStack(
+		JWTAuthMiddlewareStack(
 			URLRouter(
 				backend_app_ws +
 				backend_gamecons_ws +
 				backend_tour_ws +
 				remote_player_app_ws +
 				onlineStatus_ws
-				)
 			)
+		)
 	),
 })

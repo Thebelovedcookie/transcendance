@@ -39,7 +39,6 @@ class Router {
 
 		this.initializeAuth()
 			.then(() => {
-				this.initializeOnlineStatus();
 				this.initializeCsrfToken();
 				this.initializeRoutes();
 				this.setupEventListeners();
@@ -88,7 +87,8 @@ class Router {
 			const host = window.location.host;
 			const wsUrl = `${protocol}//${host}/ws/user_status/`;
 
-			this.onlineSocket = new WebSocket(wsUrl);
+			const protocols = [];
+			this.onlineSocket = new WebSocket(wsUrl, protocols);
 		} catch (error) {
 			console.error("WebSocket connection error:", error);
 		}
