@@ -9,6 +9,9 @@ let theme = "base";
 class RemoteGameWebSocket {
 	constructor() {
 		canvas = document.getElementById("pongGame");
+		this.container = document.querySelector('.game-container');
+		this.loadingText = this.container.querySelector('.typewriter-text');
+		this.backButton = this.container.querySelector('.back-button');
 		context = canvas.getContext("2d");
 		canvas.height = window.innerHeight * 0.8;
 		canvas.width = canvas.height * (16/9);
@@ -37,14 +40,14 @@ class RemoteGameWebSocket {
 				e.preventDefault();
 			}
 		};
-	
+
 		this.keyUpHandler = (e) => {
 			if (this.keys.hasOwnProperty(e.key)) {
 				this.keys[e.key] = false;
 				e.preventDefault();
 			}
 		};
-	
+
 		window.addEventListener('keydown', this.keyDownHandler);
 		window.addEventListener('keyup', this.keyUpHandler);
 	}
@@ -57,7 +60,7 @@ class RemoteGameWebSocket {
 			this.sendMove("down");
 		}
 	}
-	
+
 	connect() {
 		try {
 			const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -100,6 +103,9 @@ class RemoteGameWebSocket {
 	startGameLoop() {
 		if (this.gameLoopInterval) return;
 
+		this.loadingText.remove();
+		this.backButton.remove();
+
 		this.gameLoopInterval = setInterval(() => {
 			this.updatePlayerPositions();
 
@@ -131,7 +137,7 @@ class RemoteGameWebSocket {
 				"canvasWidth": canvas.width,
 			}
 		};
-	
+
 		if (this.isConnected && this.socket) {
 			this.socket.send(JSON.stringify(data));
 		} else {
@@ -250,7 +256,7 @@ class RemoteGameWebSocket {
 			}
 		}
 	}
-	
+
 	//checking if the message is for us or not since its send to every client
 	isItForMe(data) {
 		if (data.message.playerOne.id === this.playerId)
@@ -310,6 +316,11 @@ class RemoteGameWebSocket {
 let gameSocket = null;
 
 export function normalMode() {
+	const authState = window.router.getAuthState();
+	const isLoggedIn = authState.isAuthenticated;
+	if (!isLoggedIn) {
+		window.router.navigate('/login');
+	}
 	if (!gameSocket) {
 		gameSocket = new RemoteGameWebSocket();
 	}
