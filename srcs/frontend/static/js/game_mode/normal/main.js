@@ -425,7 +425,7 @@ export function normalMode(themeReceived, typeOfMatch, socketTournament, infoMat
 
 export function stopGame() {
 	if (gameSocket) {
-		gameSocket.cleanup(); // this function is not working properly
+		gameSocket.cleanup();
 		gameSocket.stopGameLoop();
 		gameSocket.socket.close();
 		gameSocket = null;
