@@ -143,6 +143,9 @@ class Router {
 		const path = window.location.pathname;
 		const page = this.routes.get(path) || new NotFoundPage();
 		await page.handle();
+		//appliquer la trad apres chargement de la page
+		const savedLang = localStorage.getItem("selectedLang") || "en";
+    	await updateTexts(savedLang);
 	}
 
 	//add the history

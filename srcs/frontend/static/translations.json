@@ -1,0 +1,43 @@
+{
+    "en": {
+        "language": "English",
+        "PLAY" : "PLAY",
+        "2025 PongSite - All Rights Reserved" : "2025 PongSite - All Rights Reserved",
+        "Login":"Login",
+        "Register": "Register",
+        "modeSelect": "Select Your Game Mode",
+        "Normal Mode" :"Normal Mode",
+        "Classic" : "Classic 2-player battle(same keyboard)"
+    },
+    "fr": {
+        "language": "Francais",
+        "PLAY" : "JOUER",
+        "2025 PongSite - All Rights Reserved" : "2025 PongSite - Tous droits reserves",
+        "Login":"connexion",
+        "Register": "inscription",
+        "modeSelect": "Selectionner votre mode de jeu",
+        "Normal Mode" : "Mode standard",
+        "Classic" : "Classique: duel (meme clavier)"
+    },
+    "es": {
+        "language": "Spanish",
+        "PLAY" : "JUGAR",
+        "2025 PongSite - All Rights Reserved" : "2025 PongSite - Tous droits reserves",
+        "Login":"se connecter",
+        "Register": "s enregistrer",
+        "modeSelect": "Selectionner votre mode de jeu",
+        "Normal Mode" : "Mode standard",
+        "Classic" : "Classique: duel (meme clavier)"
+    },
+    "ja": {
+        "language": "日本語",
+        "PLAY" : "遊ぶ",
+        "2025 PongSite - All Rights Reserved" : "2025 PongSite - 無断複写・転載を禁じます",
+        "Login":"ログイン",
+        "Register": "登録する",
+        "modeSelect": "ゲームモードを選択してください」",
+        "Normal Mode" : "ノーマルモード」",
+        "Classic" : "クラシックな2人対戦(同じキーボード)"
+    }
+
+}

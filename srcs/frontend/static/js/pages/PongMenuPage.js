@@ -53,7 +53,7 @@ export class PongMenuPage {
 			<div class="pong-menu-container">
 				<div class="game-title">
 					<h1>PONG</h1>
-					<p class="subtitle">Select Your Game Mode</p>
+					<p class="subtitle" data-translate= "modeSelect"">Select Your Game Mode</p>
 				</div>
 
                 <div class="game-modes">
@@ -61,33 +61,33 @@ export class PongMenuPage {
                         <div class="mode-icon">🏓</div>
                         <h3>Normal Mode</h3>
                         <p>Classic 2-player battle</p>
-                        <div class="mode-hover">PLAY</div>
+                        <div class="mode-hover" data-translate="PLAY">PLAY</div>
                     </div>
                     <div class="mode-card" data-path="/pong/normal">
                         <div class="mode-icon">🏓🏓</div>
-                        <h3>Normal Mode</h3>
-                        <p>Classic 2-player battle(same keyboard)</p>
-                        <div class="mode-hover">PLAY</div>
+                        <h3 data-translate="Normal Mode">Normal Mode</h3>
+                        <p data-translate="Classic">Classic 2-player battle(same keyboard)</p>
+                        <div class="mode-hover" data-translate="PLAY">PLAY</div>
                     </div>
                     <div class="mode-card" data-path="/pong/multi">
                         <div class="mode-icon">🏓🏓🏓</div>
                         <h3>Multi Mode</h3>
                         <p>Play against your friends</p>
-                        <div class="mode-hover">PLAY</div>
+                        <div class="mode-hover" data-translate="PLAY">PLAY</div>
                     </div>
 
 					<div class="mode-card solo-mode">
 						<div class="mode-icon">🤖</div>
 						<h3>Solo Mode</h3>
 						<p>Challenge yourself</p>
-						<div class="mode-hover">PLAY</div>
+						<div class="mode-hover" data-translate="PLAY">PLAY</div>
 					</div>
 
 					<div class="mode-card" data-path="/pong/tournament">
 						<div class="mode-icon">🏆</div>
 						<h3>Tournament Mode</h3>
 						<p>Compete to win</p>
-						<div class="mode-hover">PLAY</div>
+						<div class="mode-hover"data-translate="PLAY">PLAY</div>
 					</div>
 				</div>
 			</div>
