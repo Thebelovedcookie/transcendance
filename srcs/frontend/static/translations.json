@@ -7,8 +7,17 @@
         "Register": "Register",
         "modeSelect": "Select Your Game Mode",
         "Normal Mode" :"Normal Mode",
-        "Classic" : "Classic 2-player battle(same keyboard)"
+        "Classic2" : "Classic 2-player battle(same keyboard)",
+        "Classic1": "Classic 2-player battle",
+        "MultiMode" : "Multi Mode",
+        "Multidetails" : "Play against your friends",
+        "Solo" : "Solo Mode",
+        "Solodetails" :"Challenge yourself",
+        "Tournament" : "Tournament Mode",
+        "Tournamentdetails":"Compete to win"
+
     },
+
     "fr": {
         "language": "Francais",
         "PLAY" : "JOUER",
@@ -17,18 +26,16 @@
         "Register": "inscription",
         "modeSelect": "Selectionner votre mode de jeu",
         "Normal Mode" : "Mode standard",
-        "Classic" : "Classique: duel (meme clavier)"
+        "Classic2" : "Classique: duel (meme clavier)",
+        "Classic1": "Classique : duel",
+        "MultiMode" : "Multi Mode",
+        "Multidetails" : "Joue contre tes amis",
+        "Solo" : "Mode Solo",
+        "Solodetails" :"Challenge-toi",
+        "Tournament" : "Mode tournoi",
+        "Tournamentdetails":"participe pour gagner"
     },
-    "es": {
-        "language": "Spanish",
-        "PLAY" : "JUGAR",
-        "2025 PongSite - All Rights Reserved" : "2025 PongSite - Tous droits reserves",
-        "Login":"se connecter",
-        "Register": "s enregistrer",
-        "modeSelect": "Selectionner votre mode de jeu",
-        "Normal Mode" : "Mode standard",
-        "Classic" : "Classique: duel (meme clavier)"
-    },
+
     "ja": {
         "language": "日本語",
         "PLAY" : "遊ぶ",
@@ -37,7 +44,19 @@
         "Register": "登録する",
         "modeSelect": "ゲームモードを選択してください」",
         "Normal Mode" : "ノーマルモード」",
-        "Classic" : "クラシックな2人対戦(同じキーボード)"
+        "Classic2" : "クラシックな2人対戦(同じキーボード)"
+    },
+
+    "es": {
+        "language": "Spanish",
+        "PLAY" : "JUGAR",
+        "2025 PongSite - All Rights Reserved" : "2025 PongSite - Tous droits reserves",
+        "Login":"se connecter",
+        "Register": "s enregistrer",
+        "modeSelect": "Selectionner votre mode de jeu",
+        "Normal Mode" : "Mode standard",
+        "Classic2" : "Classique: duel (meme clavier)"
     }
+   
 
 }
