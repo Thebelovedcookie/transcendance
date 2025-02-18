@@ -174,6 +174,7 @@ class RemoteGameWebSocket {
 				break;
 			case "game.init":
 				this.isItForMe(data);
+				//display waiting page
 				break;
 			case "game_state":
 				this.updateGame(data);
@@ -199,24 +200,24 @@ class RemoteGameWebSocket {
 			return;
 		if (data.message.winner.id == this.playerId)
 		{
+			stopGame();
 			const victory = new WinnerRemoteGamePage();
 			victory.handle();
-			this.stopGameLoop();
 		}
 		else if (data.message.loser.id == this. playerId)
 		{
+			stopGame();
 			const defeat = new LoserRemoteGamePage();
 			defeat.handle();
-			this.stopGameLoop();
 		}
 	}
 
 	winByForfait(data) {
 		if (data.message.matchId != this.matchId)
 			return ;
+		stopGame();
 		const end = new ForfaitRemoteGamePage();
 		end.handle();
-		this.stopGameLoop();
 	}
 
 	updateGame(data) {
@@ -293,6 +294,7 @@ class RemoteGameWebSocket {
 	drawGame() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		firstPaddle(context, this.gameState.me);
+		// console.log(this.gameState.opponent);
 		firstPaddle(context, this.gameState.opponent);
 		ballStyle(context, this.gameState.ball);
 		drawDashedLine(context, canvas);

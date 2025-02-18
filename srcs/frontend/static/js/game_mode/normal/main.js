@@ -132,6 +132,18 @@ class GameWebSocket {
 		}, 1000 / 60);  // Still run at 60 FPS locally
 	}
 
+	drawPause() {
+
+		const rectWidth = 50;
+		const rectHeight = 200;
+		
+		context.fillStyle = "black";
+		context.fillRect(canvas.width / 2 - 70, canvas.height / 2 - 100, rectWidth, rectHeight);
+	
+		context.fillRect(canvas.width / 2 + 20, canvas.height / 2 - 100, rectWidth, rectHeight);
+	}
+	
+
 	stopGameLoop() {
 		if (this.gameLoopInterval) {
 			clearInterval(this.gameLoopInterval);
@@ -407,11 +419,13 @@ export function normalMode(themeReceived, typeOfMatch, socketTournament, infoMat
 		theme = themeReceived;
 		gameSocket = new GameWebSocket(typeOfMatch, socketTournament, infoMatch);
 	}
+	if (gameSocket)
+		return gameSocket;
 }
 
 export function stopGame() {
 	if (gameSocket) {
-		gameSocket.cleanup(); // this function is not working properly
+		gameSocket.cleanup();
 		gameSocket.stopGameLoop();
 		gameSocket.socket.close();
 		gameSocket = null;
