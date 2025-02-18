@@ -165,6 +165,7 @@ class Router {
 	 * 4. call the handle function of the page
 	 */
 	async handleLocation() {
+		await this.updateAuthState();
 		await this.header.render();
 
 		const path = window.location.pathname;

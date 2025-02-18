@@ -119,8 +119,6 @@ def get_profile(request):
 	match_response = pong_history_app.get_user_matches(request)
 	match_data = json.loads(match_response.content)['data']
 
-	is_online = OnlineStatus.objects.get(user_id=user.id).is_online if OnlineStatus.objects.filter(user_id=user.id).exists() else False
-
 	friends_data = [
 		{
 			'id': friend.id,
@@ -148,7 +146,7 @@ def get_profile(request):
 			'image_path': user.profile_image.url if user.profile_image else None,
 			'friends': friends_data,
 			'match_history': match_data['matches'],
-			'is_online': is_online
+			'is_online': True
 		}
 	})
 
