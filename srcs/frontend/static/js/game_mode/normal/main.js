@@ -1,11 +1,8 @@
 import { EndNormalGamePage } from '../../pages/EndNormalGamePage.js';
 import { EndGamePage } from '../../tournament/EndGamePage.js';
 import { firstPaddle, secondPaddle, ballStyle, drawDashedLine, displayScoreOne, displayScoreTwo, displayPlayerName, drawWalls } from './style.js';
-import { firstPaddleBlue, secondPaddleBlue, ballStyleBlue, drawDashedLineBlue, displayScoreOneBlue, displayScoreTwoBlue } from './themeBlue.js';
-import { firstPaddleRed, secondPaddleRed, ballStyleRed, drawDashedLineRed, displayScoreOneRed, displayScoreTwoRed } from './themeRed.js';
 let canvas = null;
 let context = null;
-let theme = "base";
 
 class GameWebSocket {
 	constructor(typeOfMatch, socketTournament, infoMatch) {
@@ -32,7 +29,9 @@ class GameWebSocket {
 			ArrowDown: false
 		};
 		this.setupKeyboardControls();
+		console.log("after setup")
 		this.connect();
+		console.log("after connect")
 		this.frameCount = 0;
 		this.sendRate = 20;
 	}
@@ -167,6 +166,7 @@ class GameWebSocket {
 
 	sendInfoStarting()
 	{
+		console.log("loading data")
 		const data = {
 			type: "game.starting",
 			timestamp: Date.now(),
@@ -177,9 +177,12 @@ class GameWebSocket {
 			}
 		};
 
+		console.log("data loaded")
 		if (this.isConnected && this.socket) {
+			console.log("sending data")
 			this.socket.send(JSON.stringify(data));
 		} else {
+			console.log("warning")
 			console.warn("WebSocket not connected");
 		}
 	}
@@ -260,34 +263,6 @@ class GameWebSocket {
 		displayScoreTwo(context, scoreTwo, canvas);
 	}
 
-	// drawGameBlue() {
-	// 	context.clearRect(0, 0, canvas.width, canvas.height);
-	// 	firstPaddleBlue(context, this.gameState.player1);
-	// 	secondPaddleBlue(context, this.gameState.player2);
-	// 	ballStyleBlue(context, this.gameState.ball);
-	// 	drawDashedLineBlue(context, canvas);
-
-	// 	const scoreOne = this.gameState.scores.playerOne ?? 0;
-	// 	const scoreTwo = this.gameState.scores.playerTwo ?? 0;
-
-	// 	displayScoreOneBlue(context, scoreOne, canvas);
-	// 	displayScoreTwoBlue(context, scoreTwo, canvas);
-	// }
-
-	// drawGameRed() {
-	// 	context.clearRect(0, 0, canvas.width, canvas.height);
-	// 	firstPaddleRed(context, this.gameState.player1);
-	// 	secondPaddleRed(context, this.gameState.player2);
-	// 	ballStyleRed(context, this.gameState.ball);
-	// 	drawDashedLineRed(context, canvas);
-
-	// 	const scoreOne = this.gameState.scores.playerOne ?? 0;
-	// 	const scoreTwo = this.gameState.scores.playerTwo ?? 0;
-
-	// 	displayScoreOneRed(context, scoreOne, canvas);
-	// 	displayScoreTwoRed(context, scoreTwo, canvas);
-	// }
-
 	cleanup() {
 		window.removeEventListener('keydown', this.keyDownHandler);
 		window.removeEventListener('keyup', this.keyUpHandler);
@@ -296,12 +271,14 @@ class GameWebSocket {
 
 let gameSocket = null;
 
-export function normalMode(themeReceived, typeOfMatch, socketTournament, infoMatch) {
+export function normalMode(typeOfMatch, socketTournament, infoMatch) {
+	console.log('function normal mode')
 	if (!gameSocket) {
-		theme = themeReceived;
+		console.log('get new socket')
 		gameSocket = new GameWebSocket(typeOfMatch, socketTournament, infoMatch);
 	}
 	if (gameSocket)
+		console.log('have socket')
 		return gameSocket;
 }
 

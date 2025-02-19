@@ -60,7 +60,7 @@ class RemoteGameWebSocket {
 			this.sendMove("down");
 		}
 	}
-
+ 
 	connect() {
 		try {
 			const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';

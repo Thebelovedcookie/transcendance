@@ -14,6 +14,8 @@ export class NormalGamePage {
 	async handle() {
 		this.setupEventListeners()
 		this.render();
+
+		console.log("finished handle")
 	}
 
 	render() {
@@ -25,8 +27,9 @@ export class NormalGamePage {
 
 		this.container.innerHTML = '';
 		this.container.appendChild(gameContent);
-
-		this.game = normalMode(this.theme, this.type, this.socketTournament, this.infoMatch);
+		console.log("in render")
+		this.game = normalMode(this.type, this.socketTournament, this.infoMatch);
+		console.log("after normal mode")
 	}
 
 	setupEventListeners()

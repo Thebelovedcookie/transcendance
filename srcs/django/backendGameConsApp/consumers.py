@@ -4,6 +4,7 @@ import random
 import time
 import json
 import logging
+import asyncio
 import math
 
 logger = logging.getLogger(__name__)
@@ -17,11 +18,11 @@ class GameConsumer(AsyncWebsocketConsumer):
 	async def connect(self):
 		logger.info("WebSocket connection attempt")
 		try:
-			self.accept()
+			await self.accept()
 			logger.info("WebSocket connection accepted")
 		except Exception as e:
 			logger.error(f"WebSocket connection failed: {e}")
-		self.createGame()
+		await self.createGame()
 
 	#interrupt the Websocket
 	async def disconnect(self, close_code):
@@ -83,16 +84,16 @@ class GameConsumer(AsyncWebsocketConsumer):
 	async def initialisation(self, data):
 		m = self.infoMatch["match"][0]
 		start_data = data.get("start", {})
-		window_height = start_data.get("windowHeight", 0)
-		window_width = start_data.get("windowWidth", 0)
+		canvas_height = start_data.get("windowHeight", 0)
+		canvas_width = start_data.get("windowWidth", 0)
 		typeOfMatch = start_data.get("typeOfMatch", 0)
 
 		m["maxScore"] = 10
+		m["canvas"] = {"canvas_height": canvas_height, "canvas_width": canvas_width}
 		if typeOfMatch == "tournement":
 			m["maxScore"] = 5
 
 		m["playerOne"].update({
-			"id": playerId,
 			"x": 5,
 			"y": canvas_height * 0.4,
 			"width": canvas_width / 80,
@@ -102,7 +103,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 			"score": 0
 			})
 		m["playerTwo"].update({
-			"id": playerId,
 			"x": canvas_width - 20,
 			"y": canvas_height * 0.4,
 			"width": canvas_width / 80,
