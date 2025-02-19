@@ -86,7 +86,7 @@ class GameConsumer(WebsocketConsumer):
 					"width": 15,
 					"height": 15,
 					"color": "black",
-					"speed": 16,
+					"speed": 8, #is this the same for all games?
 					"gravity": 6,
 				},
 				"scores": {
