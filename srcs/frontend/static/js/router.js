@@ -22,18 +22,64 @@ import { RemoteNormalGamePage } from './pages/RemoteNormalGamePage.js';
 
 //first step : Creation of a class Router which will allows to naviguates between pages and add an history
 class Router {
-	//constructor of the class call his 3 function
+	#authState;  // private field
+
 	constructor() {
 		this.header = new Header();
 		this.routes = new Map();
 		this.container = document.getElementById('dynamicPage');
 		this.onlineSocket = null;
 
-		this.initializeOnlineStatus();
-		this.initializeCsrfToken();
-		this.initializeRoutes();
-		this.setupEventListeners();
-		this.handleLocation();
+		// Initialize private field
+		this.#authState = {
+			isAuthenticated: false,
+			username: '',
+			lastChecked: null
+		};
+
+		this.initializeAuth()
+			.then(() => {
+				this.initializeOnlineStatus();
+				this.initializeCsrfToken();
+				this.initializeRoutes();
+				this.setupEventListeners();
+				this.handleLocation();
+			});
+	}
+
+	async initializeAuth() {
+		await this.updateAuthState();
+	}
+
+	async updateAuthState() {
+		try {
+			const response = await fetch('/api/user', {
+				credentials: 'include'
+			});
+			const data = await response.json();
+
+			this.#authState = {
+				isAuthenticated: data.data.isAuthenticated,
+				username: data.data.username || '',
+				lastChecked: new Date()
+			};
+
+			if (this.#authState.isAuthenticated) {
+				this.initializeOnlineStatus();
+			} else if (this.onlineSocket) {
+				this.onlineSocket.close();
+				this.onlineSocket = null;
+			}
+
+			return this.getAuthState();
+		} catch (error) {
+			console.error('Failed to check auth state:', error);
+			return this.getAuthState();
+		}
+	}
+
+	getAuthState() {
+		return Object.freeze({ ...this.#authState });
 	}
 
 	async initializeOnlineStatus() {
@@ -42,25 +88,7 @@ class Router {
 			const host = window.location.host;
 			const wsUrl = `${protocol}//${host}/ws/user_status/`;
 
-			console.log("Attempting to connect:", wsUrl);
 			this.onlineSocket = new WebSocket(wsUrl);
-
-			this.onlineSocket.onopen = () => {
-				console.log("WebSocket connection established");
-			};
-
-			this.onlineSocket.onmessage = (event) => {
-				console.log('Online status message received:', event.data);
-			};
-
-			this.onlineSocket.onerror = (error) => {
-				console.error("WebSocket error:", error);
-			};
-
-			this.onlineSocket.onclose = (event) => {
-				console.log("WebSocket connection closed:", event);
-			};
-
 		} catch (error) {
 			console.error("WebSocket connection error:", error);
 		}
@@ -74,7 +102,6 @@ class Router {
 			const data = await response.json();
 			// global variable to use the CSRF token in the RegisterPage.js
 			window.csrfToken = data.csrf_token;
-			console.log('CSRF Token initialized in Router');
 		} catch (error) {
 			console.error('Failed to initialize CSRF token:', error);
 		}

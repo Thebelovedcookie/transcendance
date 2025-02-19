@@ -8,6 +8,7 @@ class OnlineStatus(models.Model):
 		on_delete=models.CASCADE
 	)
 	is_online	= models.BooleanField(default=False)
+	# not in use(use last_login of user model instead)
 	last_seen	= models.DateTimeField(default=timezone.now)
 
 	# Update online status and last seen time

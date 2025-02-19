@@ -5,12 +5,9 @@ export class Header {
 
 	async render() {
 		try {
-			const response = await fetch('/api/user', {
-				credentials: 'include'
-			});
-			const data = await response.json();
-			const isLoggedIn = data.data.isAuthenticated;
-			const username = isLoggedIn ? data.data.username : '';
+			const authState = window.router.getAuthState();
+			const isLoggedIn = authState.isAuthenticated;
+			const username = authState.username;
 
 			this.container.innerHTML = `
 				<nav class="navbar navbar-expand-lg navbar-light bg-secondary">

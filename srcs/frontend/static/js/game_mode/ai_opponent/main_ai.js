@@ -432,8 +432,13 @@ class GameAISocket {
 	resetBall() {
 		this.gameState.ball.x = canvas.width / 2;
 		this.gameState.ball.y = canvas.height / 2;
-		this.gameState.ball.speed = Math.abs(this.gameState.ball.speed) * (Math.random() > 0.5 ? 1 : -1); // Changer la direction aléatoirement
-		this.gameState.ball.gravity = Math.abs(this.gameState.ball.gravity) * (Math.random() > 0.5 ? 1 : -1);
+
+		const angle = (Math.random() * Math.PI / 3 - Math.PI / 6);
+
+		const current_speed = Math.sqrt(this.gameState.ball.speed * this.gameState.ball.speed + this.gameState.ball.gravity * this.gameState.ball.gravity);
+		
+		this.gameState.ball.speed = current_speed * Math.cos(angle) * (Math.random() > 0.5 ? 1 : -1);
+		this.gameState.ball.gravity = current_speed *  Math.sin(angle) * (Math.random() > 0.5 ? 1 : -1);
 	}
 
 	drawGame() {

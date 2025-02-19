@@ -1,6 +1,7 @@
-import { firstPaddleSolo, ballSoloStyle, drawDashedLineSolo, drawWallsSolo } from './style.js';
+import { firstPaddleSolo, ballSoloStyle, drawDashedLineSolo, drawWallsSolo, displayText } from './style.js';
 
 //----------------------GLOBAL GAME ELEMENT----------------------------//
+
 let canvasSolo;
 let contextSolo;
 let playerOneSolo;
@@ -160,8 +161,13 @@ function ballSoloWallCollision(){
 function resetBallSolo() {
 	ballSolo.x = canvasSolo.width / 2;
 	ballSolo.y = canvasSolo.height / 2;
-	ballSolo.speed = Math.abs(ballSolo.speed) * (Math.random() > 0.5 ? 1 : -1); // Changer la direction aléatoirement
-	ballSolo.gravity = Math.abs(ballSolo.gravity) * (Math.random() > 0.5 ? 1 : -1);
+
+	const angle = (Math.random() * Math.PI / 4 - Math.PI / 8);
+
+	const current_speed = Math.sqrt(ballSolo.speed * ballSolo.speed + ballSolo.gravity * ballSolo.gravity);
+	
+	ballSolo.speed = current_speed * Math.cos(angle);
+	ballSolo.gravity = current_speed *  Math.sin(angle);
 }
 
 function drawElementsSolo(){
@@ -176,6 +182,7 @@ function drawElementsSolo(){
 		firstPaddleSolo(contextSolo, playerOneSolo);
 		ballSoloStyle(contextSolo, ballSolo);
 		drawDashedLineSolo(contextSolo, canvasSolo);
+		displayText(contextSolo, canvasSolo);
 	}
 }
 

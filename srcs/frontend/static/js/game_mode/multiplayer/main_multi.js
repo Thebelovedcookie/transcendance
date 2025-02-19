@@ -422,7 +422,7 @@ class GameWebSocket {
 			this.gameState.scores.playerOne++;
 			this.gameState.scores.playerTwo++;
 		}
-		//this.checkScore();
+		this.checkScore();
 		this.resetBall();
 	}
 
@@ -438,19 +438,19 @@ class GameWebSocket {
 			if (this.gameState.scores.playerOne == 10)
 			{
 				stopGame();
-				const end = new EndNormalGamePage("PlayerOne", "PlayerTwo and PlayerThree");
+				const end = new EndNormalGamePage("Player 1", "Player 2 and Player 3");
 				end.handle();
 			}
 			else if (this.gameState.scores.playerTwo == 10)
 			{
 				stopGame();
-				const end = new EndNormalGamePage("PlayerTwo", "PlayerOne and PlayerThree");
+				const end = new EndNormalGamePage("Player 2", "Player 1 and Player 3");
 				end.handle();
 			}
 			else
 			{
 				stopGame();
-				const end = new EndNormalGamePage("PlayerThree", "PlayerOne and PlayerTwo");
+				const end = new EndNormalGamePage("Player 3", "Player 1 and Player 2");
 				end.handle();
 			}
 		}
@@ -461,11 +461,9 @@ class GameWebSocket {
 		this.gameState.ball.y = this.centerY;
 
 		if (!this.gameState.ball.speed) this.gameState.ball.speed = 4;
-		if (!this.gameState.ball.gravity) this.gameState.ball.gravity = 2;
 
 		const angle = Math.random() * 2 * Math.PI
 
-		// no longer using gravity
 		this.gameState.ball.vx = this.gameState.ball.speed * Math.cos(angle);
 		this.gameState.ball.vy = this.gameState.ball.speed * Math.sin(angle);
 	}

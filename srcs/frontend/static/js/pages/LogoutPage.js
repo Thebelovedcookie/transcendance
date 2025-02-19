@@ -23,7 +23,8 @@ export class LogoutPage {
 				throw new Error(`HTTP error! status: ${response.status}`);
 			}
 
-			window.router.onlineSocket.close();
+			window.router.updateAuthState();
+			// window.router.onlineSocket.close();
 			window.history.pushState({}, '', '/');
 			window.dispatchEvent(new PopStateEvent('popstate'));
 

@@ -127,6 +127,11 @@ export function displayPlayerName(context, canvas)
 	context.shadowOffsetY = 0;
 	context.shadowBlur = 3;
 
+	context.textAlign = "left";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+	context.fillText('Pause game: Esc', size, size);
+
 	context.textAlign = "right";
 	context.textBaseline = "bottom";
 	context.fillStyle = "red";
