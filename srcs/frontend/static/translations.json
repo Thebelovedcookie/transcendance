@@ -15,26 +15,71 @@
         "Solodetails" :"Challenge yourself",
         "Tournament" : "Tournament Mode",
         "Tournamentdetails":"Compete to win",
-        "settinglog":"Please enter your login and password!"
+        "pwd":"Password",
+        "settinglog":"Please enter your login and password!",
+        "email_placeholder":"Email",
+        "pwd_placeholder":"Password",
+        "pwd2_placeholder":"Confirm Password",
+        "user-placeholder":"Username",
+        "Enter-user":"Please enter your username",
+        "Email-user":"Please enter a valid email address",
+        "emailerror": "Please enter your email",
+        "errorpwd" :"Please enter your password",
+        "pwd-rules":"Password must be at least 8 characters",
+        "forgotpwd":"Forgot password?",
+        "notyet": "Don't have an account {link}",
+        "already":"Already have an account? {link}",
+        "sign":"Sign Up",
+        "sign-in":"Sign In",
+        "createaccount": "Create your account",
+        "page-error":"The page you are looking for does not exist",
+        "error404":"Page Not Found",
+        "return-home":"Return to Home"
 
     },
 
     "fr": {
         "language": "Francais",
+
         "PLAY" : "JOUER",
         "2025 PongSite - All Rights Reserved" : "2025 PongSite - Tous droits reserves",
-        "Login":"connexion",
-        "Register": "inscription",
+
+        "Login":"Connexion",
+        "Register": "Inscription",
+
         "modeSelect": "Selectionner votre mode de jeu",
         "Normal Mode" : "Mode standard",
-        "Classic2" : "Classique: duel (meme clavier)",
-        "Classic1": "Classique : duel",
+        "Classic2" : "Duel Standard (meme clavier)",
+        "Classic1": "Duel Standard",
         "MultiMode" : "Multi Mode",
         "Multidetails" : "Joue contre tes amis",
         "Solo" : "Mode Solo",
         "Solodetails" :"Challenge-toi",
         "Tournament" : "Mode tournoi",
-        "Tournamentdetails":"participe pour gagner"
+        "Tournamentdetails":"participe pour gagner",
+        
+        "settinglog":"Entrer votre login et mot de passe!",
+        "pwd":"mot de passe",
+        "Enter-user":"Entrer votre nom d'utilisateur",
+        "Email-user":"Entrer une adresse email valide",
+        "email_placeholder":"Email",
+        "pwd_placeholder":"Mot de passe",
+        "pwd2_placeholder":"Confirmer le mot de passe",
+        "user-placeholder":"Nom d'utilisateur",
+        "emailerror": "Entrer votre email",
+        "errorpwd" :"Entrer votre mot de passe",
+        "pwd-rules":"Le mot de passe doit contenir au moins 8 caractères",
+        "forgotpwd":"Mot de passe oublié?",
+        "already":"Déjà inscrit? {link}",
+        "notyet":"Pas encore inscrit? {link}",
+        "sign":"S'inscrire",
+        "sign-in":"Se connecter",
+        "createaccount": "Créer votre compte",
+
+        "page-error":"La page que vous recherchez n'existe pas",
+        "error404":"Page non trouvée",
+        "return-home":"Retour à l'accueil"
+        
     },
 
     "ja": {

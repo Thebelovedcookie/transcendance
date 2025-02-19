@@ -9,42 +9,42 @@ export class RegisterPage {
 				<div class="card bg-dark text-white" style="border-radius: 1rem;">
 					<div class="card-body p-5 text-center">
 						<div class="mb-md-5 mt-md-4 pb-5">
-							<h2 class="fw-bold mb-2 text-uppercase">Register</h2>
-							<p class="text-white-50 mb-5">Create your account</p>
+							<h2 class="fw-bold mb-2 text-uppercase"data-translate="Register"></h2>
+							<p class="text-white-50 mb-5" data-translate= "createaccount"></p>
 
 							<div class="form-outline form-white mb-4">
-								<input type="text" id="typeUsernameX" class="form-control form-control-lg" placeholder="Username" />
-								<div id="usernameError" class="text-danger small mt-1" style="display: none;">Please enter your username</div>
+								<input type="text" id="typeUsernameX" class="form-control form-control-lg" placeholder="Username" data-translate="user-placeholder" />
+								<div id="usernameError" class="text-danger small mt-1" style="display: none;" data-translate="Enter-user"></div>
 							</div>
 
 							<div class="form-outline form-white mb-4">
-								<input type="email" id="typeEmailX" class="form-control form-control-lg" placeholder="Email" />
-								<div id="emailError" class="text-danger small mt-1" style="display: none;">Please enter a valid email address</div>
+								<input type="email" id="typeEmailX" class="form-control form-control-lg" placeholder="Email" data-translate="email_placeholder"/>
+								<div id="emailError" class="text-danger small mt-1" style="display: none;" data-transfert= "Email-user"></div>
 							</div>
 
 							<div class="form-outline form-white mb-4">
-								<input type="password" id="typePasswordX" class="form-control form-control-lg" placeholder="Password" />
+								<input type="password" id="typePasswordX" class="form-control form-control-lg" placeholder="Password" data-translate="pwd_placeholder"/>
 								<div class="password-strength-meter mt-1">
 									<div class="progress" style="height: 5px;">
 										<div id="passwordStrength" class="progress-bar" role="progressbar" style="width: 0%"></div>
 									</div>
-									<small class="text-white-50">Password must be at least 8 characters</small>
+									<small class="text-white-50" data-translate="pwd-rules"></small>
 								</div>
-								<div id="passwordError" class="text-danger small mt-1" style="display: none;">Password must be at least 8 characters</div>
+								<div id="passwordError" class="text-danger small mt-1" style="display: none;" data-translate="pwd-rules"></div>
 							</div>
 
 							<div class="form-outline form-white mb-4">
-								<input type="password" id="typeConfirmPasswordX" class="form-control form-control-lg" placeholder="Confirm Password" />
+								<input type="password" id="typeConfirmPasswordX" class="form-control form-control-lg" placeholder="Confirm Password" data-translate="pwd2_placeholder"/>
 								<div class="password-strength-meter mt-1">
 									<div class="progress" style="height: 5px;">
 										<div id="passwordConfirmStrength" class="progress-bar" role="progressbar" style="width: 0%"></div>
 									</div>
-									<small class="text-white-50">Password must be at least 8 characters</small>
+									<small class="text-white-50" data-translate="pwd-rules"></small>
 								</div>
-								<div id="confirmPasswordError" class="text-danger small mt-1" style="display: none;">Please confirm your password</div>
+								<div id="confirmPasswordError" class="text-danger small mt-1" style="display: none;" data-translate="pwd-rules"></div>
 							</div>
 
-							<button class="btn btn-outline-light btn-lg px-5" type="submit" id="registerButton">Register</button>
+							<button class="btn btn-outline-light btn-lg px-5" type="submit" id="registerButton" data-translate = "Register"></button>
 
 							<div class="d-flex justify-content-center text-center mt-4 pt-1">
 								<a href="#!" class="text-white"><i class="fab fa-facebook-f fa-lg"></i></a>
@@ -54,7 +54,7 @@ export class RegisterPage {
 						</div>
 
 						<div>
-							<p class="mb-0">Already have an account? <a href="/login" data-path="/login" class="text-white-50 fw-bold">Sign In</a></p>
+							<p class="mb-0" data-translate="already">Already have an account? <a href="/login" data-path="/login" class="text-white-50 fw-bold" data-translate="sign-in">Sign In</a></p>
 						</div>
 					</div>
 				</div>

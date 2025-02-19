@@ -13,11 +13,9 @@ export class NotFoundPage {
 		notFoundContent.innerHTML = `
 			<div class="error-content text-center">
 				<h1>404</h1>
-				<h2>Page Not Found</h2>
-				<p>The page you are looking for does not exist.</p>
-				<a href="/" data-path="/" class="btn btn-primary">
-					Return to Home
-				</a>
+				<h2 data-translate = "error404"></h2>
+				<p data-translate="page-error"></p>
+				<a href="/" data-path="/" class="btn btn-primary" data-translate="return-home"></a>
 			</div>
 		`;
 

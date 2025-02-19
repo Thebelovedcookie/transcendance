@@ -17,10 +17,24 @@ async function updateTexts(lang) {
     const translations = await loadTranslations(lang);
     document.querySelectorAll("[data-translate]").forEach(el => {
         const key = el.getAttribute("data-translate");
-        if (translations[key]) {
-            el.textContent = translations[key];
+        if (el.placeholder !== undefined) {
+            el.placeholder = translations[key] || key;  // Met à jour le placeholder
+        } else {
+            const link = el.querySelector("a[data-translate]");
+            if (link) {
+                // On traduit d'abord le texte du lien
+                const linkKey = link.getAttribute("data-translate");
+                link.textContent = translations[linkKey] || linkKey;
+
+                // On remplace {link} par le code HTML du lien dans le texte principal
+                el.innerHTML = (translations[key] || key).replace("{link}", link.outerHTML);
+            } else {
+                el.textContent = translations[key] || key;
+            }
         }
     });
+
+    
 
     // Met à jour le sélecteur 
     const languageSelector = document.getElementById("languageSelector");
