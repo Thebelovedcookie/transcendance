@@ -164,7 +164,7 @@ class RemoteGameWebSocket {
 		console.log(data.type);
 		switch (data.type) {
 			case "playerId":
-				this.playerId = data.playerId;
+				this.playerId = data.playerId; //for this client
 				break;
 			case "game.init":
 				this.isItForMe(data);
