@@ -42,4 +42,8 @@ export class ForfaitRemoteGamePage {
             window.dispatchEvent(new PopStateEvent('popstate'));
         });
     }
+
+    clean() {
+		return ;
+	}
 }

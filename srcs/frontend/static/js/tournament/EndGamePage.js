@@ -64,4 +64,8 @@ export class EndGamePage {
 			}
 		});
 	}
+
+	clean() {
+		return ;
+	}
 }

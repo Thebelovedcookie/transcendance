@@ -66,7 +66,7 @@ class RemoteGameWebSocket {
 
 			//creer un id aleatoire
 			console.log("Attempting to connect:", wsUrl);
-			this.socket = new WebSocket(wsUrl); //envoie l'id dans l'url
+			this.socket = new WebSocket(wsUrl);
 
 			this.socket.onopen = () => {
 				console.log("WebSocket connection established");
@@ -161,10 +161,9 @@ class RemoteGameWebSocket {
 	}
 
 	handleMessage(data) {
-		console.log(data.type);
 		switch (data.type) {
 			case "playerId":
-				this.playerId = data.playerId; //for this client
+				this.playerId = data.playerId;
 				break;
 			case "game.init":
 				this.isItForMe(data);
@@ -181,7 +180,6 @@ class RemoteGameWebSocket {
 				this.winByForfait(data);
 				break;
 			case "error":
-				console.log(data);
 				console.error("Server error:", data.message);
 				break;
 			default:
@@ -288,7 +286,6 @@ class RemoteGameWebSocket {
 	drawGame() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		firstPaddle(context, this.gameState.me);
-		// console.log(this.gameState.opponent);
 		firstPaddle(context, this.gameState.opponent);
 		ballStyle(context, this.gameState.ball);
 		drawDashedLine(context, canvas);

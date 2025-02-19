@@ -59,4 +59,8 @@ export class EndTournementPage {
 			container.appendChild(confetti);
 		}
 	}
+	
+	clean() {
+		return ;
+	}
 }

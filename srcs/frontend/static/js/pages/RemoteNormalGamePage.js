@@ -21,4 +21,8 @@ export class RemoteNormalGamePage {
 
 		normalMode();
 	}
+
+	clean() {
+		return ;
+	}
 }

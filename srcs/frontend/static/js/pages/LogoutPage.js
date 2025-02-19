@@ -31,4 +31,7 @@ export class LogoutPage {
 			console.error('Logout failed:', error);
 		}
 	}
+	clean() {
+		return ;
+	}
 }

@@ -50,4 +50,8 @@ export class EndNormalGamePage {
 			window.dispatchEvent(new PopStateEvent('popstate'));
 		});
 	}
+
+	clean() {
+		return ;
+	}
 }

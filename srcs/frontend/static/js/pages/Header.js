@@ -46,4 +46,8 @@ export class Header {
 			console.error('Failed to render header:', error);
 		}
 	}
+	
+	clean() {
+		return ;
+	}
 }

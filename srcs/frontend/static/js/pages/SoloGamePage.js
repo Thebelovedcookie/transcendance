@@ -26,9 +26,8 @@ export class SoloGamePage {
 
 	setupEventListeners()
 	{
-		window.addEventListener('keydown', (e) => {
+		this.keydownHandler = (e) => {
 			e.preventDefault();
-			console.log(e.key);
 			if (e.key == "Escape")
 			{
 				if (this.pause == false) {
@@ -42,7 +41,12 @@ export class SoloGamePage {
 				}
 
 			}
-		})
+		};
+		window.addEventListener('keydown', this.keydownHandler)
+	}
+
+	clean() {
+		window.removeEventListener('keydown', this.keydownHandler);
 	}
 }
 
