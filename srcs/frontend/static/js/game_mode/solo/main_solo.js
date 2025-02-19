@@ -160,8 +160,13 @@ function ballSoloWallCollision(){
 function resetBallSolo() {
 	ballSolo.x = canvasSolo.width / 2;
 	ballSolo.y = canvasSolo.height / 2;
-	ballSolo.speed = Math.abs(ballSolo.speed) * (Math.random() > 0.5 ? 1 : -1); // Changer la direction aléatoirement
-	ballSolo.gravity = Math.abs(ballSolo.gravity) * (Math.random() > 0.5 ? 1 : -1);
+
+	const angle = (Math.random() * Math.PI / 4 - Math.PI / 8);
+
+	const current_speed = Math.sqrt(ballSolo.speed * ballSolo.speed + ballSolo.gravity * ballSolo.gravity);
+	
+	ballSolo.speed = current_speed * Math.cos(angle);
+	ballSolo.gravity = current_speed *  Math.sin(angle);
 }
 
 function drawElementsSolo(){
