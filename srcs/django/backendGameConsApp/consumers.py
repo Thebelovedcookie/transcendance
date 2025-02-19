@@ -127,7 +127,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 		m = self.infoMatch["match"][0]
 
 		while (m["status"]):
-			logger.info("game loop")
 			await asyncio.sleep(1 / 60)
 			await self.calculBallMovement()
 			await self.send_gamestate()
@@ -202,12 +201,13 @@ class GameConsumer(AsyncWebsocketConsumer):
 			await self.checkScore(m)
 	
 	async def checkScore(self, m):
+		logger.info("check score")
 		if (m["playerOne"]["score"] == m["maxScore"]):
 			m["status"] = False
-			await self.sendMatchResult(m["playerOne"], m["playerTwo"])
+			await self.sendGameState(m)
 		elif (m["playerTwo"]["score"] == m["maxScore"]):
 			m["status"] = False
-			await self.sendMatchResult(m["playerTwo"], m["playerOne"])
+			await self.sendGameState(m)
 
 	#################### PLAYER MOVE ##########################
 
@@ -227,8 +227,9 @@ class GameConsumer(AsyncWebsocketConsumer):
 			elif (direction == "down" and m["playerTwo"]["y"] < m["canvas"]["canvas_height"] - m["playerOne"]["height"]):
 				m["playerTwo"]["y"] += 10
 
-	async def sendMatchResult(winner, loser):
-		response = {
-			"winner": winner,
-			"loser": loser,
-		}
+	async def sendGameState(self, m):
+		logger.info("send match result") #somthing needs to be sent to js to signal the game is finished
+		await self.send(text_data=json.dumps({
+			"status": m['status'],
+			"message": 'game over'
+		}))
