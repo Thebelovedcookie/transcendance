@@ -34,7 +34,7 @@ export class NormalGamePage {
 
 	setupEventListeners()
 	{
-		window.addEventListener('keydown', (e) => {
+		this.keydownHandler = (e) => {
 			e.preventDefault();
 			console.log(e.key);
 			if (e.key == "Escape")
@@ -50,7 +50,12 @@ export class NormalGamePage {
 				}
 
 			}
-		})
+		};
+		window.addEventListener('keydown', this.keydownHandler);
+	}
+	clean() {
+		window.removeEventListener('keydown', this.keydownHandler);
+		return ;
 	}
 }
 

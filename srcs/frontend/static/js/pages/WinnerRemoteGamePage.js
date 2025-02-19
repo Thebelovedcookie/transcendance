@@ -42,4 +42,8 @@ export class WinnerRemoteGamePage {
             window.dispatchEvent(new PopStateEvent('popstate'));
         });
     }
+
+    clean() {
+		return ;
+	}
 }

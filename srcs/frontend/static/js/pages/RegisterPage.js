@@ -239,4 +239,8 @@ export class RegisterPage {
 		document.getElementById('typeConfirmPasswordX').addEventListener('input', (e) => this.updatePasswordConfirmStrength(e));
 		document.getElementById('typeEmailX').addEventListener('input', (e) => this.validateEmail(e));
 	}
+	
+	clean() {
+		return ;
+	}
 }

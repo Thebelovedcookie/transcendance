@@ -835,4 +835,8 @@ export class ProfilePage {
 			});
 		});
 	}
+	
+	clean() {
+		return ;
+	}
 }

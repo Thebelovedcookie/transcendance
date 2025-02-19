@@ -25,24 +25,45 @@ export class AiPage {
 		this.game = aiMode("base");
 	}
 
-	setupEventListeners()
-	{
-		window.addEventListener('keydown', (e) => {
+	// setupEventListeners()
+	// {
+	// 	window.addEventListener('keydown', (e) => {
+	// 		e.preventDefault();
+	// 		console.log(e.key);
+	// 		if (e.key == "Escape")
+	// 		{
+	// 			if (this.pause == false && this.game) {
+	// 				this.game.stopGameLoop();
+	// 				this.game.drawPause();
+	// 				this.pause = true;
+	// 			}
+	// 			else if (this.game){
+	// 				this.pause = false;
+	// 				this.game.startGameLoop();
+	// 			}
+
+	// 		}
+	// 	})
+	// }
+
+	setupEventListeners() {
+		this.keydownHandler = (e) => {
 			e.preventDefault();
-			console.log(e.key);
-			if (e.key == "Escape")
-			{
-				if (this.pause == false && this.game) {
+			if (e.key == "Escape") {
+				if (!this.pause && this.game) {
 					this.game.stopGameLoop();
 					this.game.drawPause();
 					this.pause = true;
-				}
-				else if (this.game){
+				} else if (this.game) {
 					this.pause = false;
 					this.game.startGameLoop();
 				}
-
 			}
-		})
+		};
+		window.addEventListener('keydown', this.keydownHandler);
+	}
+
+	clean() {
+		window.removeEventListener('keydown', this.keydownHandler);
 	}
 }

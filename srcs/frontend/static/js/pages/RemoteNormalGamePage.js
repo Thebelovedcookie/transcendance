@@ -37,6 +37,10 @@ export class RemoteNormalGamePage {
 			`;
 		}
 	}
+
+	clean() {
+		return ;
+	}
 }
 
 

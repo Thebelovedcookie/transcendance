@@ -25,9 +25,8 @@ export class MultiPage {
 		this.game = multiMode("base");
 	}
 
-	setupEventListeners()
-	{
-		window.addEventListener('keydown', (e) => {
+	setupEventListeners() {
+		this.keydownHandler = (e) => {
 			e.preventDefault();
 			console.log(e.key);
 			if (e.key == "Escape")
@@ -43,6 +42,11 @@ export class MultiPage {
 				}
 
 			}
-		})
+		};
+		window.addEventListener('keydown', this.keydownHandler);
+	}
+	clean() {
+		window.removeEventListener('keydown', this.keydownHandler);
+		return ;
 	}
 }

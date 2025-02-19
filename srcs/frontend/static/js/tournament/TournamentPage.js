@@ -229,4 +229,8 @@ export class TournamentPage {
 			btn.disabled = this.numberOfPlayers <= this.minPlayers;
 		});
 	}
+
+	clean() {
+		return ;
+	}
 }

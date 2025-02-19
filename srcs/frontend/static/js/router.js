@@ -19,6 +19,7 @@ import { Header } from './pages/Header.js';
 import { MultiPage } from './pages/MultiPage.js';
 import { RemoteNormalGamePage } from './pages/RemoteNormalGamePage.js';
 
+let currentPage = null;
 
 //first step : Creation of a class Router which will allows to naviguates between pages and add an history
 class Router {
@@ -166,9 +167,15 @@ class Router {
 	 */
 	async handleLocation() {
 		await this.header.render();
-
+		//test
+		if (currentPage != null)
+		{
+			console.log(currentPage);
+			currentPage.clean();
+		}
 		const path = window.location.pathname;
 		const page = this.routes.get(path) || new NotFoundPage();
+		currentPage = page;
 		await page.handle();
 	}
 

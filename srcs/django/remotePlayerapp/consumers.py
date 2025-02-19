@@ -53,19 +53,21 @@ class PongConsumer(AsyncWebsocketConsumer):
 		client = self.scope["client"]
 		toRemove = next((c for c in self.infoPlayer["players"] if c["client"] == client), None)
 
-		if (findMatch and (findMatch["playerOne"]["score"] != 10 and findMatch["playerTwo"]["score"] != 10)):
-			findMatch["status"] = False
-			#for 10 second we are waiting for the disconnect player
-				#if the player come's back
-					#findMatch["status"] = True
-					#return
-			#if he doesnt come back
-			self.infoPlayer["players"].remove(toRemove)
-			for secondPlayer in self.infoPlayer["players"]:
-				if secondPlayer["player_id"] in (findMatch["playerOne"]["id"], findMatch["playerTwo"]["id"]):
-					self.infoPlayer["players"].remove(secondPlayer)
-					logger.info(self.infoPlayer)
-			await self.winByForfait(findMatch["matchId"])
+		if (toRemove):
+
+			findMatch = next(
+			(m for m in self.infoMatch["match"] 
+				if m["playerOne"]["id"] == toRemove["player_id"] 
+				or m["playerTwo"]["id"] == toRemove["player_id"]), 
+			None)
+			
+		#changing the color of the player who's disconnect
+		if findMatch and findMatch["playerOne"]["id"] == toRemove["player_id"]:
+			findMatch["playerOne"]["color"] = "red"
+
+		if findMatch and findMatch["playerTwo"]["id"] == toRemove["player_id"]:
+			findMatch["playerTwo"]["color"] = "red"
+
 
 	async def receive(self, text_data):
 		# logger.info(f"Received WebSocket data: {text_data}")
@@ -90,37 +92,12 @@ class PongConsumer(AsyncWebsocketConsumer):
 			await self.send(text_data=json.dumps(response))
 
 		except json.JSONDecodeError:
-			logger.error("Error: Invalid JSON received")
 			await self.send(text_data=json.dumps({
 				"type": "error",
 				"message": "Invalid JSON format"
 			}))
 
-	async def winByForfait(self, matchId):
-		#update Game History
-		matchPlayed = next((m for m in self.infoMatch["match"] if m["matchId"] == matchId), None)
-
-		logger.info(matchPlayed)
-		if matchPlayed:
-			# logger.info(f"Sending game state for match {matchId}")
-			response = {
-				"type": "game.starting",
-				"matchId": matchPlayed["matchId"],
-				"victory": True
-			}
-			await self.channel_layer.group_send(
-			self.game_group_name,
-			{
-				"type": "forfait",
-				"message": response
-			})
-			self.infoMatch["match"].remove(matchPlayed)
-
-	async def forfait(self, event):
-		await self.send(text_data=json.dumps({
-			"type": "forfait",
-			"message": event["message"]
-		}))
+    ####################### INIT MATCH ############################
 
 	####################### INIT MATCH ############################
 

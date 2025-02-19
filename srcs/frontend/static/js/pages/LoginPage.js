@@ -124,4 +124,8 @@ export class LoginPage {
 		throw error;
 	}
 }
+			
+	clean() {
+		return ;
+	}
 }
