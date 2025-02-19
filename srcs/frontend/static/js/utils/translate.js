@@ -11,7 +11,7 @@ async function loadTranslations(lang) {
         return {};
     }
 }
-
+//MAJ texte et selector
 async function updateTexts(lang) {
     console.log("Mise à jour du texte en:", lang);
     const translations = await loadTranslations(lang);

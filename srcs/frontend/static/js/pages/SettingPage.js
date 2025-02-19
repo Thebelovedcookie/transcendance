@@ -2,7 +2,7 @@ export class SettingPage {
 	constructor() {
 		this.container = document.getElementById('dynamicPage');
 		this.settings = {
-			language: localStorage.getItem('language') || 'en',
+			language: localStorage.getItem('selectedLang') || 'en',
 			mode: localStorage.getItem('displayMode') || 'light'
 		};
 		this.languages = [

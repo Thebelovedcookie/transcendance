@@ -10,8 +10,8 @@ export class LoginPage {
 
 			<div class="mb-md-5 mt-md-4 pb-5">
 
-			  <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
-			  <p class="text-white-50 mb-5">Please enter your login and password!</p>
+			  <h2 class="fw-bold mb-2 text-uppercase" data-translate = "Login"></h2>
+			  <p class="text-white-50 mb-5" data-translate = "settinglog"></p>
 
 			  <div data-mdb-input-init class="form-outline form-white mb-4">
 				<input type="email" id="typeEmailX" class="form-control form-control-lg" placeholder="Email" />
@@ -20,7 +20,7 @@ export class LoginPage {
 
 			  <div data-mdb-input-init class="form-outline form-white mb-4">
 				<input type="password" id="typePasswordX" class="form-control form-control-lg" placeholder="Password" />
-				<div id="passwordError" class="text-danger small mt-1" style="display: none;">Please enter your password</div>
+				<div id="passwordError" class="text-danger small mt-1" style="display: none;" data-translate= "error1"></div>
 			  </div>
 
 			  <p class="small mb-5 pb-lg-2"><a class="text-white-50" href="#!">Forgot password?</a></p>

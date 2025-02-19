@@ -14,7 +14,8 @@
         "Solo" : "Solo Mode",
         "Solodetails" :"Challenge yourself",
         "Tournament" : "Tournament Mode",
-        "Tournamentdetails":"Compete to win"
+        "Tournamentdetails":"Compete to win",
+        "settinglog":"Please enter your login and password!"
 
     },
 
