@@ -37,16 +37,15 @@ class GameAISocket {
 		let predictionSpeedX = this.gameState.ball.speed;
 		let predictionSpeedY = this.gameState.ball.gravity;
 
-		for (let i = 0; i < 60; i++) { // Simulate x step
+		for (let i = 0; i < 60; i++) {
 			predictionX += predictionSpeedX;
 			predictionY += predictionSpeedY;
 
-			// Gestion des collisions avec les bords
 			if (predictionX + this.gameState.ball.width > canvas.width || predictionX < 0) {
-				predictionSpeedX *= -1; // Inverser direction X
+				predictionSpeedX *= -1;
 			}
 			if (predictionY + this.gameState.ball.height > canvas.height || predictionY < 0) {
-				predictionSpeedY *= -1; // Inverser direction Y
+				predictionSpeedY *= -1;
 				predictionY = predictionY + this.gameState.ball.height > canvas.height ? canvas.height - this.gameState.ball.height : predictionY;
 			}
 
@@ -157,7 +156,6 @@ class GameAISocket {
 			this.sendMove("down", "p1")
 		}
 
-		// P 2 movement (Arrow keys)
 		if (this.keys.ArrowUp && this.gameState.p2.y > 0) {
 			this.sendMove("up", "p2")
 		}
@@ -223,7 +221,6 @@ class GameAISocket {
 			// Update player positions based on key states
 			this.updatePlayerPositions();
 
-			// Draw every frame (60 FPS)
 			this.drawGame();
 
 			this.frameCount++;
@@ -233,7 +230,7 @@ class GameAISocket {
 			this.stopMovePaddleAi();
 			if (this.frameCount == 60)
 				this.frameCount = 0;
-		}, 1000 / 60);  // Still run at 60 FPS locally
+		}, 1000 / 60);
 	}
 
 	stopGameLoop() {

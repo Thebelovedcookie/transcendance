@@ -27,9 +27,9 @@ export class NormalGamePage {
 
 		this.container.innerHTML = '';
 		this.container.appendChild(gameContent);
-		console.log("in render")
+		// console.log("in render")
 		this.game = normalMode(this.type, this.socketTournament, this.infoMatch);
-		console.log("after normal mode")
+		// console.log("after normal mode")
 	}
 
 	setupEventListeners()
