@@ -111,6 +111,10 @@ export class PongMenuPage {
 			});
 		});
 	}
+	
+	clean() {
+		return ;
+	}
 }
 
 /*

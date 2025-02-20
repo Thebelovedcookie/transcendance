@@ -1,6 +1,7 @@
-import { firstPaddleSolo, ballSoloStyle, drawDashedLineSolo, drawWallsSolo } from './style.js';
+import { firstPaddleSolo, ballSoloStyle, drawDashedLineSolo, drawWallsSolo, displayText } from './style.js';
 
 //----------------------GLOBAL GAME ELEMENT----------------------------//
+
 let canvasSolo;
 let contextSolo;
 let playerOneSolo;
@@ -181,6 +182,7 @@ function drawElementsSolo(){
 		firstPaddleSolo(contextSolo, playerOneSolo);
 		ballSoloStyle(contextSolo, ballSolo);
 		drawDashedLineSolo(contextSolo, canvasSolo);
+		displayText(contextSolo, canvasSolo);
 	}
 }
 

@@ -33,7 +33,7 @@ ALLOWED_HOSTS = [
 	"127.0.0.1",
 ]
 
-AUTH_USER_MODEL = 'usrman_app.CustomUser'
+AUTH_USER_MODEL = 'user_management_app.CustomUser'
 
 
 # Application definition
@@ -45,14 +45,15 @@ INSTALLED_APPS = [
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
-	'backend_app',
-	'backend_gamecons_app',
 	'channels',
 	'corsheaders',
-	'usrman_app',
+	'user_management_app',
+	'local_multi_game_app',
+	'local_normal_game_app',
+	'local_tournement_app',
+	'local_ai_game_app',
 	'pong_history_app',
-	'backend_tour_app',
-	'remotePlayer_app',
+	'remote_normal_game_app',
 	'online_status_app',
 ]
 

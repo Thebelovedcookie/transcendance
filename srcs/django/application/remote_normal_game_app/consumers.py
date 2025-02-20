@@ -2,14 +2,14 @@ import json
 import uuid
 import logging
 import random
-import time
+import time 
 import asyncio
 import math
 
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from pong_history_app.models import PongMatchHistory
-from usrman_app.models import CustomUser
+from user_management_app.models import CustomUser
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +31,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 			'player_id': self.player_id,
 			'client': self.scope["client"]
 		}
-		logger.info(self.scope["client"])
 		self.infoPlayer['players'].append(obj)
 		await self.channel_layer.group_add(self.game_group_name, self.channel_name)
 		if len(self.infoPlayer["players"]) % 2 == 0:
@@ -55,26 +54,19 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 		if (toRemove):
 			findMatch = next(
-			(m for m in self.infoMatch["match"]
-			 if m["playerOne"]["id"] == toRemove["player_id"]
-			 or m["playerTwo"]["id"] == toRemove["player_id"]),
+			(m for m in self.infoMatch["match"] 
+				if m["playerOne"]["id"] == toRemove["player_id"] 
+				or m["playerTwo"]["id"] == toRemove["player_id"]), 
 			None)
 
-			if (findMatch and (findMatch["playerOne"]["score"] != 10 and findMatch["playerTwo"]["score"] != 10)):
-				findMatch["status"] = False
-				#for 10 second we are waiting for the disconnect player
-					#if the player come's back
-						#findMatch["status"] = True
-						#return
-				#if he doesnt come back
-				self.infoPlayer["players"].remove(toRemove)
-				for secondPlayer in self.infoPlayer["players"]:
-					if secondPlayer["player_id"] == (findMatch["playerOne"]["id"] or findMatch["playerTwo"]["id"]):
-						self.infoPlayer["players"].remove(secondPlayer)
-				await self.winByForfait(findMatch["matchId"])
+		#changing the color of the player who's disconnect
+		if findMatch and findMatch["playerOne"]["id"] == toRemove["player_id"]:
+			findMatch["playerOne"]["color"] = "red"
+
+		if findMatch and findMatch["playerTwo"]["id"] == toRemove["player_id"]:
+			findMatch["playerTwo"]["color"] = "red"
 
 	async def receive(self, text_data):
-		# logger.info(f"Received WebSocket data: {text_data}")
 		try:
 			data = json.loads(text_data)
 			message_type = data.get("type")
@@ -96,37 +88,12 @@ class PongConsumer(AsyncWebsocketConsumer):
 			await self.send(text_data=json.dumps(response))
 
 		except json.JSONDecodeError:
-			logger.error("Error: Invalid JSON received")
 			await self.send(text_data=json.dumps({
 				"type": "error",
 				"message": "Invalid JSON format"
 			}))
 
-	async def winByForfait(self, matchId):
-		#update Game History
-		matchPlayed = next((m for m in self.infoMatch["match"] if m["matchId"] == matchId), None)
-
-		logger.info(matchPlayed)
-		if matchPlayed:
-			# logger.info(f"Sending game state for match {matchId}")
-			response = {
-				"type": "game.starting",
-				"matchId": matchPlayed["matchId"],
-				"victory": True
-			}
-			await self.channel_layer.group_send(
-			self.game_group_name,
-			{
-				"type": "forfait",
-				"message": response
-			})
-			self.infoMatch["match"].remove(matchPlayed)
-
-	async def forfait(self, event):
-		await self.send(text_data=json.dumps({
-			"type": "forfait",
-			"message": event["message"]
-		}))
+    ####################### INIT MATCH ############################
 
 	####################### INIT MATCH ############################
 
@@ -287,11 +254,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 	async def record_match_history(self, user_id, opponent_id, user_score, opponent_score):
 		@database_sync_to_async
 		def save_match_history():
-			logger.info(f"Record match history")
-			logger.info(user_id)
-			logger.info(opponent_id)
-			logger.info(user_score)
-			logger.info(opponent_score)
 			user = CustomUser.objects.get(id=user_id)
 			opponent = CustomUser.objects.get(id=opponent_id)
 
@@ -332,7 +294,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 		response = {
 			"matchId": m["matchId"],
 			"winner": winner,
-			"loser": loser,
+			"loser": loser, 
 		}
 		await self.channel_layer.group_send(
 		self.game_group_name,

@@ -1,4 +1,4 @@
-import { normalMode } from '../game_mode/normal/main.js';
+import { normalMode, stopGame } from '../game_mode/normal/main.js';
 
 export class NormalGamePage {
 	constructor(themeReceived, type, socketTournament, infoMatch) {
@@ -14,6 +14,8 @@ export class NormalGamePage {
 	async handle() {
 		this.setupEventListeners()
 		this.render();
+
+		console.log("finished handle")
 	}
 
 	render() {
@@ -25,13 +27,14 @@ export class NormalGamePage {
 
 		this.container.innerHTML = '';
 		this.container.appendChild(gameContent);
-
-		this.game = normalMode(this.theme, this.type, this.socketTournament, this.infoMatch);
+		// console.log("in render")
+		this.game = normalMode(this.type, this.socketTournament, this.infoMatch);
+		// console.log("after normal mode")
 	}
 
 	setupEventListeners()
 	{
-		window.addEventListener('keydown', (e) => {
+		this.keydownHandler = (e) => {
 			e.preventDefault();
 			console.log(e.key);
 			if (e.key == "Escape")
@@ -47,7 +50,14 @@ export class NormalGamePage {
 				}
 
 			}
-		})
+		};
+		window.addEventListener('keydown', this.keydownHandler);
+	}
+
+	clean() {
+		window.removeEventListener('keydown', this.keydownHandler);
+		stopGame();
+		return ;
 	}
 }
 

@@ -126,4 +126,8 @@ export class SettingPage {
 			window.location.href = '/';
 		});
 	}
+
+	clean() {
+		return ;
+	}
 }
