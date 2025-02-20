@@ -26,7 +26,8 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 		logger.info(f"WebSocket disconnected with code: {close_code}")
 		if len(self.infoMatch["match"]) != 0:
 			m = self.infoMatch["match"][0]
-			self.infoMatch["match"].remove(m)
+			m["status"] = False
+			
 
 	async def receive(self, text_data):
 		try:
@@ -109,6 +110,8 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 			await asyncio.sleep(1 / 60)
 			await self.calculBallMovement()
 			await self.send_gamestate()
+		
+		self.infoMatch["match"].remove(m)
 
 	async def send_gamestate(self):
 		m = self.infoMatch["match"][0]
@@ -120,7 +123,8 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 			"ball": m["ball"],
 			"scoreMax": m["maxScore"]
 		}
-		await self.send(text_data=json.dumps(response))
+		if m["status"]:
+			await self.send(text_data=json.dumps(response))
 	
 	######################## GAME LOGIC #############################
 
@@ -182,7 +186,6 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 			await self.checkScore(m)
 		
 	async def checkScore(self, m):
-		logger.info("check score")
 		if (m["playerOne"]["score"] == m["maxScore"]):
 			m["status"] = False
 			await self.sendMatchResult("p1", "p2")
@@ -211,7 +214,6 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 	###################### RESULTS ##########################
 
 	async def sendMatchResult(self, winner, loser):
-		logger.info("sending match result")
 		response = {
 			"type" : "match.result",
 			"winner": winner,

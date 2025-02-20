@@ -29,9 +29,7 @@ class GameWebSocket {
 			ArrowDown: false
 		};
 		this.setupKeyboardControls();
-		console.log("after setup")
 		this.connect();
-		console.log("after connect")
 		this.frameCount = 0;
 		this.sendRate = 20;
 	}
@@ -60,21 +58,17 @@ class GameWebSocket {
 
 		// Player 1 movement (W and S keys)
 		if (this.keys.w && this.gameState.p1.y > 0) {
-			// this.gameState.p1.y -= moveSpeed;
 			this.sendMove("up", "p1")
 		}
 		if (this.keys.s && this.gameState.p1.y < canvas.height - this.gameState.p1.height) {
-			// this.gameState.p1.y += moveSpeed;
 			this.sendMove("down", "p1")
 		}
 
 		// P 2 movement (Arrow keys)
 		if (this.keys.ArrowUp && this.gameState.p2.y > 0) {
-			// this.gameState.p2.y -= moveSpeed;
 			this.sendMove("up", "p2")
 		}
 		if (this.keys.ArrowDown && this.gameState.p2.y < canvas.height - this.gameState.p2.height) {
-			// this.gameState.p2.y += moveSpeed;
 			this.sendMove("down", "p2")
 		}
 	}
@@ -133,17 +127,15 @@ class GameWebSocket {
 		if (this.gameLoopInterval) return;
 
 		this.gameLoopInterval = setInterval(() => {
-			// Update player positions based on key states
 			this.updatePlayerPositions();
 
-			// Draw every frame (60 FPS)
 			this.drawGame();
 
 			this.frameCount++;
 			if (this.frameCount >= (60 / this.sendRate)) {
 				this.frameCount = 0;
 			}
-		}, 1000 / 60);  // Still run at 60 FPS locally
+		}, 1000 / 60);
 	}
 
 	drawPause() {
@@ -166,7 +158,6 @@ class GameWebSocket {
 
 	sendInfoStarting()
 	{
-		console.log("loading data")
 		const data = {
 			type: "game.starting",
 			timestamp: Date.now(),
@@ -177,12 +168,9 @@ class GameWebSocket {
 			}
 		};
 
-		console.log("data loaded")
 		if (this.isConnected && this.socket) {
-			console.log("sending data")
 			this.socket.send(JSON.stringify(data));
 		} else {
-			console.log("warning")
 			console.warn("WebSocket not connected");
 		}
 	}
@@ -196,18 +184,15 @@ class GameWebSocket {
 	}
 
 	handleMessage(data) {
-		console.log(data.type)
 		switch (data.type) {
 			case "game.state":
 				this.getInfoFromBackend(data);
 				this.startGameLoop();
 				break;
 			case "game.result":
-				console.log(data.type);
 				this.getResult(data);
 				break;
 			case "error":
-				console.log(data.type);
 				console.error("Server error:", data.message);
 				break;
 			default:
@@ -217,7 +202,7 @@ class GameWebSocket {
 
 	getResult(data) {
 		stopGame();
-		const end = new EndNormalGamePage(data.message.winner, data.message.loser);
+		const end = new EndNormalGamePage(data.winner, data.loser);
 		end.handle();
 	}
 
@@ -260,7 +245,6 @@ class GameWebSocket {
 	drawGame() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		firstPaddle(context, this.gameState.p1);
-		// console.log(this.gameState.opponent);
 		firstPaddle(context, this.gameState.p2);
 		ballStyle(context, this.gameState.ball);
 		drawDashedLine(context, canvas);
@@ -282,13 +266,10 @@ class GameWebSocket {
 let gameSocket = null;
 
 export function normalMode(typeOfMatch, socketTournament, infoMatch) {
-	console.log('function normal mode')
 	if (!gameSocket) {
-		console.log('get new socket')
 		gameSocket = new GameWebSocket(typeOfMatch, socketTournament, infoMatch);
 	}
 	if (gameSocket)
-		console.log('have socket')
 		return gameSocket;
 }
 

@@ -277,7 +277,6 @@ class GameAISocket {
 	}
 
 	handleMessage(data) {
-		console.log(data.type)
 		switch (data.type) {
 			case "game.state":
 				this.getInfoFromBackend(data);
@@ -287,7 +286,6 @@ class GameAISocket {
 				this.getResult(data);
 				break;
 			case "error":
-				console.log(data.type);
 				console.error("Server error:", data.message);
 				break;
 			default:

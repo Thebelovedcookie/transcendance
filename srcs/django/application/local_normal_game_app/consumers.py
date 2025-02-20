@@ -16,6 +16,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 	}
 	#connection to the WebSocket
 	async def connect(self):
+		logger.info("WebSocket connection attempt")
 		try:
 			await self.accept()
 			logger.info("WebSocket connection accepted")
@@ -26,6 +27,9 @@ class GameConsumer(AsyncWebsocketConsumer):
 	#interrupt the Websocket
 	async def disconnect(self, close_code):
 		logger.info(f"WebSocket disconnected with code: {close_code}")
+		if len(self.infoMatch["match"]) != 0:
+			m = self.infoMatch["match"][0]
+			m["status"] = False
 
 	#Manage the info receive
 	async def receive(self, text_data):
@@ -33,11 +37,9 @@ class GameConsumer(AsyncWebsocketConsumer):
 
 			# Decode Json data
 			data = json.loads(text_data)
-			logger.debug(f"Decoded data: {data}")
 
 			# search for the type of the message
 			message_type = data.get("type")
-			print(f"Message type received: {message_type}")
 
 			# Manage the type of the msg
 			if message_type == "game.starting":
@@ -62,8 +64,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 				"type": "error",
 				"message": "Invalid JSON format"
 			}))
-
-	######################## GAME INIT #############################
 
 	async def createGame(self):
 		obj = {
@@ -125,6 +125,8 @@ class GameConsumer(AsyncWebsocketConsumer):
 			await self.calculBallMovement()
 			await self.send_gamestate()
 
+		self.infoMatch["match"].remove(m)
+
 	async def send_gamestate(self):
 		m = self.infoMatch["match"][0]
 
@@ -135,9 +137,8 @@ class GameConsumer(AsyncWebsocketConsumer):
 			"ball": m["ball"],
 			"scoreMax": m["maxScore"]
 		}
-		await self.send(text_data=json.dumps(response))
-
-	######################## GAME LOGIC #############################
+		if m["status"]:
+			await self.send(text_data=json.dumps(response))
 
 	async def calculBallMovement(self):
 		m = self.infoMatch["match"][0]
@@ -199,10 +200,10 @@ class GameConsumer(AsyncWebsocketConsumer):
 	async def checkScore(self, m):
 		if (m["playerOne"]["score"] == m["maxScore"]):
 			m["status"] = False
-			await self.sendMatchResult(m["playerOne"], m["playerTwo"])
+			await self.sendMatchResult(m, "Player 1", "Player 2")
 		elif (m["playerTwo"]["score"] == m["maxScore"]):
 			m["status"] = False
-			await self.sendMatchResult(m["playerTwo"], m["playerOne"])
+			await self.sendMatchResult(m, "Player 2", "Player 1")
 
 	#################### PLAYER MOVE ##########################
 
@@ -222,8 +223,10 @@ class GameConsumer(AsyncWebsocketConsumer):
 			elif (direction == "down" and m["playerTwo"]["y"] < m["canvas"]["canvas_height"] - m["playerOne"]["height"]):
 				m["playerTwo"]["y"] += 10
 
-	async def sendMatchResult(winner, loser):
+	async def sendMatchResult(self, m, winner, loser):
 		response = {
+			"type": "game.result",
 			"winner": winner,
-			"loser": loser,
+			"loser": loser, 
 		}
+		await self.send(text_data=json.dumps(response))

@@ -1,4 +1,4 @@
-import { aiMode } from "../game_mode/ai_opponent/main_ai.js";
+import { aiMode, stopGameAi } from "../game_mode/ai_opponent/main_ai.js";
 
 export class AiPage {
 	constructor() {
@@ -44,5 +44,6 @@ export class AiPage {
 
 	clean() {
 		window.removeEventListener('keydown', this.keydownHandler);
+		stopGameAi();
 	}
 }

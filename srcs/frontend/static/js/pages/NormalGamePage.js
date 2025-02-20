@@ -1,4 +1,4 @@
-import { normalMode } from '../game_mode/normal/main.js';
+import { normalMode, stopGame } from '../game_mode/normal/main.js';
 
 export class NormalGamePage {
 	constructor(themeReceived, type, socketTournament, infoMatch) {
@@ -53,8 +53,10 @@ export class NormalGamePage {
 		};
 		window.addEventListener('keydown', this.keydownHandler);
 	}
+
 	clean() {
 		window.removeEventListener('keydown', this.keydownHandler);
+		stopGame();
 		return ;
 	}
 }
