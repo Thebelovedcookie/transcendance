@@ -204,10 +204,10 @@ class GameConsumer(AsyncWebsocketConsumer):
 		logger.info("check score")
 		if (m["playerOne"]["score"] == m["maxScore"]):
 			m["status"] = False
-			await self.sendGameState(m)
+			await self.sendGameState(m, "Player 1", "Player 2")
 		elif (m["playerTwo"]["score"] == m["maxScore"]):
 			m["status"] = False
-			await self.sendGameState(m)
+			await self.sendGameState(m, "Player 2", "Player 1")
 
 	#################### PLAYER MOVE ##########################
 
@@ -227,9 +227,10 @@ class GameConsumer(AsyncWebsocketConsumer):
 			elif (direction == "down" and m["playerTwo"]["y"] < m["canvas"]["canvas_height"] - m["playerOne"]["height"]):
 				m["playerTwo"]["y"] += 10
 
-	async def sendGameState(self, m):
+	async def sendGameState(self, m, winner, loser):
 		logger.info("send match result") #somthing needs to be sent to js to signal the game is finished
-		await self.send(text_data=json.dumps({
-			"status": m['status'],
-			"message": 'game over'
-		}))
+		response = {
+			"winner": winner,
+			"loser": loser, 
+		}
+		await self.send(text_data=json.dumps(response))

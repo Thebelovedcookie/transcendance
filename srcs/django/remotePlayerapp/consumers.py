@@ -332,7 +332,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 		response = {
 			"matchId": m["matchId"],
 			"winner": winner,
-			"loser": loser,
+			"loser": loser, 
 		}
 		await self.channel_layer.group_send(
 		self.game_group_name,
