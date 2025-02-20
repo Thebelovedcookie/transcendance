@@ -60,13 +60,8 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
 	'corsheaders.middleware.CorsMiddleware',
 	'django.middleware.security.SecurityMiddleware',
-<<<<<<< HEAD:srcs/django/backendProject/settings.py
-	'django.contrib.sessions.middleware.SessionMiddleware',
-	'django.middleware.locale.LocaleMiddleware',
-=======
 	# 'django.contrib.sessions.middleware.SessionMiddleware',
 	'user_management_app.middleware.CustomSessionMiddleware',
->>>>>>> main:srcs/django/backend_project/settings.py
 	'django.middleware.common.CommonMiddleware',
 	'django.middleware.csrf.CsrfViewMiddleware',
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
