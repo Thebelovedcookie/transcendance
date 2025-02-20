@@ -217,16 +217,17 @@ class PongConsumer(AsyncWebsocketConsumer):
             m["ball"]["x"] = m["playerOne"]["x"] + m["ball"]["width"]
 
         elif (m["ball"]["x"] + m["ball"]["speed"] < m["playerOne"]["x"]):
-            m["playerTwo"]["score"] += 1
-            m["ball"]["x"] = m["canvas"]["canvas_width"] / 2
-            m["ball"]["y"] = m["canvas"]["canvas_height"]  / 2
-            await self.checkScore(m)
-
+            player = m["playerTwo"]
+            await self.addScore(player, m)
         elif (m["ball"]["x"] + m["ball"]["speed"] > m["playerTwo"]["x"] + m["playerTwo"]["width"]):
-            m["playerOne"]["score"] += 1
-            m["ball"]["x"] = m["canvas"]["canvas_width"] / 2
-            m["ball"]["y"] = m["canvas"]["canvas_height"]  / 2
-            await self.checkScore(m)
+            player = m["playerOne"]
+            await self.addScore(player, m)
+
+    async def addScore(self, player, m):
+        player["score"] += 1
+        m["ball"]["x"] = m["canvas"]["canvas_width"] / 2
+        m["ball"]["y"] = m["canvas"]["canvas_height"]  / 2
+        await self.checkScore(m)
 
     async def checkScore(self, m):
         if (m["playerOne"]["score"] == 10):
