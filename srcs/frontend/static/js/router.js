@@ -170,7 +170,6 @@ class Router {
 		//test
 		if (currentPage != null)
 		{
-			console.log(currentPage);
 			currentPage.clean();
 		}
 		const path = window.location.pathname;

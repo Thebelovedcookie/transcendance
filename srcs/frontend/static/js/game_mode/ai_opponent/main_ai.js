@@ -277,10 +277,14 @@ class GameAISocket {
 	}
 
 	handleMessage(data) {
+		console.log(data.type)
 		switch (data.type) {
 			case "game.state":
 				this.getInfoFromBackend(data);
 				this.startGameLoop();
+				break;
+			case "match.result":
+				this.getResult(data);
 				break;
 			case "error":
 				console.log(data.type);
@@ -288,6 +292,21 @@ class GameAISocket {
 				break;
 			default:
 				console.log("Unhandled message type:", data.type);
+		}
+	}
+
+	getResult(data) {
+		if (data.winner == 'p1')
+		{
+			stopGameAi();
+			const victory = new EndNormalGamePage("PlayerOne", "Ai");
+			victory.handle();
+		}
+		else if (data.winner == 'p2')
+		{
+			stopGameAi();
+			const defeat = new EndNormalGamePage("Ai", "PlayerOne");
+			defeat.handle();
 		}
 	}
 
