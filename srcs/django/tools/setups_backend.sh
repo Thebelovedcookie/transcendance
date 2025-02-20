@@ -10,9 +10,9 @@ export PYTHONPATH=${PYTHONPATH}:/project
 
 python3.11 manage.py collectstatic --noinput
 cp -r /project/staticfiles/static/* /var/www/html/static/
-python3.11 manage.py makemigrations
-python3.11 manage.py migrate
-python3.11 manage.py createsuperuser --noinput --username ${DJANGO_SUPERUSER_USERNAME} --email ${DJANGO_SUPERUSER_EMAIL}
+python3.11 /project/manage.py makemigrations
+python3.11 /project/manage.py migrate
+python3.11 /project/manage.py createsuperuser --noinput --username ${DJANGO_SUPERUSER_USERNAME} --email ${DJANGO_SUPERUSER_EMAIL}
 python3.11 /project/manage.py loaddata user
 python3.11 /project/manage.py loaddata pong_history
 python3.11 /project/manage.py loaddata online_status
