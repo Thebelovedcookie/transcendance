@@ -53,20 +53,18 @@ class PongConsumer(AsyncWebsocketConsumer):
 		toRemove = next((c for c in self.infoPlayer["players"] if c["client"] == client), None)
 
 		if (toRemove):
-
 			findMatch = next(
 			(m for m in self.infoMatch["match"] 
 				if m["playerOne"]["id"] == toRemove["player_id"] 
 				or m["playerTwo"]["id"] == toRemove["player_id"]), 
 			None)
-			
+
 		#changing the color of the player who's disconnect
 		if findMatch and findMatch["playerOne"]["id"] == toRemove["player_id"]:
 			findMatch["playerOne"]["color"] = "red"
 
 		if findMatch and findMatch["playerTwo"]["id"] == toRemove["player_id"]:
 			findMatch["playerTwo"]["color"] = "red"
-
 
 	async def receive(self, text_data):
 		try:
