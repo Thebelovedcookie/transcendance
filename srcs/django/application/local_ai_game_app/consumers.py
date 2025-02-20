@@ -24,6 +24,8 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 
 	async def disconnect(self, close_code):
 		logger.info(f"WebSocket disconnected with code: {close_code}")
+		m = self.infoMatch["match"][0]
+		self.infoMatch["match"].remove(m)
 
 	async def receive(self, text_data):
 		try:
