@@ -30,7 +30,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-AUTH_USER_MODEL = 'usrman_app.CustomUser'
+AUTH_USER_MODEL = 'user_management_app.CustomUser'
 
 
 # Application definition
@@ -42,14 +42,14 @@ INSTALLED_APPS = [
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
-	'gameMulti_app',
+	'game_multi_app',
 	'channels',
 	'corsheaders',
-	'usrman_app',
-	'localNormalGame_app',
+	'user_management_app',
+	'local_normal_game_app',
 	'pong_history_app',
 	'tournement_app',
-	'remotePlayer_app',
+	'remote_normal_game_app',
 	'online_status_app',
 ]
 

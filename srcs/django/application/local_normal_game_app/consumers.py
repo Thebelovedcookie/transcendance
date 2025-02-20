@@ -16,7 +16,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 	}
 	#connection to the WebSocket
 	async def connect(self):
-		logger.info("WebSocket connection attempt")
 		try:
 			await self.accept()
 			logger.info("WebSocket connection accepted")
@@ -30,28 +29,22 @@ class GameConsumer(AsyncWebsocketConsumer):
 
 	#Manage the info receive
 	async def receive(self, text_data):
-		logger.info(f"Received WebSocket data: {text_data}")
 		try:
 
-			logger.info("starting try")
 			# Decode Json data
 			data = json.loads(text_data)
 			logger.debug(f"Decoded data: {data}")
 
-			logger.info("got data")
 			# search for the type of the message
 			message_type = data.get("type")
 			print(f"Message type received: {message_type}")
 
 			# Manage the type of the msg
 			if message_type == "game.starting":
-				logger.info("game stating")
 				await self.initialisation(data)
-				logger.info("game init")
 				asyncio.create_task(self.loop())
 				return
 			elif message_type == "player.moved":
-				logger.info("player moved")
 				await self.moveChange(data)
 				return
 			else:
@@ -64,7 +57,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 			self.send(text_data=json.dumps(response))
 
 		except json.JSONDecodeError:
-			logger.info("failure")
 			logger.error("Error: Invalid JSON received")
 			self.send(text_data=json.dumps({
 				"type": "error",
@@ -127,7 +119,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 		m = self.infoMatch["match"][0]
 
 		while (m["status"]):
-			logger.info("game loop")
 			await asyncio.sleep(1 / 60)
 			await self.calculBallMovement()
 			await self.send_gamestate()

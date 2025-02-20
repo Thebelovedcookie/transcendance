@@ -9,7 +9,7 @@ import math
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from pong_history_app.models import PongMatchHistory
-from usrman_app.models import CustomUser
+from user_management_app.models import CustomUser
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +31,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 			'player_id': self.player_id,
 			'client': self.scope["client"]
 		}
-		logger.info(self.scope["client"])
 		self.infoPlayer['players'].append(obj)
 		await self.channel_layer.group_add(self.game_group_name, self.channel_name)
 		if len(self.infoPlayer["players"]) % 2 == 0:
@@ -70,7 +69,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 
 	async def receive(self, text_data):
-		# logger.info(f"Received WebSocket data: {text_data}")
 		try:
 			data = json.loads(text_data)
 			message_type = data.get("type")
@@ -258,11 +256,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 	async def record_match_history(self, user_id, opponent_id, user_score, opponent_score):
 		@database_sync_to_async
 		def save_match_history():
-			logger.info(f"Record match history")
-			logger.info(user_id)
-			logger.info(opponent_id)
-			logger.info(user_score)
-			logger.info(opponent_score)
 			user = CustomUser.objects.get(id=user_id)
 			opponent = CustomUser.objects.get(id=opponent_id)
 

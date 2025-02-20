@@ -18,10 +18,10 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
-	path("", include("gameMulti_app.urls")),
+	path("", include("game_multi_app.urls")),
 	path('admin/', admin.site.urls),
-	path("gameMulti_app/", include("gameMulti_app.urls")),
-	path('api/', include("usrman_app.urls")),
+	path("game_multi_app/", include("game_multi_app.urls")),
+	path('api/', include("user_management_app.urls")),
 	path("api/matches/", include("pong_history_app.urls")),
 ]
 

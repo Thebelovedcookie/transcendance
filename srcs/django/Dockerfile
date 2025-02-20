@@ -31,12 +31,12 @@ RUN mkdir project
 
 RUN django-admin startproject backend_project project
 
-RUN cd /project && python3.11 manage.py startapp gameMulti_app \
-	 && python3.11 manage.py startapp localNormalGame_app \
+RUN cd /project && python3.11 manage.py startapp game_multi_app \
+	 && python3.11 manage.py startapp local_normal_name_app \
 	 && python3.11 manage.py startapp tournement_app \
-	 && python3.11 manage.py startapp usrman_app \
+	 && python3.11 manage.py startapp user_management_app \
 	 && python3.11 manage.py startapp pong_history_app \
-	 && python3.11 manage.py startapp remotePlayer_app \
+	 && python3.11 manage.py startapp remote_normal_game_app \
 	 && python3.11 manage.py startapp online_status_app
 
 
@@ -48,15 +48,15 @@ RUN pip install psycopg[binary] channels[daphne] django-cors-headers Pillow
 ENV DJANGO_SETTINGS_MODULE=backend_project.settings
 
 #config des urls
-COPY ./gameMulti_app /project/gameMulti_app/
-COPY ./pongHistoryApp /project/pong_history_app/
-COPY ./backendProject /project/backend_project/
-COPY ./localNormalGame_app /project/localNormalGame_app/
-COPY ./tournement_app /project/tournement_app/
+COPY ./backend_project /project/backend_project/
+COPY ./application/game_multi_app /project/game_multi_app/
+COPY ./application/pong_history_app /project/pong_history_app/
+COPY ./application/local_normal_game_app /project/local_normal_game_app/
+COPY ./application/tournement_app /project/tournement_app/
+COPY ./application/user_management_app /project/user_management_app/
+COPY ./application/remote_normal_game_app/* /project/remote_normal_game_app/
+COPY ./application/online_status_app /project/online_status_app/
 COPY /tools/setups_backend.sh /setups_backend.sh
-COPY ./usrmanApp /project/usrman_app/
-COPY ./remotePlayerapp/* /project/remotePlayer_app/
-COPY ./onlineStatusApp /project/online_status_app/
 RUN chmod +x /setups_backend.sh
 
 
