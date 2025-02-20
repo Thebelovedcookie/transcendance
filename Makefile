@@ -1,7 +1,6 @@
 DC = docker-compose.yml
 
-all: clean creat_v build up
-	make logs c=django
+all: clean creat_v build up logs
 
 network:
 	@echo 'up'

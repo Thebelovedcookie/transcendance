@@ -4,27 +4,9 @@ export class ProfilePage {
 		this.chartLoaded = false;
 		this.userData = null;
 		this.default_path = 'static/img/deer.jpg';
-		this.userData = {
-			username: "Player123",
-			email: "player123@example.com",
-			image_path: null,
-			join_date: "2024-01-15",
-			totalGames: 150,
-			wins: 89,
-			losses: 61,
-			is_online: true
-		};
-		this.matchHistory = [
-			{ opponent: "User456", result: "Win", date: "2024-03-20", score: "11-5" },
-			{ opponent: "GameMaster", result: "Loss", date: "2024-03-19", score: "8-11" },
-			{ opponent: "PongKing", result: "Win", date: "2024-03-18", score: "11-7" }
-		];
-		this.friends = [
-			{ userName: "PongMaster", online: true, lastSeen: "Now" },
-			{ userName: "GamePro", online: false, lastSeen: "2 hours ago" },
-			{ userName: "Champion", online: true, lastSeen: "Now" },
-			{ userName: "PongKing", online: false, lastSeen: "1 day ago" }
-		];
+		this.userData = {};
+		this.matchHistory = [];
+		this.friends = [];
 		this.chart = null;  // Add property to store chart instance
 	}
 
@@ -78,11 +60,6 @@ export class ProfilePage {
 	}
 
 	render() {
-		// const win_percent = this.userData.totalGames > 0
-		//     ? Math.round((this.userData.wins / this.userData.totalGames) * 100): 0;
-
-		// console.log(Math.round((this.userData.wins / this.userData.totalGames) * 100));
-
 		const content = `
 			<div class="profile-container">
 				<div class="profile-header">

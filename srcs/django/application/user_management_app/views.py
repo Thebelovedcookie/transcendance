@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
-from . models import CustomUser
+from . models import CustomUser, EmailVerification
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 import json
@@ -9,6 +9,13 @@ from online_status_app.models import OnlineStatus
 # experiemnting from here
 from PIL import Image
 from django.core.files.storage import FileSystemStorage
+from django.conf import settings
+from datetime import datetime, timedelta
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.core.mail import send_mail
+import random
+from django.utils import timezone
 
 def require_login(view_func):
 	def wrapper(request, *args, **kwargs):
@@ -51,23 +58,144 @@ def logout_user(request):
 			'message': 'invalid request method'
 		}, status=405)
 
-def register_user(request):
-	data = json.load(request)
-	username = data.get('username')
-	email = data.get('email')
-	password = data.get('password')
-	user = CustomUser.objects.create_user(username=username, email=email, password=password) #this is not used ?
-	return JsonResponse({
-		'status': 'success',
-		'message': 'user registered'
-	}, status=200)
-
 def get_csrf_token(request):
 	csrf_token = get_token(request)
 	return JsonResponse({
 		'status': 'success',
 		'csrf_token': csrf_token
 	}, status=200)
+
+def register_user(request):
+	data = json.load(request)
+	username = data.get('username')
+	email = data.get('email')
+	password = data.get('password')
+
+	# Check if user already exists
+	if CustomUser.objects.filter(email=email).exists():
+		return JsonResponse({
+			'status': 'error',
+			'message': 'Email already registered'
+		}, status=400)
+
+	is_active = False
+	user = CustomUser.objects.create_user(
+		username=username,
+		email=email,
+		password=password,
+		is_active=is_active
+	)
+
+	return JsonResponse({
+		'status': 'success',
+		'message': 'Verification email sent'
+	}, status=200)
+
+# this func is executed when a new user is created
+@receiver(post_save, sender=CustomUser)
+def send_email_verification(sender, instance, created, **kwargs):
+	if created and not instance.is_active:
+		# Generate 6-digit verification code
+		verification_code = ''.join([str(random.randint(0, 9)) for _ in range(6)])
+
+		# Create verification token
+		EmailVerification.objects.create(
+			user=instance,
+			verification_code=verification_code
+		)
+
+		# Send email
+		subject = 'Please Activate Your Account'
+		message = f'Your verification code is: {verification_code}'
+		from_email = settings.DEFAULT_FROM_EMAIL
+		recipient_list = [instance.email]
+
+		send_mail(subject, message, from_email, recipient_list)
+
+def resend_verification(request):
+	if request.method != 'POST':
+		return JsonResponse({
+			'status': 'error',
+			'message': 'Invalid request method'
+		}, status=405)
+
+	data = json.load(request)
+	email = data.get('email')
+
+	try:
+		user = CustomUser.objects.get(email=email, is_active=False)
+
+		# Delete existing verification
+		EmailVerification.objects.filter(user=user).delete()
+
+		# Generate new verification code
+		verification_code = ''.join([str(random.randint(0, 9)) for _ in range(6)])
+
+		# Create new verification
+		EmailVerification.objects.create(
+			user=user,
+			verification_code=verification_code
+		)
+
+		# Send email
+		subject = 'New Verification Code'
+		message = f'Your new verification code is: {verification_code}'
+		from_email = settings.DEFAULT_FROM_EMAIL
+		recipient_list = [email]
+
+		send_mail(subject, message, from_email, recipient_list)
+
+		return JsonResponse({
+			'status': 'success',
+			'message': 'New verification code sent'
+		})
+
+	except CustomUser.DoesNotExist:
+		return JsonResponse({
+			'status': 'error',
+			'message': 'User not found or already activated'
+		}, status=404)
+
+def verify_email(request):
+	if request.method != 'POST':
+		return JsonResponse({
+			'status': 'error',
+			'message': 'Invalid request method'
+		}, status=405)
+
+	data = json.load(request)
+	email = data.get('email')
+	verification_code = data.get('code')
+
+	try:
+		user = CustomUser.objects.get(email=email, is_active=False)
+		verification = EmailVerification.objects.get(
+			user=user,
+			verification_code=verification_code
+		)
+
+		if verification.expires_at < timezone.now():
+			return JsonResponse({
+				'status': 'error',
+				'message': 'Verification code expired'
+			}, status=400)
+
+		user.is_active = True
+		user.save()
+
+		# Delete verification after successful activation
+		verification.delete()
+
+		return JsonResponse({
+			'status': 'success',
+			'message': 'Email verified successfully'
+		})
+
+	except (CustomUser.DoesNotExist, EmailVerification.DoesNotExist):
+		return JsonResponse({
+			'status': 'error',
+			'message': 'Invalid verification code'
+		}, status=400)
 
 @login_required
 def update_profile(request):
@@ -119,8 +247,6 @@ def get_profile(request):
 	match_response = pong_history_app.get_user_matches(request)
 	match_data = json.loads(match_response.content)['data']
 
-	is_online = OnlineStatus.objects.get(user_id=user.id).is_online if OnlineStatus.objects.filter(user_id=user.id).exists() else False
-
 	friends_data = [
 		{
 			'id': friend.id,
@@ -148,7 +274,7 @@ def get_profile(request):
 			'image_path': user.profile_image.url if user.profile_image else None,
 			'friends': friends_data,
 			'match_history': match_data['matches'],
-			'is_online': is_online
+			'is_online': True
 		}
 	})
 

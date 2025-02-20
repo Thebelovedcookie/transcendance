@@ -28,7 +28,10 @@ SECRET_KEY = 'django-insecure-r_qdte8i4r3$0okld7voz1g8k1_8aq93gj!t_hscbb(1#lbg@&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+	"localhost",
+	"127.0.0.1",
+]
 
 AUTH_USER_MODEL = 'user_management_app.CustomUser'
 
@@ -57,13 +60,16 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
 	'corsheaders.middleware.CorsMiddleware',
 	'django.middleware.security.SecurityMiddleware',
-	'django.contrib.sessions.middleware.SessionMiddleware',
+	# 'django.contrib.sessions.middleware.SessionMiddleware',
+	'user_management_app.middleware.CustomSessionMiddleware',
 	'django.middleware.common.CommonMiddleware',
 	'django.middleware.csrf.CsrfViewMiddleware',
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+JWT_SECRET_KEY = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 ROOT_URLCONF = 'backend_project.urls'
 
@@ -185,3 +191,10 @@ CSRF_TRUSTED_ORIGINS = [
 	'https://localhost',
 	'https://127.0.0.1',
 ]
+
+# email settings
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 25
+DEFAULT_FROM_EMAIL = 'transcendence-pong@gmail.com'
+ACTIVATION_EXPIRED_MINUTES = 10

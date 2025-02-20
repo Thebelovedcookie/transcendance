@@ -113,7 +113,7 @@ export class LoginPage {
 		}
 
 		const data = await response.json();
-		window.router.updateAuthState();
+		// window.router.updateAuthState();
 		//changing the page to ProfilePage
 		window.router.navigateTo('/profile');
 
