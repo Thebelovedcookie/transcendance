@@ -54,7 +54,7 @@ export class RegisterPage {
 						</div>
 
 						<div>
-							<p class="mb-0" data-translate="already">Already have an account? <a href="/login" data-path="/login" class="text-white-50 fw-bold" data-translate="sign-in">Sign In</a></p>
+							<p class="mb-0" data-translate="already"><a href="/login" data-path="/login" class="text-white-50 fw-bold" data-translate="sign-in"></a></p>
 						</div>
 					</div>
 				</div>

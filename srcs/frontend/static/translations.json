@@ -3,8 +3,10 @@
         "language": "English",
         "PLAY" : "PLAY",
         "2025 PongSite - All Rights Reserved" : "2025 PongSite - All Rights Reserved",
+
         "Login":"Login",
         "Register": "Register",
+
         "modeSelect": "Select Your Game Mode",
         "Normal Mode" :"Normal Mode",
         "Classic2" : "Classic 2-player battle(same keyboard)",
@@ -15,6 +17,7 @@
         "Solodetails" :"Challenge yourself",
         "Tournament" : "Tournament Mode",
         "Tournamentdetails":"Compete to win",
+
         "pwd":"Password",
         "settinglog":"Please enter your login and password!",
         "email_placeholder":"Email",
@@ -32,6 +35,7 @@
         "sign":"Sign Up",
         "sign-in":"Sign In",
         "createaccount": "Create your account",
+
         "page-error":"The page you are looking for does not exist",
         "error404":"Page Not Found",
         "return-home":"Return to Home"
@@ -88,9 +92,45 @@
         "2025 PongSite - All Rights Reserved" : "2025 PongSite - 無断複写・転載を禁じます",
         "Login":"ログイン",
         "Register": "登録する",
+
         "modeSelect": "ゲームモードを選択してください」",
         "Normal Mode" : "ノーマルモード」",
-        "Classic2" : "クラシックな2人対戦(同じキーボード)"
+        "Classic2" : "クラシックな2人対戦(同じキーボード)",
+        "Classic1": "Duel Standard",
+        "MultiMode" : "Multi Mode",
+        "Multidetails" : "Joue contre tes amis",
+        "Solo" : "Mode Solo",
+        "Solodetails" :"Challenge-toi",
+        "Tournament" : "Mode tournoi",
+        "Tournamentdetails":"participe pour gagner",
+        
+        "settinglog":"Entrer votre login et mot de passe!",
+        "pwd":"mot de passe",
+        "Enter-user":"Entrer votre nom d'utilisateur",
+        "Email-user":"Entrer une adresse email valide",
+        "email_placeholder":"Email",
+        "pwd_placeholder":"Mot de passe",
+        "pwd2_placeholder":"Confirmer le mot de passe",
+        "user-placeholder":"Nom d'utilisateur",
+        "emailerror": "Entrer votre email",
+        "errorpwd" :"Entrer votre mot de passe",
+        "pwd-rules":"Le mot de passe doit contenir au moins 8 caractères",
+        "forgotpwd":"Mot de passe oublié?",
+        "already":"Déjà inscrit? {link}",
+        "notyet":"Pas encore inscrit? {link}",
+        "sign":"S'inscrire",
+        "sign-in":"Se connecter",
+        "createaccount": "Créer votre compte",
+
+        "page-error":"La page que vous recherchez n'existe pas",
+        "error404":"Page non trouvée",
+        "return-home":"Retour à l'accueil",
+
+        "matchresult": "MATCH RESULT",
+        "victory": "VICTORY",
+    	"ReturnGame": "RETURN TO GAME",
+		"defeat":"DEFEAT"
+
     },
 
     "es": {
