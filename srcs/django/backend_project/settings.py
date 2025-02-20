@@ -56,17 +56,22 @@ INSTALLED_APPS = [
 	'remote_normal_game_app',
 	'online_status_app',
 ]
-
+# SO: ajout de LocaleMiddleware pour la langue
 MIDDLEWARE = [
 	'corsheaders.middleware.CorsMiddleware',
 	'django.middleware.security.SecurityMiddleware',
+<<<<<<< HEAD:srcs/django/backendProject/settings.py
+	'django.contrib.sessions.middleware.SessionMiddleware',
+	'django.middleware.locale.LocaleMiddleware',
+=======
 	# 'django.contrib.sessions.middleware.SessionMiddleware',
 	'user_management_app.middleware.CustomSessionMiddleware',
+>>>>>>> main:srcs/django/backend_project/settings.py
 	'django.middleware.common.CommonMiddleware',
 	'django.middleware.csrf.CsrfViewMiddleware',
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
-	'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'django.middleware.clickjacking.XFrameOptionsMiddleware',	
 ]
 
 JWT_SECRET_KEY = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -152,6 +157,15 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
+from django.utils.translation import gettext_lazy as _
+
+LANGUAGES = [
+    ('en', _('English')),
+    ('fr', _('French')),
+    ('es', _('Spanish')),
+    ('ja', _('Japanese')),
+]
+
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'Europe/Paris'
@@ -159,7 +173,12 @@ TIME_ZONE = 'Europe/Paris'
 USE_I18N = True
 
 USE_TZ = True
+# ajout du fichier locale des traductions
 
+
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale'),
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/

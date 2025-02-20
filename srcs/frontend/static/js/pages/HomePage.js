@@ -4,14 +4,13 @@ export class HomePage {
 			<div class="home-container">
 				<canvas id="ballAnimation"></canvas>
 				<div class="play-content">
-					<a href="/pong" data-path="/pong" class="play-btn">
-						PLAY
-					</a>
+					<a href="/pong" data-path="/pong" class="play-btn" data-translate="PLAY"></a>
 				</div>
 			</div>
 		`;
 
 		document.getElementById('dynamicPage').innerHTML = content;
+	
 
 		// Add floating animation after content is loaded
 		const playBtn = document.querySelector('.play-btn');

@@ -13,6 +13,7 @@ RUN apt update && apt install -y \
 	wget \
 	libbz2-dev \
 	python3 \
+	gettext \
 	&& apt clean && rm -rf /var/lib/apt/lists/*
 
 RUN wget https://www.python.org/ftp/python/3.11.1/Python-3.11.1.tgz
@@ -60,7 +61,7 @@ COPY ./application/online_status_app /project/online_status_app/
 COPY /tools/setups_backend.sh /setups_backend.sh
 RUN chmod +x /setups_backend.sh
 
+# fichiers de traduction des langues 
 
-WORKDIR /project
 
 ENTRYPOINT [ "/setups_backend.sh" ]

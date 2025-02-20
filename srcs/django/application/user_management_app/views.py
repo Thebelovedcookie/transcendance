@@ -9,6 +9,9 @@ from online_status_app.models import OnlineStatus
 # experiemnting from here
 from PIL import Image
 from django.core.files.storage import FileSystemStorage
+<<<<<<< HEAD:srcs/django/usrmanApp/views.py
+from django.utils.translation import gettext as _
+=======
 from django.conf import settings
 from datetime import datetime, timedelta
 from django.db.models.signals import post_save
@@ -16,14 +19,15 @@ from django.dispatch import receiver
 from django.core.mail import send_mail
 import random
 from django.utils import timezone
+>>>>>>> main:srcs/django/application/user_management_app/views.py
 
 def require_login(view_func):
 	def wrapper(request, *args, **kwargs):
 		if not request.user.is_authenticated:
 			return JsonResponse({
-				'status': 'error',
-				'message': 'Authentication required',
-				'code': 'not_authenticated'
+				'status': _('error'),
+				'message': _('Authentication required'),
+				'code': _('not_authenticated')
 			}, status=401)
 		return view_func(request, *args, **kwargs)
 	return wrapper

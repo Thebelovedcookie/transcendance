@@ -179,6 +179,9 @@ class Router {
 		const page = this.routes.get(path) || new NotFoundPage();
 		currentPage = page;
 		await page.handle();
+		//appliquer la trad apres chargement de la page
+		const savedLang = localStorage.getItem("selectedLang") || "en";
+    	await updateTexts(savedLang);
 	}
 
 	//add the history
