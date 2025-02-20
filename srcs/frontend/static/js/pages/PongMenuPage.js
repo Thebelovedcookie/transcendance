@@ -63,35 +63,35 @@ export class PongMenuPage {
 				${isLoggedIn ? `
 					<div class="mode-card" data-path="/pong/remote">
 						<div class="mode-icon">🏓</div>
-						<h3>Normal Mode</h3>
-						<p>Classic 2-player battle</p>
+						<h3>Battle Mode</h3>
+						<p>Classic 2-player battle against an online opponent</p>
 						<div class="mode-hover">PLAY</div>
 					</div>`
 					: ``}
 					<div class="mode-card" data-path="/pong/normal">
 						<div class="mode-icon">🏓🏓</div>
-						<h3>Normal Mode</h3>
-						<p>Classic 2-player battle(same keyboard)</p>
+						<h3>Duel Mode</h3>
+						<p>Classic 2-player game on a single keyboard</p>
 						<div class="mode-hover">PLAY</div>
 					</div>
 					<div class="mode-card" data-path="/pong/multi">
 						<div class="mode-icon">🏓🏓🏓</div>
-						<h3>Multi Mode</h3>
-						<p>Play against your friends</p>
+						<h3>Tri Mode</h3>
+						<p>Circular 3-player game on a single keyboard</p>
 						<div class="mode-hover">PLAY</div>
 					</div>
 
 					<div class="mode-card solo-mode">
 						<div class="mode-icon">🤖</div>
 						<h3>Solo Mode</h3>
-						<p>Challenge yourself</p>
+						<p>Challenge yourself: train alone or battle an AI opponent</p>
 						<div class="mode-hover">PLAY</div>
 					</div>
 
 					<div class="mode-card" data-path="/pong/tournament">
 						<div class="mode-icon">🏆</div>
 						<h3>Tournament Mode</h3>
-						<p>Compete to win</p>
+						<p>Compete in Duel mode with multiple players on a single machine</p>
 						<div class="mode-hover">PLAY</div>
 					</div>
 				</div>
