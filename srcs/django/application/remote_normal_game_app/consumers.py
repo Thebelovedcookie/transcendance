@@ -26,6 +26,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 	async def connect(self):
 		self.player_id = self.scope["user"].id
+		if await self.reconnect() == 0 : return
 		await self.accept()
 		obj = {
 			'player_id': self.player_id,
@@ -47,6 +48,43 @@ class PongConsumer(AsyncWebsocketConsumer):
 					'message': 'Waiting for Opponent',
 				})
 			)
+
+	async def reconnect(self):
+		for match in self.infoMatch["match"]:
+			if match["playerOne"]["id"] == self.player_id:
+				await self.accept()
+				await self.channel_layer.group_add(self.game_group_name, self.channel_name)
+				match["playerOne"]["color"] = "black"
+				response = {
+					"type": "reconnection",
+					"matchId" : match["matchId"],
+					"me" : match["playerOne"],
+					"opponent" : match["playerTwo"],
+					"id" : match["playerOne"]["id"],
+					"ball": match["ball"],
+					"side": "right",
+					"ctrlUp": "ArrowUp",
+					"ctrlDown": "ArrowDown"
+				}
+				await self.send(text_data=json.dumps(response))
+				return 0
+			elif match["playerTwo"]["id"] == self.player_id:
+				await self.accept()
+				await self.channel_layer.group_add(self.game_group_name, self.channel_name)
+				match["playerTwo"]["color"] = "black"
+				response = {
+					"type": "reconnection",
+					"matchId" : match["matchId"],
+					"me" : match["playerTwo"],
+					"opponent" : match["playerOne"],
+					"id" : match["playerTwo"]["id"],
+					"ball": match["ball"],
+					"side": "right",
+					"ctrlUp": "ArrowUp",
+					"ctrlDown": "ArrowDown"
+				}
+				await self.send(text_data=json.dumps(response))
+				return 0
 
 	async def disconnect(self, close_code):
 		client = self.scope["client"]
