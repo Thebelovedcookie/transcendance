@@ -9,42 +9,33 @@ import math
 
 logger = logging.getLogger(__name__)
 
-class GameConsumer(AsyncWebsocketConsumer):
-
+class GameAiConsumer(AsyncWebsocketConsumer):
 	infoMatch = {
 		"match": []
 	}
-	#connection to the WebSocket
+
 	async def connect(self):
+		logger.info("WebSocket connection attempt")
 		try:
 			await self.accept()
 			logger.info("WebSocket connection accepted")
 		except Exception as e:
 			logger.error(f"WebSocket connection failed: {e}")
-		await self.createGame()
 
-	#interrupt the Websocket
 	async def disconnect(self, close_code):
 		logger.info(f"WebSocket disconnected with code: {close_code}")
 
-	#Manage the info receive
 	async def receive(self, text_data):
 		try:
-
-			# Decode Json data
 			data = json.loads(text_data)
-			logger.debug(f"Decoded data: {data}")
 
-			# search for the type of the message
 			message_type = data.get("type")
-			print(f"Message type received: {message_type}")
 
-			# Manage the type of the msg
 			if message_type == "game.starting":
 				await self.initialisation(data)
 				asyncio.create_task(self.loop())
 				return
-			elif message_type == "player.moved":
+			if message_type == "player.moved":
 				await self.moveChange(data)
 				return
 			else:
@@ -53,8 +44,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 					"message": f"Unknown message type: {message_type}"
 				}
 
-			# Envoyer la réponse au client
-			self.send(text_data=json.dumps(response))
+			await self.send(text_data=json.dumps(response))
 
 		except json.JSONDecodeError:
 			logger.error("Error: Invalid JSON received")
@@ -65,28 +55,22 @@ class GameConsumer(AsyncWebsocketConsumer):
 
 	######################## GAME INIT #############################
 
-	async def createGame(self):
-		obj = {
-			'status': True,
-			'playerOne': {
-			},
-			'playerTwo': {
-			}
-		}
-		self.infoMatch['match'].append(obj)
-
 	async def initialisation(self, data):
-		m = self.infoMatch["match"][0]
 		start_data = data.get("start", {})
 		canvas_height = start_data.get("windowHeight", 0)
 		canvas_width = start_data.get("windowWidth", 0)
-		typeOfMatch = start_data.get("typeOfMatch", 0)
 
+		obj = {
+				'status': True,
+				'playerOne': {
+				},
+				'playerTwo': {
+				}
+			}
+		self.infoMatch['match'].append(obj)
+		m = self.infoMatch["match"][0]
 		m["maxScore"] = 10
 		m["canvas"] = {"canvas_height": canvas_height, "canvas_width": canvas_width}
-		if typeOfMatch == "tournement":
-			m["maxScore"] = 5
-
 		m["playerOne"].update({
 			"x": 5,
 			"y": canvas_height * 0.4,
@@ -115,8 +99,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 			"gravity": 2
 			}
 
-	######################## GAME LOOP #############################
-
 	async def loop(self):
 		m = self.infoMatch["match"][0]
 
@@ -136,7 +118,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 			"scoreMax": m["maxScore"]
 		}
 		await self.send(text_data=json.dumps(response))
-
+	
 	######################## GAME LOGIC #############################
 
 	async def calculBallMovement(self):
@@ -195,17 +177,17 @@ class GameConsumer(AsyncWebsocketConsumer):
 			m["ball"]["x"] = m["canvas"]["canvas_width"] / 2
 			m["ball"]["y"] = m["canvas"]["canvas_height"]  / 2
 			await self.checkScore(m)
-	
+		
 	async def checkScore(self, m):
 		if (m["playerOne"]["score"] == m["maxScore"]):
 			m["status"] = False
-			await self.sendMatchResult(m["playerOne"], m["playerTwo"])
+			await self.sendMatchResult("p1", "p2")
 		elif (m["playerTwo"]["score"] == m["maxScore"]):
 			m["status"] = False
-			await self.sendMatchResult(m["playerTwo"], m["playerOne"])
+			await self.sendMatchResult("p2", "p1")
 
 	#################### PLAYER MOVE ##########################
-
+	
 	async def moveChange(self, data):
 		m = self.infoMatch["match"][0]
 		player = data.get("player", None)
@@ -222,8 +204,11 @@ class GameConsumer(AsyncWebsocketConsumer):
 			elif (direction == "down" and m["playerTwo"]["y"] < m["canvas"]["canvas_height"] - m["playerOne"]["height"]):
 				m["playerTwo"]["y"] += 10
 
-	async def sendMatchResult(winner, loser):
+	###################### RESULTS ##########################
+
+	async def sendMatchResult(self, winner, loser):
 		response = {
 			"winner": winner,
 			"loser": loser,
 		}
+		await self.send(text_data=json.dumps(response))

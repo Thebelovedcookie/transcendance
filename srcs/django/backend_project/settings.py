@@ -48,6 +48,7 @@ INSTALLED_APPS = [
 	'local_multi_game_app',
 	'local_normal_game_app',
 	'local_tournement_app',
+	'local_ai_game_app',
 	'pong_history_app',
 	'remote_normal_game_app',
 	'online_status_app',
