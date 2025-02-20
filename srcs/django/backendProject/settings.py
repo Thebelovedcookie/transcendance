@@ -190,3 +190,10 @@ CSRF_TRUSTED_ORIGINS = [
 	'https://localhost',
 	'https://127.0.0.1',
 ]
+
+# email settings
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 25
+DEFAULT_FROM_EMAIL = 'transcendence-pong@gmail.com'
+ACTIVATION_EXPIRED_MINUTES = 10

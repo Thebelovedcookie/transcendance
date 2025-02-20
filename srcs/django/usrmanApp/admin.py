@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 from .forms import CustomUserCreationForm, CustomUserChangeForm
-from .models import CustomUser
+from .models import CustomUser, EmailVerification
 
 class CustomUserAdmin(UserAdmin):
 	add_form = CustomUserCreationForm
@@ -31,4 +31,10 @@ class CustomUserAdmin(UserAdmin):
 	search_fields = ('username', 'email',)
 	ordering = ('username',)
 
+class EmailVerificationAdmin(admin.ModelAdmin):
+	list_display = ('user', 'verification_code', 'created_at', 'expires_at')
+	search_fields = ('user__email',)
+	ordering = ('-created_at',)
+
 admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(EmailVerification, EmailVerificationAdmin)
