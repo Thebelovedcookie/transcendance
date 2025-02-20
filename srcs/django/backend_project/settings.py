@@ -60,13 +60,14 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
 	'corsheaders.middleware.CorsMiddleware',
 	'django.middleware.security.SecurityMiddleware',
+	'django.middleware.locale.LocaleMiddleware',
 	# 'django.contrib.sessions.middleware.SessionMiddleware',
 	'user_management_app.middleware.CustomSessionMiddleware',
 	'django.middleware.common.CommonMiddleware',
 	'django.middleware.csrf.CsrfViewMiddleware',
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
-	'django.middleware.clickjacking.XFrameOptionsMiddleware',	
+	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 JWT_SECRET_KEY = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -206,9 +207,19 @@ CSRF_TRUSTED_ORIGINS = [
 	'https://127.0.0.1',
 ]
 
-# email settings
+# email settings for dev(console)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 25
 DEFAULT_FROM_EMAIL = 'transcendence-pong@gmail.com'
 ACTIVATION_EXPIRED_MINUTES = 10
+
+# gmail settings for prod
+# DEFAULT_FROM_EMAIL = 'transcendence-pong@gmail.com'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+# ACTIVATION_EXPIRED_MINUTES = 10
