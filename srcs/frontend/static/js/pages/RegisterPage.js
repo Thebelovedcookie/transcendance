@@ -95,11 +95,9 @@ export class RegisterPage {
 			}
 
 			const data = await response.json();
-			console.log('Success:', data);
 
 			// Store email for verification page
 			sessionStorage.setItem('pendingVerificationEmail', document.getElementById('typeEmailX').value);
-			console.log("email: ", sessionStorage.getItem('pendingVerificationEmail'));
 			// Navigate to verification page
 			window.router.navigateTo('/verify');
 		} catch (error) {
