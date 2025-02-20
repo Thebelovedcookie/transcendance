@@ -18,6 +18,7 @@ import { AiPage } from './pages/AiPage.js';
 import { Header } from './pages/Header.js';
 import { MultiPage } from './pages/MultiPage.js';
 import { RemoteNormalGamePage } from './pages/RemoteNormalGamePage.js';
+import { VerificationPage } from './pages/VerificationPage.js';
 
 let currentPage = null;
 
@@ -124,6 +125,7 @@ class Router {
         this.routes.set('/pong/solo/ai', new AiPage());
         this.routes.set('/pong/multi', new MultiPage());
         this.routes.set('/pong/remote', new RemoteNormalGamePage());
+        this.routes.set('/verify', new VerificationPage());
     }
 
 	//add listeners popstate (backward/forward)

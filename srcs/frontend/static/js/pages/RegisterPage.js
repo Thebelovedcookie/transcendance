@@ -74,9 +74,6 @@ export class RegisterPage {
 		}
 
 		try {
-			// sending a post request to the backend -> (email, username, password)
-			//Who will allow us to register a new account
-			/*---------------------------REQUEST-----------------------------*/
 			const response = await fetch('/api/register', {
 				method: 'POST',
 				headers: {
@@ -84,17 +81,13 @@ export class RegisterPage {
 					'X-CSRFToken': window.csrfToken,
 				},
 				credentials: 'same-origin',
-				body: JSON.stringify({ 'username': document.getElementById('typeUsernameX').value,
+				body: JSON.stringify({
+					'username': document.getElementById('typeUsernameX').value,
 					'email': document.getElementById('typeEmailX').value,
 					'password': document.getElementById('typePasswordX').value
 				 })
 			});
-			/*--------------------------ENDREQUEST----------------------------*/
-			console.log("use token:", window.csrfToken);
-			console.log('Response status:', response.status);
-			console.log('Response headers:', Object.fromEntries(response.headers));
 
-			//if we get a bad response
 			if (!response.ok) {
 				const errorText = await response.text();
 				console.error('Response error:', errorText);
@@ -103,9 +96,12 @@ export class RegisterPage {
 
 			const data = await response.json();
 			console.log('Success:', data);
-			//changing the page to loginPage
-			window.router.navigateTo('/login');
 
+			// Store email for verification page
+			sessionStorage.setItem('pendingVerificationEmail', document.getElementById('typeEmailX').value);
+			console.log("email: ", sessionStorage.getItem('pendingVerificationEmail'));
+			// Navigate to verification page
+			window.router.navigateTo('/verify');
 		} catch (error) {
 			console.error('Error details:', error);
 			throw error;
@@ -239,7 +235,7 @@ export class RegisterPage {
 		document.getElementById('typeConfirmPasswordX').addEventListener('input', (e) => this.updatePasswordConfirmStrength(e));
 		document.getElementById('typeEmailX').addEventListener('input', (e) => this.validateEmail(e));
 	}
-	
+
 	clean() {
 		return ;
 	}
