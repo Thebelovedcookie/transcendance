@@ -182,6 +182,7 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 			await self.checkScore(m)
 		
 	async def checkScore(self, m):
+		logger.info("check score")
 		if (m["playerOne"]["score"] == m["maxScore"]):
 			m["status"] = False
 			await self.sendMatchResult("p1", "p2")

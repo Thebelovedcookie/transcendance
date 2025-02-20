@@ -202,6 +202,10 @@ class GameWebSocket {
 				this.getInfoFromBackend(data);
 				this.startGameLoop();
 				break;
+			case "game.result":
+				console.log(data.type);
+				this.getResult(data);
+				break;
 			case "error":
 				console.log(data.type);
 				console.error("Server error:", data.message);
@@ -209,6 +213,12 @@ class GameWebSocket {
 			default:
 				console.log("Unhandled message type:", data.type);
 		}
+	}
+
+	getResult(data) {
+		stopGame();
+		const end = new EndNormalGamePage(data.message.winner, data.message.loser);
+		end.handle();
 	}
 
 	getInfoFromBackend(data)
