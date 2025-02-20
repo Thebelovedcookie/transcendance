@@ -32,50 +32,33 @@ RUN mkdir project
 
 RUN django-admin startproject backend_project project
 
-RUN cd /project && python3.11 manage.py startapp backend_app \
-	 && python3.11 manage.py startapp backend_gamecons_app \
-	 && python3.11 manage.py startapp backend_tour_app \
-	 && python3.11 manage.py startapp usrman_app \
-	 && python3.11 manage.py startapp pong_history_app \
-	 && python3.11 manage.py startapp remotePlayer_app \
-	 && python3.11 manage.py startapp online_status_app
-
+RUN cd /project && python3.11 manage.py startapp local_multi_game_app \
+	&& python3.11 manage.py startapp local_normal_name_app \
+	&& python3.11 manage.py startapp local_tournement_app \
+	&& python3.11 manage.py startapp local_ai_game_app \
+	&& python3.11 manage.py startapp user_management_app \
+	&& python3.11 manage.py startapp pong_history_app \
+	&& python3.11 manage.py startapp remote_normal_game_app \
+	&& python3.11 manage.py startapp online_status_app 
 
 EXPOSE 8000
 
 RUN apt update && apt install -y postgresql-client
-RUN pip install psycopg[binary] channels[daphne] django-cors-headers Pillow
+RUN pip install psycopg[binary] channels[daphne] django-cors-headers Pillow pyjwt django-channels-jwt-auth-middleware
 
 ENV DJANGO_SETTINGS_MODULE=backend_project.settings
 
 #config des urls
-COPY ./backendApp /project/backend_app/
-COPY ./pongHistoryApp /project/pong_history_app/
-COPY ./backendProject /project/backend_project/
-COPY ./backendGameConsApp /project/backend_gamecons_app/
-COPY ./backendTourApp /project/backend_tour_app/
-COPY ./tools/setups_backend.sh /setups_backend.sh
-COPY ./usrmanApp /project/usrman_app/
-COPY ./remotePlayerapp/* /project/remotePlayer_app/
-COPY ./onlineStatusApp /project/online_status_app/
-COPY ./locale /project/locale/
-
-
-ENV PYTHONPATH=/project
-# Vérifier le chemin Python et la présence du module
-#RUN python3.11 -c "import sys; print(sys.path)"
-#RUN python3.11 -c "import backend_project.settings"
-#RUN ls -l /project/backend_project && python3.11 -c "import backend_project.settings"
-
-# RUN for lang in fr es ja; do \
-#     django-admin makemessages -l $lang --verbosity 2 --keep-pot \
-#     --settings=backend_project.settings -d django --extension=html,py \
-# 	--ignore=venv --no-location --no-wrap --locale=$lang; \
-# done
-
-RUN django-admin compilemessages -i venv --settings=backend_project.settings
-
-
+COPY ./backend_project /project/backend_project/
+COPY ./application/local_multi_game_app /project/local_multi_game_app/
+COPY ./application/local_normal_game_app /project/local_normal_game_app/
+COPY ./application/local_ai_game_app /project/local_ai_game_app/
+COPY ./application/local_tournement_app /project/local_tournement_app/
+COPY ./application/pong_history_app /project/pong_history_app/
+COPY ./application/user_management_app /project/user_management_app/
+COPY ./application/remote_normal_game_app/* /project/remote_normal_game_app/
+COPY ./application/online_status_app /project/online_status_app/
+COPY /tools/setups_backend.sh /setups_backend.sh
 RUN chmod +x /setups_backend.sh
 
 # fichiers de traduction des langues 

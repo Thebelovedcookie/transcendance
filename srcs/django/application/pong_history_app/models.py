@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from usrman_app.models import CustomUser
+from user_management_app.models import CustomUser
 
 class PongMatchHistory(models.Model):
 	id = models.AutoField(primary_key=True)

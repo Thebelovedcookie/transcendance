@@ -1,11 +1,14 @@
-import { aiMode } from "../game_mode/ai_opponent/main_ai.js";
+import { aiMode, stopGameAi } from "../game_mode/ai_opponent/main_ai.js";
 
 export class AiPage {
 	constructor() {
 		this.container = document.getElementById('dynamicPage');
+		this.game = null;
+		this.pause = false;
 	}
 
 	async handle() {
+		this.setupEventListeners();
 		this.render();
 	}
 
@@ -19,6 +22,28 @@ export class AiPage {
 		this.container.innerHTML = '';
 		this.container.appendChild(gameContent);
 
-		aiMode("base");
+		this.game = aiMode("base");
+	}
+
+	setupEventListeners() {
+		this.keydownHandler = (e) => {
+			e.preventDefault();
+			if (e.key == "Escape") {
+				if (!this.pause && this.game) {
+					this.game.stopGameLoop();
+					this.game.drawPause();
+					this.pause = true;
+				} else if (this.game) {
+					this.pause = false;
+					this.game.startGameLoop();
+				}
+			}
+		};
+		window.addEventListener('keydown', this.keydownHandler);
+	}
+
+	clean() {
+		window.removeEventListener('keydown', this.keydownHandler);
+		stopGameAi();
 	}
 }

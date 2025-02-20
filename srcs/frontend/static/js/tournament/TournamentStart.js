@@ -102,4 +102,8 @@ export class TournamentStart {
 		const endOfTournement = new EndTournementPage(winner);
 		endOfTournement.handle();
 	}
+
+	clean() {
+		return ;
+	}
 }

@@ -48,6 +48,9 @@ export class PongMenuPage {
 	}
 
 	render() {
+		const authState = window.router.getAuthState();
+		const isLoggedIn = authState.isAuthenticated;
+
 		const menuContent = document.createElement('div');
 		menuContent.innerHTML = `
 			<div class="pong-menu-container">
@@ -59,20 +62,20 @@ export class PongMenuPage {
                 <div class="game-modes">
                     <div class="mode-card" data-path="/pong/remote">
                         <div class="mode-icon">🏓</div>
-                        <h3 data-translate="Normal Mode"></h3>
+                        <h3 data-translate="Battle Mode"></h3>
                         <p data-translate="Classic1"></p>
                         <div class="mode-hover" data-translate="PLAY"></div>
                     </div>
                     <div class="mode-card" data-path="/pong/normal">
                         <div class="mode-icon">🏓🏓</div>
-                        <h3 data-translate="Normal Mode"></h3>
+                        <h3 data-translate="Duel Mode"></h3>
                         <p data-translate="Classic2"></p>
                         <div class="mode-hover" data-translate="PLAY"></div>
                     </div>
                     <div class="mode-card" data-path="/pong/multi">
                         <div class="mode-icon">🏓🏓🏓</div>
-                        <h3 data-translate ="MultiMode"></h3>
-                        <p data-translate = "Multidetails"></p>
+                        <h3 data-translate ="TriMode"></h3>
+                        <p data-translate = "Tridetails"></p>
                         <div class="mode-hover" data-translate="PLAY"></div>
                     </div>
 
@@ -105,6 +108,10 @@ export class PongMenuPage {
 				}
 			});
 		});
+	}
+	
+	clean() {
+		return ;
 	}
 }
 

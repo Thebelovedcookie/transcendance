@@ -18,22 +18,69 @@ import { AiPage } from './pages/AiPage.js';
 import { Header } from './pages/Header.js';
 import { MultiPage } from './pages/MultiPage.js';
 import { RemoteNormalGamePage } from './pages/RemoteNormalGamePage.js';
+import { VerificationPage } from './pages/VerificationPage.js';
 
+let currentPage = null;
 
 //first step : Creation of a class Router which will allows to naviguates between pages and add an history
 class Router {
-	//constructor of the class call his 3 function
+	#authState;  // private field
+
 	constructor() {
 		this.header = new Header();
 		this.routes = new Map();
 		this.container = document.getElementById('dynamicPage');
 		this.onlineSocket = null;
 
-		this.initializeOnlineStatus();
-		this.initializeCsrfToken();
-		this.initializeRoutes();
-		this.setupEventListeners();
-		this.handleLocation();
+		// Initialize private field
+		this.#authState = {
+			isAuthenticated: false,
+			username: '',
+			lastChecked: null
+		};
+
+		this.initializeAuth()
+			.then(() => {
+				this.initializeCsrfToken();
+				this.initializeRoutes();
+				this.setupEventListeners();
+				this.handleLocation();
+			});
+	}
+
+	async initializeAuth() {
+		await this.updateAuthState();
+	}
+
+	async updateAuthState() {
+		try {
+			const response = await fetch('/api/user', {
+				credentials: 'include'
+			});
+			const data = await response.json();
+
+			this.#authState = {
+				isAuthenticated: data.data.isAuthenticated,
+				username: data.data.username || '',
+				lastChecked: new Date()
+			};
+
+			if (this.#authState.isAuthenticated) {
+				this.initializeOnlineStatus();
+			} else if (this.onlineSocket) {
+				this.onlineSocket.close();
+				this.onlineSocket = null;
+			}
+
+			return this.getAuthState();
+		} catch (error) {
+			console.error('Failed to check auth state:', error);
+			return this.getAuthState();
+		}
+	}
+
+	getAuthState() {
+		return Object.freeze({ ...this.#authState });
 	}
 
 	async initializeOnlineStatus() {
@@ -42,25 +89,8 @@ class Router {
 			const host = window.location.host;
 			const wsUrl = `${protocol}//${host}/ws/user_status/`;
 
-			console.log("Attempting to connect:", wsUrl);
-			this.onlineSocket = new WebSocket(wsUrl);
-
-			this.onlineSocket.onopen = () => {
-				console.log("WebSocket connection established");
-			};
-
-			this.onlineSocket.onmessage = (event) => {
-				console.log('Online status message received:', event.data);
-			};
-
-			this.onlineSocket.onerror = (error) => {
-				console.error("WebSocket error:", error);
-			};
-
-			this.onlineSocket.onclose = (event) => {
-				console.log("WebSocket connection closed:", event);
-			};
-
+			const protocols = [];
+			this.onlineSocket = new WebSocket(wsUrl, protocols);
 		} catch (error) {
 			console.error("WebSocket connection error:", error);
 		}
@@ -74,29 +104,29 @@ class Router {
 			const data = await response.json();
 			// global variable to use the CSRF token in the RegisterPage.js
 			window.csrfToken = data.csrf_token;
-			console.log('CSRF Token initialized in Router');
 		} catch (error) {
 			console.error('Failed to initialize CSRF token:', error);
 		}
 	}
 
-    //add every path at our Container map "routes"
-    initializeRoutes() {
-        this.routes.set('/', new HomePage());
-        this.routes.set('/pong', new PongMenuPage());
-        this.routes.set('/pong/normal', new NormalGamePage("base", "normal", null, null));
-        this.routes.set('/pong/solo', new SoloGamePage());
-        this.routes.set('/pong/tournament', new TournamentPage());
-        this.routes.set('/login', new LoginPage());
-        this.routes.set('/register', new RegisterPage());
-        this.routes.set('/profile', new ProfilePage());
-        this.routes.set('/settings', new SettingPage());
-        this.routes.set('/logout', new LogoutPage());
-        this.routes.set('/tictactoe', new TicTacToeGamePage());
-        this.routes.set('/pong/solo/ai', new AiPage());
-        this.routes.set('/pong/multi', new MultiPage());
-        this.routes.set('/pong/remote', new RemoteNormalGamePage());
-    }
+	//add every path at our Container map "routes"
+	initializeRoutes() {
+		this.routes.set('/', new HomePage());
+		this.routes.set('/pong', new PongMenuPage());
+		this.routes.set('/pong/normal', new NormalGamePage("base", "normal", null, null));
+		this.routes.set('/pong/solo', new SoloGamePage());
+		this.routes.set('/pong/tournament', new TournamentPage());
+		this.routes.set('/login', new LoginPage());
+		this.routes.set('/register', new RegisterPage());
+		this.routes.set('/profile', new ProfilePage());
+		this.routes.set('/settings', new SettingPage());
+		this.routes.set('/logout', new LogoutPage());
+		this.routes.set('/tictactoe', new TicTacToeGamePage());
+		this.routes.set('/pong/solo/ai', new AiPage());
+		this.routes.set('/pong/multi', new MultiPage());
+		this.routes.set('/pong/remote', new RemoteNormalGamePage());
+		this.routes.set('/verify', new VerificationPage());
+	}
 
 	//add listeners popstate (backward/forward)
 	//The listeners will tell us if someone clicked on the backward or forward button
@@ -138,10 +168,16 @@ class Router {
 	 * 4. call the handle function of the page
 	 */
 	async handleLocation() {
+		await this.updateAuthState();
 		await this.header.render();
-
+		//test
+		if (currentPage != null)
+		{
+			currentPage.clean();
+		}
 		const path = window.location.pathname;
 		const page = this.routes.get(path) || new NotFoundPage();
+		currentPage = page;
 		await page.handle();
 		//appliquer la trad apres chargement de la page
 		const savedLang = localStorage.getItem("selectedLang") || "en";

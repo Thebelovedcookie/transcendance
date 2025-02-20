@@ -42,4 +42,7 @@ export class LoserRemoteGamePage {
             window.dispatchEvent(new PopStateEvent('popstate'));
         });
     }
+    clean() {
+		return ;
+	}
 }

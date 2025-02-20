@@ -1,6 +1,6 @@
 [
 	{
-		"model": "usrman_app.customuser",
+		"model": "user_management_app.customuser",
 		"pk": 2,
 		"fields": {
 			"username": "testuser",
@@ -14,7 +14,7 @@
 		}
 	},
 	{
-		"model": "usrman_app.customuser",
+		"model": "user_management_app.customuser",
 		"pk": 3,
 		"fields": {
 			"username": "testuser2",
@@ -28,7 +28,7 @@
 		}
 	},
 	{
-		"model": "usrman_app.customuser",
+		"model": "user_management_app.customuser",
 		"pk": 4,
 		"fields": {
 			"username": "testuser3",

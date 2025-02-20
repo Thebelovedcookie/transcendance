@@ -10,15 +10,37 @@ export class RemoteNormalGamePage {
 	}
 
 	render() {
-		const gameContent = document.createElement('div');
-		gameContent.className = 'game-container';
-		gameContent.innerHTML = `
-			<canvas id="pongGame" width="800" height="400"></canvas>
-		`;
+		const authState = window.router.getAuthState();
+		const isLoggedIn = authState.isAuthenticated;
+		const username = authState.username;
 
-		this.container.innerHTML = '';
-		this.container.appendChild(gameContent);
+		if (isLoggedIn) {
+			this.container.innerHTML = `
+				<div class="game-container">
+					<button class="back-button" data-path="/pong">
+						<i class="fas fa-arrow-left"></i> Back to Menu
+					</button>
+					<canvas id="pongGame" width="800" height="400"></canvas>
+					<div class="typewriter-text">Searching for opponent...</div>
+				</div>
+			`;
 
-		normalMode();
+			normalMode();
+		} else {
+			this.container.innerHTML = `
+				<div class="game-container">
+					<h1>Please login to play</h1>
+					<button class="back-button" data-path="/login">
+						<i class="fas fa-arrow-left"></i> Login
+					</button>
+				</div>
+			`;
+		}
+	}
+
+	clean() {
+		return ;
 	}
 }
+
+

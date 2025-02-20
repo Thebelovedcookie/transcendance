@@ -198,6 +198,18 @@ class GameWebSocket {
 		}, 1000 / 60);  // Still run at 60 FPS locally
 	}
 
+	drawPause() {
+
+		const rectWidth = 50;
+		const rectHeight = 200;
+		
+		context.fillStyle = "black";
+		context.fillRect(canvas.width / 2 - 70, canvas.height / 2 - 100, rectWidth, rectHeight);
+	
+		context.fillRect(canvas.width / 2 + 20, canvas.height / 2 - 100, rectWidth, rectHeight);
+	}
+	
+
 	stopGameLoop() {
 		if (this.gameLoopInterval) {
 			clearInterval(this.gameLoopInterval);
@@ -410,7 +422,7 @@ class GameWebSocket {
 			this.gameState.scores.playerOne++;
 			this.gameState.scores.playerTwo++;
 		}
-		//this.checkScore();
+		this.checkScore();
 		this.resetBall();
 	}
 
@@ -426,19 +438,19 @@ class GameWebSocket {
 			if (this.gameState.scores.playerOne == 10)
 			{
 				stopGame();
-				const end = new EndNormalGamePage("PlayerOne", "PlayerTwo and PlayerThree");
+				const end = new EndNormalGamePage("Player 1", "Player 2 and Player 3");
 				end.handle();
 			}
 			else if (this.gameState.scores.playerTwo == 10)
 			{
 				stopGame();
-				const end = new EndNormalGamePage("PlayerTwo", "PlayerOne and PlayerThree");
+				const end = new EndNormalGamePage("Player 2", "Player 1 and Player 3");
 				end.handle();
 			}
 			else
 			{
 				stopGame();
-				const end = new EndNormalGamePage("PlayerThree", "PlayerOne and PlayerTwo");
+				const end = new EndNormalGamePage("Player 3", "Player 1 and Player 2");
 				end.handle();
 			}
 		}
@@ -449,11 +461,9 @@ class GameWebSocket {
 		this.gameState.ball.y = this.centerY;
 
 		if (!this.gameState.ball.speed) this.gameState.ball.speed = 4;
-		if (!this.gameState.ball.gravity) this.gameState.ball.gravity = 2;
 
 		const angle = Math.random() * 2 * Math.PI
 
-		// no longer using gravity
 		this.gameState.ball.vx = this.gameState.ball.speed * Math.cos(angle);
 		this.gameState.ball.vy = this.gameState.ball.speed * Math.sin(angle);
 	}
@@ -490,6 +500,8 @@ export function multiMode() {
 	if (!gameSocket) {
 		gameSocket = new GameWebSocket();
 	}
+	if (gameSocket)
+		return gameSocket;
 }
 
 export function stopGame() {

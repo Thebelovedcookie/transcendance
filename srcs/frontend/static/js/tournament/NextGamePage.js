@@ -129,4 +129,8 @@ export class NextGamePage {
 			}
 		}, 1000);
 	}
+
+	clean() {
+		return ;
+	}
 }

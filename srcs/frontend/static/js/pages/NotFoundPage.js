@@ -22,6 +22,10 @@ export class NotFoundPage {
 		this.container.innerHTML = '';
 		this.container.appendChild(notFoundContent);
 	}
+	
+	clean() {
+		return ;
+	}
 }
 
 /*

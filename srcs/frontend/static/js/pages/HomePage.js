@@ -100,4 +100,8 @@ export class HomePage {
 
 		window.addEventListener('resize', resizeCanvas);
 	}
+	
+	clean() {
+		return ;
+	}
 }

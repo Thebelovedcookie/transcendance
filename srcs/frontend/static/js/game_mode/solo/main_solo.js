@@ -1,11 +1,13 @@
-import { firstPaddleSolo, ballSoloStyle, drawDashedLineSolo, drawWallsSolo } from './style.js';
+import { firstPaddleSolo, ballSoloStyle, drawDashedLineSolo, drawWallsSolo, displayText } from './style.js';
 
 //----------------------GLOBAL GAME ELEMENT----------------------------//
+
 let canvasSolo;
 let contextSolo;
 let playerOneSolo;
 let ballSolo;
 let controllerSolo;
+let isPaused = false;
 
 function init_canvasSolo(){
 	canvasSolo = document.getElementById("pongGame");
@@ -102,12 +104,6 @@ function movePaddleDownP2Solo() {
 
 //----------------------------METHOD--------------------------------//
 
-//draw elements
-function drawElement(element){
-	contextSolo.fillStyle = element.color;
-	contextSolo.fillRect(element.x, element.y, element.width, element.height);
-}
-
 //make ballSolo bounce
 function ballSoloBounce(){
 	let nextX = ballSolo.x + ballSolo.speed;
@@ -165,16 +161,29 @@ function ballSoloWallCollision(){
 function resetBallSolo() {
 	ballSolo.x = canvasSolo.width / 2;
 	ballSolo.y = canvasSolo.height / 2;
-	ballSolo.speed = Math.abs(ballSolo.speed) * (Math.random() > 0.5 ? 1 : -1); // Changer la direction aléatoirement
-	ballSolo.gravity = Math.abs(ballSolo.gravity) * (Math.random() > 0.5 ? 1 : -1);
+
+	const angle = (Math.random() * Math.PI / 4 - Math.PI / 8);
+
+	const current_speed = Math.sqrt(ballSolo.speed * ballSolo.speed + ballSolo.gravity * ballSolo.gravity);
+	
+	ballSolo.speed = current_speed * Math.cos(angle);
+	ballSolo.gravity = current_speed *  Math.sin(angle);
 }
 
 function drawElementsSolo(){
-	contextSolo.clearRect(0, 0, canvasSolo.width, canvasSolo.height);
-	drawWallsSolo(contextSolo, canvasSolo);
-	firstPaddleSolo(contextSolo, playerOneSolo);
-	ballSoloStyle(contextSolo, ballSolo);
-	drawDashedLineSolo(contextSolo, canvasSolo);
+	if (isPaused)
+	{
+		contextSolo.clearRect(0, 0, canvasSolo.width, canvasSolo.height);
+		displayPauseScreen();
+	}
+	else {
+		contextSolo.clearRect(0, 0, canvasSolo.width, canvasSolo.height);
+		drawWallsSolo(contextSolo, canvasSolo);
+		firstPaddleSolo(contextSolo, playerOneSolo);
+		ballSoloStyle(contextSolo, ballSolo);
+		drawDashedLineSolo(contextSolo, canvasSolo);
+		displayText(contextSolo, canvasSolo);
+	}
 }
 
 export function resetGameSolo()
@@ -204,10 +213,29 @@ export function resetGameSolo()
 
 let animationId = null;
 
-function loopSolo(){
+export function loopSolo(){
 	ballSoloBounce();
 	executeMovesSolo();
 	animationId = requestAnimationFrame(loopSolo);
+}
+
+export function paused() {
+	if (animationId)
+	{
+		cancelAnimationFrame(animationId);
+		animationId = null;
+	}
+}
+
+export function drawPause() {
+
+	const rectWidth = 50;
+	const rectHeight = 200;
+	
+	contextSolo.fillStyle = "black";
+	contextSolo.fillRect(canvasSolo.width / 2 - 70, canvasSolo.height / 2 - 100, rectWidth, rectHeight);
+
+	contextSolo.fillRect(canvasSolo.width / 2 + 20, canvasSolo.height / 2 - 100, rectWidth, rectHeight);
 }
 
 export function soloMode(){

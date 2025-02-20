@@ -113,7 +113,7 @@ export class LoginPage {
 		}
 
 		const data = await response.json();
-		window.router.initializeOnlineStatus();
+		// window.router.updateAuthState();
 		//changing the page to ProfilePage
 		window.router.navigateTo('/profile');
 
@@ -124,4 +124,8 @@ export class LoginPage {
 		throw error;
 	}
 }
+			
+	clean() {
+		return ;
+	}
 }
