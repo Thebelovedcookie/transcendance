@@ -26,7 +26,8 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 	async def connect(self):
 		self.player_id = self.scope["user"].id
-		if await self.reconnect() == 0 : return
+		if await self.reconnect() == 0:
+			return
 		await self.accept()
 		obj = {
 			'player_id': self.player_id,
@@ -85,6 +86,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 				}
 				await self.send(text_data=json.dumps(response))
 				return 0
+		return 1
 
 	async def disconnect(self, close_code):
 		client = self.scope["client"]
@@ -130,8 +132,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 				"type": "error",
 				"message": "Invalid JSON format"
 			}))
-
-    ####################### INIT MATCH ############################
 
 	####################### INIT MATCH ############################
 
