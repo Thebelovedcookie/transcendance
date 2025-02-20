@@ -11,7 +11,7 @@ from channels.auth import AuthMiddlewareStack
 from django.urls import path
 from gameMulti_app.routing import websocket_urlpatterns as gameMulti_app_ws
 from localNormalGame_app.routing import websocket_urlpatterns as localNormalGame_ws
-from backend_tour_app.routing import websocket_urlpatterns as backend_tour_ws
+from tournement_app.routing import websocket_urlpatterns as tournement_ws
 from remotePlayer_app.routing import websocket_urlpatterns as remote_player_app_ws
 from online_status_app.routing import websocket_urlpatterns as onlineStatus_ws
 from channels.auth import AuthMiddlewareStack
@@ -30,7 +30,7 @@ application = ProtocolTypeRouter({
 			URLRouter(
 				gameMulti_app_ws +
 				localNormalGame_ws +
-				backend_tour_ws +
+				tournement_ws +
 				remote_player_app_ws +
 				onlineStatus_ws
 				)

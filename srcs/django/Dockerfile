@@ -33,7 +33,7 @@ RUN django-admin startproject backend_project project
 
 RUN cd /project && python3.11 manage.py startapp gameMulti_app \
 	 && python3.11 manage.py startapp localNormalGame_app \
-	 && python3.11 manage.py startapp backend_tour_app \
+	 && python3.11 manage.py startapp tournement_app \
 	 && python3.11 manage.py startapp usrman_app \
 	 && python3.11 manage.py startapp pong_history_app \
 	 && python3.11 manage.py startapp remotePlayer_app \
@@ -52,7 +52,7 @@ COPY ./gameMulti_app /project/gameMulti_app/
 COPY ./pongHistoryApp /project/pong_history_app/
 COPY ./backendProject /project/backend_project/
 COPY ./localNormalGame_app /project/localNormalGame_app/
-COPY ./backendTourApp /project/backend_tour_app/
+COPY ./tournement_app /project/tournement_app/
 COPY /tools/setups_backend.sh /setups_backend.sh
 COPY ./usrmanApp /project/usrman_app/
 COPY ./remotePlayerapp/* /project/remotePlayer_app/
