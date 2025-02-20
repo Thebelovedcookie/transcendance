@@ -8,6 +8,15 @@ from datetime import timedelta
 
 class CustomUser(AbstractUser):
 	email = models.EmailField(_('email address'), unique=True)
+	username = models.CharField(
+		_('username'),
+		max_length=150,
+		unique=False,
+		help_text=_('Required. 150 characters or fewer.'),
+		error_messages={
+			'max_length': _("This username is too long."),
+		},
+	)
 
 	profile_image = models.ImageField(
 		upload_to="profile_images/",

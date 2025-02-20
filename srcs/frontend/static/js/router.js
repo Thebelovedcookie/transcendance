@@ -109,24 +109,24 @@ class Router {
 		}
 	}
 
-    //add every path at our Container map "routes"
-    initializeRoutes() {
-        this.routes.set('/', new HomePage());
-        this.routes.set('/pong', new PongMenuPage());
-        this.routes.set('/pong/normal', new NormalGamePage("base", "normal", null, null));
-        this.routes.set('/pong/solo', new SoloGamePage());
-        this.routes.set('/pong/tournament', new TournamentPage());
-        this.routes.set('/login', new LoginPage());
-        this.routes.set('/register', new RegisterPage());
-        this.routes.set('/profile', new ProfilePage());
-        this.routes.set('/settings', new SettingPage());
-        this.routes.set('/logout', new LogoutPage());
-        this.routes.set('/tictactoe', new TicTacToeGamePage());
-        this.routes.set('/pong/solo/ai', new AiPage());
-        this.routes.set('/pong/multi', new MultiPage());
-        this.routes.set('/pong/remote', new RemoteNormalGamePage());
-        this.routes.set('/verify', new VerificationPage());
-    }
+	//add every path at our Container map "routes"
+	initializeRoutes() {
+		this.routes.set('/', new HomePage());
+		this.routes.set('/pong', new PongMenuPage());
+		this.routes.set('/pong/normal', new NormalGamePage("base", "normal", null, null));
+		this.routes.set('/pong/solo', new SoloGamePage());
+		this.routes.set('/pong/tournament', new TournamentPage());
+		this.routes.set('/login', new LoginPage());
+		this.routes.set('/register', new RegisterPage());
+		this.routes.set('/profile', new ProfilePage());
+		this.routes.set('/settings', new SettingPage());
+		this.routes.set('/logout', new LogoutPage());
+		this.routes.set('/tictactoe', new TicTacToeGamePage());
+		this.routes.set('/pong/solo/ai', new AiPage());
+		this.routes.set('/pong/multi', new MultiPage());
+		this.routes.set('/pong/remote', new RemoteNormalGamePage());
+		this.routes.set('/verify', new VerificationPage());
+	}
 
 	//add listeners popstate (backward/forward)
 	//The listeners will tell us if someone clicked on the backward or forward button
