@@ -230,6 +230,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 	async def sendGameState(self, m, winner, loser):
 		logger.info("send match result") #somthing needs to be sent to js to signal the game is finished
 		response = {
+			"type": "game.result",
 			"winner": winner,
 			"loser": loser, 
 		}

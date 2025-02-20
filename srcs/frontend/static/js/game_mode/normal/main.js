@@ -202,7 +202,7 @@ class GameWebSocket {
 				this.getInfoFromBackend(data);
 				this.startGameLoop();
 				break;
-			case "game_result":
+			case "game.result":
 				console.log(data.type);
 				this.getResult(data);
 				break;
