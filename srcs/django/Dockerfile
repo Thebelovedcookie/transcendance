@@ -31,8 +31,8 @@ RUN mkdir project
 
 RUN django-admin startproject backend_project project
 
-RUN cd /project && python3.11 manage.py startapp backend_app \
-	 && python3.11 manage.py startapp backend_gamecons_app \
+RUN cd /project && python3.11 manage.py startapp gameMulti_app \
+	 && python3.11 manage.py startapp localNormalGame_app \
 	 && python3.11 manage.py startapp backend_tour_app \
 	 && python3.11 manage.py startapp usrman_app \
 	 && python3.11 manage.py startapp pong_history_app \
@@ -48,10 +48,10 @@ RUN pip install psycopg[binary] channels[daphne] django-cors-headers Pillow
 ENV DJANGO_SETTINGS_MODULE=backend_project.settings
 
 #config des urls
-COPY ./backendApp /project/backend_app/
+COPY ./gameMulti_app /project/gameMulti_app/
 COPY ./pongHistoryApp /project/pong_history_app/
 COPY ./backendProject /project/backend_project/
-COPY ./backendGameConsApp /project/backend_gamecons_app/
+COPY ./localNormalGame_app /project/localNormalGame_app/
 COPY ./backendTourApp /project/backend_tour_app/
 COPY /tools/setups_backend.sh /setups_backend.sh
 COPY ./usrmanApp /project/usrman_app/

@@ -9,8 +9,8 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.security.websocket import AllowedHostsOriginValidator
 from channels.auth import AuthMiddlewareStack
 from django.urls import path
-from backend_app.routing import websocket_urlpatterns as backend_app_ws
-from backend_gamecons_app.routing import websocket_urlpatterns as backend_gamecons_ws
+from gameMulti_app.routing import websocket_urlpatterns as gameMulti_app_ws
+from localNormalGame_app.routing import websocket_urlpatterns as localNormalGame_ws
 from backend_tour_app.routing import websocket_urlpatterns as backend_tour_ws
 from remotePlayer_app.routing import websocket_urlpatterns as remote_player_app_ws
 from online_status_app.routing import websocket_urlpatterns as onlineStatus_ws
@@ -28,8 +28,8 @@ application = ProtocolTypeRouter({
 	"websocket": AllowedHostsOriginValidator(
 		AuthMiddlewareStack(
 			URLRouter(
-				backend_app_ws +
-				backend_gamecons_ws +
+				gameMulti_app_ws +
+				localNormalGame_ws +
 				backend_tour_ws +
 				remote_player_app_ws +
 				onlineStatus_ws
