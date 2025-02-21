@@ -1,7 +1,7 @@
 //----------------------------COLOR/STYLE--------------------------------//
 
 //raquette playerOne
-export function multiPaddle(context, element)
+export function multiPaddle(context, element, canvas_info)
 {
 	context.strokeStyle = element.color;
 	context.lineWidth = element.width; // Largeur de la raquette
@@ -9,9 +9,9 @@ export function multiPaddle(context, element)
 
 	context.beginPath();
 	context.arc(
-		element.centerX,  // Centre de l'arène
-		element.centerY,  // Centre de l'arène
-		element.radius,   // Distance du centre (rayon)
+		canvas_info.centerX,  // Centre de l'arène
+		canvas_info.centerY,  // Centre de l'arène
+		canvas_info.radius,   // Distance du centre (rayon)
 		element.startAngle, // Angle de début (en radians)
 		element.endAngle   // Angle de fin
 	);
@@ -30,9 +30,9 @@ export function ballStyle(context, element)
 
 	context.beginPath();
 	context.arc(
-		element.x + element.width / 2, // Centre X
-		element.y + element.height / 2, // Centre Y
-		element.width / 1.50, // Rayon
+		element.x + element.size / 2, // Centre X
+		element.y + element.size / 2, // Centre Y
+		element.size / 1.50, // Rayon
 		0, // Début de l'angle
 		Math.PI * 2 // Fin de l'angle (cercle complet)
 	);

@@ -60,7 +60,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
 	'corsheaders.middleware.CorsMiddleware',
 	'django.middleware.security.SecurityMiddleware',
-	'django.middleware.locale.LocaleMiddleware',
+	# 'django.middleware.locale.LocaleMiddleware',
 	# 'django.contrib.sessions.middleware.SessionMiddleware',
 	'user_management_app.middleware.CustomSessionMiddleware',
 	'django.middleware.common.CommonMiddleware',
@@ -153,22 +153,22 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-from django.utils.translation import gettext_lazy as _
+# from django.utils.translation import gettext_lazy as _
 
-LANGUAGES = [
-    ('en', _('English')),
-    ('fr', _('French')),
-    ('es', _('Spanish')),
-    ('ja', _('Japanese')),
-]
+# LANGUAGES = [
+#     ('en', _('English')),
+#     ('fr', _('French')),
+#     ('es', _('Spanish')),
+#     ('ja', _('Japanese')),
+# ]
 
-LANGUAGE_CODE = 'en-us'
+# LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Europe/Paris'
+# TIME_ZONE = 'Europe/Paris'
 
-USE_I18N = True
+# USE_I18N = True
 
-USE_TZ = True
+# USE_TZ = True
 # ajout du fichier locale des traductions
 
 
