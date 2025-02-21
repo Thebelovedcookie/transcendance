@@ -17,6 +17,9 @@ from django.dispatch import receiver
 from django.core.mail import send_mail
 import random
 from django.utils import timezone
+import logging
+
+logger = logging.getLogger(__name__)
 
 def require_login(view_func):
 	def wrapper(request, *args, **kwargs):
@@ -58,6 +61,28 @@ def logout_user(request):
 			'status': 'error',
 			'message': 'invalid request method'
 		}, status=405)
+
+def delete_account(request):
+	if request.method != 'POST':
+		return JsonResponse({
+			'status': 'error',
+			'message': 'Invalid request method'
+		}, status=405)
+
+	try:
+		user = request.user
+		user.delete()
+		# user.is_active = False
+		# user.save()
+		return JsonResponse({
+			'status': 'success',
+			'message': 'Account deleted successfully'
+		}, status=200)
+	except Exception as e:
+		return JsonResponse({
+			'status': 'error',
+			'message': str(e)
+		}, status=500)
 
 def get_csrf_token(request):
 	csrf_token = get_token(request)
@@ -246,7 +271,14 @@ def get_profile(request):
 	user = request.user
 
 	match_response = pong_history_app.get_user_matches(request)
-	match_data = json.loads(match_response.content)['data']
+	if (match_response.status_code != 200):
+		logger.error("match_response failed")
+		return JsonResponse({
+			'status': 'error',
+			'message': 'Failed to fetch match history'
+		}, status=500)
+	else:
+		match_data = json.loads(match_response.content)['data']
 
 	friends_data = [
 		{

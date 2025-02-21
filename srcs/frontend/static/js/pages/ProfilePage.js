@@ -114,6 +114,15 @@ export class ProfilePage {
 							${this.renderFriendsList()}
 						</div>
 					</div>
+					<div class="profile-section account-management-section">
+						<div class="card account-management-header">
+							<h2>Account Management</h2>
+							<p class="text-danger">Warning: This action cannot be undone.</p>
+							<button class="btn btn-danger" id="deleteAccountBtn">
+								<i class="fas fa-trash-alt me-2"></i>Delete Account
+							</button>
+						</div>
+					</div>
 				</div>
 			</div>
 		`;
@@ -138,7 +147,7 @@ export class ProfilePage {
 		const matchesList = visibleMatches.map(match => `
 			<div class="match-card ${match.result.toLowerCase()}">
 				<div class="match-info">
-					<span class="match-opponent">vs ${match.opponent.username}</span>
+					<span class="match-opponent">vs ${match.opponent ? match.opponent.username : 'Deleted User'}</span>
 					<span class="match-score">${match.user_score} - ${match.opponent_score}</span>
 				</div>
 				<div class="match-details">
@@ -230,7 +239,8 @@ export class ProfilePage {
 			'.edit-profile-btn',
 			'.search-friends-btn',
 			'.view-all-friends-btn',
-			'.view-all-matches-btn'
+			'.view-all-matches-btn',
+			'#deleteAccountBtn'
 		];
 
 		elementsToClone.forEach(selector => {
@@ -290,7 +300,11 @@ export class ProfilePage {
 			viewAllMatchesBtn.addEventListener('click', () => this.showAllMatchesModal());
 		}
 
-		// ... other event listeners if any ...
+		// Delete account button
+		const deleteAccountBtn = document.querySelector('#deleteAccountBtn');
+		if (deleteAccountBtn) {
+			deleteAccountBtn.addEventListener('click', () => this.showDeleteAccountModal());
+		}
 	}
 
 	showEditModal() {
@@ -782,7 +796,7 @@ export class ProfilePage {
 					${this.userData.match_history.map(match => `
 						<div class="match-card ${match.result.toLowerCase()}">
 							<div class="match-info">
-								<span class="match-opponent">vs ${match.opponent.username}</span>
+								<span class="match-opponent">vs ${match.opponent ? match.opponent.username : 'Deleted User'}</span>
 								<span class="match-score">${match.user_score} - ${match.opponent_score}</span>
 							</div>
 							<div class="match-details">
@@ -812,7 +826,59 @@ export class ProfilePage {
 			});
 		});
 	}
-	
+
+	showDeleteAccountModal() {
+		const modal = document.createElement('div');
+		modal.className = 'confirm-modal';
+		modal.innerHTML = `
+			<div class="modal-content">
+				<h2>Delete Account</h2>
+				<p class="warning-text">Are you sure you want to delete your account? This action cannot be undone.</p>
+				<div class="modal-actions">
+					<button type="button" class="cancel-btn">Cancel</button>
+					<button type="button" class="confirm-btn danger-btn">Delete Account</button>
+				</div>
+			</div>
+		`;
+
+		document.body.appendChild(modal);
+
+		// Setup confirmation modal event listeners
+		const cancelBtn = modal.querySelector('.cancel-btn');
+		const confirmBtn = modal.querySelector('.confirm-btn');
+
+		cancelBtn.addEventListener('click', () => {
+			modal.classList.add('fade-out');
+			setTimeout(() => modal.remove(), 300);
+		});
+
+		confirmBtn.addEventListener('click', async () => {
+			try {
+				const csrfToken = document.cookie
+					.split('; ')
+					.find(row => row.startsWith('csrftoken='))
+					?.split('=')[1];
+
+				const response = await fetch('/api/delete_account', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'X-CSRFToken': csrfToken,
+					}
+				});
+
+				const result = await response.json();
+				if (result.status === 'success') {
+					modal.remove();
+					window.location.href = '/logout';
+				}
+			} catch (error) {
+				console.error('Failed to delete account:', error);
+			}
+		});
+
+	}
+
 	clean() {
 		return ;
 	}
