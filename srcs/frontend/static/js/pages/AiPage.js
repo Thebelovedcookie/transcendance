@@ -31,11 +31,11 @@ export class AiPage {
 			if (e.key == "Escape") {
 				if (!this.pause && this.game) {
 					this.game.stopGameLoop();
-					this.game.drawPause();
 					this.pause = true;
+					this.game.drawPause();
 				} else if (this.game) {
 					this.pause = false;
-					this.game.startGameLoop();
+					this.game.sendUnpause();
 				}
 			}
 		};
