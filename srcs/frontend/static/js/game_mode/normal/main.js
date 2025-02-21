@@ -18,6 +18,7 @@ class GameWebSocket {
 		this.infoMatch = infoMatch; // null for normal || contains name of player for tournament
 		/* end */
 
+		this.pause = false
 		this.socket = null;
 		this.isConnected = false;
 		this.gameLoopInterval = null;
@@ -138,8 +139,28 @@ class GameWebSocket {
 		}, 1000 / 60);
 	}
 
-	drawPause() {
+	sendPause() {
+		if (!this.isConnected) return;
 
+		const updates = {
+			type: "player.pause",
+		};
+		this.sendMessage(updates);
+	}
+
+	sendUnpause() {
+		if (!this.isConnected) return;
+
+		this.pause = false;
+		const updates = {
+			type: "player.unpause",
+		};
+		this.sendMessage(updates);
+	}
+
+	drawPause() {
+		this.pause = true;
+		this.sendPause();
 		const rectWidth = 50;
 		const rectHeight = 200;
 		
@@ -187,8 +208,11 @@ class GameWebSocket {
 	handleMessage(data) {
 		switch (data.type) {
 			case "game.state":
-				this.getInfoFromBackend(data);
-				this.startGameLoop();
+				if (this.pause == false)
+				{
+					this.getInfoFromBackend(data);
+					this.startGameLoop();
+				}
 				break;
 			case "game.result":
 				this.getResult(data);

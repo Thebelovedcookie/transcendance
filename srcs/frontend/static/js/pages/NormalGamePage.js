@@ -14,8 +14,6 @@ export class NormalGamePage {
 	async handle() {
 		this.setupEventListeners()
 		this.render();
-
-		console.log("finished handle")
 	}
 
 	render() {
@@ -27,26 +25,23 @@ export class NormalGamePage {
 
 		this.container.innerHTML = '';
 		this.container.appendChild(gameContent);
-		// console.log("in render")
 		this.game = normalMode(this.type, this.socketTournament, this.infoMatch);
-		// console.log("after normal mode")
 	}
 
 	setupEventListeners()
 	{
 		this.keydownHandler = (e) => {
 			e.preventDefault();
-			console.log(e.key);
 			if (e.key == "Escape")
 			{
 				if (this.pause == false && this.game) {
 					this.game.stopGameLoop();
-					this.game.drawPause();
 					this.pause = true;
+					this.game.drawPause();
 				}
 				else if (this.game){
 					this.pause = false;
-					this.game.startGameLoop();
+					this.game.sendUnpause();
 				}
 
 			}
