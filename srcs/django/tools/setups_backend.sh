@@ -8,7 +8,7 @@ trap cleanup SIGINT SIGTERM
 export PYTHONPATH=${PYTHONPATH}:/project
 
 
-python3.11 manage.py collectstatic --noinput
+python3.11 /project/manage.py collectstatic --noinput
 cp -r /project/staticfiles/static/* /var/www/html/static/
 python3.11 /project/manage.py makemigrations
 python3.11 /project/manage.py migrate
