@@ -9,6 +9,7 @@ export class NextGamePage {
 		this.infoMatch     = infoMatch;
 		this.countdown     = 10;
 		this.timer         = null;
+		this.newGame = null;
 	}
 
 	async handle() {
@@ -101,13 +102,13 @@ export class NextGamePage {
 		// this.playStartSound();
 
 		setTimeout(() => {
-			const newGame = new NormalGamePage(
+			this.newGame = new NormalGamePage(
 				this.theme,
 				this.type,
 				this.socketTournament,
 				this.infoMatch
 			);
-			newGame.handle();
+			this.newGame.handle();
 		}, 500);
 	}
 
@@ -131,6 +132,11 @@ export class NextGamePage {
 	}
 
 	clean() {
+		if (this.newGame)
+		{
+			this.newGame.clean();
+			this.newGame = null;
+		}
 		return ;
 	}
 }

@@ -7,6 +7,7 @@ export class TournamentPage {
 		this.numberOfPlayers = 3;
 		this.maxPlayers = 8;
 		this.minPlayers = 3;
+		this.tournament = null;
 	}
 
 	async handle() {
@@ -207,8 +208,8 @@ export class TournamentPage {
 
 			const inputs = document.querySelectorAll('.tournament-input');
 			const players = Array.from(inputs).map(input => input.value.trim());
-			const tournament = new TournamentStart(players, this.numberOfPlayers);
-			tournament.connect();
+			this.tournament = new TournamentStart(players, this.numberOfPlayers);
+			this.tournament.connect();
 		});
 	}
 
@@ -231,6 +232,7 @@ export class TournamentPage {
 	}
 
 	clean() {
+		this.tournament.clean();
 		return ;
 	}
 }
