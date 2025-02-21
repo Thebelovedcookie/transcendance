@@ -5,6 +5,7 @@ async function loadTranslations(lang) {
             throw new Error(`Erreur de chargement des traductions: ${response.statusText}`);
         }
         const translations = await response.json();
+        console.log("Données chargées depuis JSON :", translations);
         return translations[lang] || {};
     } catch (error) {
         console.error("Erreur lors du chargement des traductions :", error);
@@ -15,20 +16,24 @@ async function loadTranslations(lang) {
 async function updateTexts(lang) {
     console.log("Mise à jour du texte en:", lang);
     const translations = await loadTranslations(lang);
+    console.log("Traductions chargées :", translations);
+    // this.translations = await loadTranslations(lang)
     document.querySelectorAll("[data-translate]").forEach(el => {
         const key = el.getAttribute("data-translate");
+        console.log(`Élément détecté:`, el, `Clé:`, key);
+        
         if (el.placeholder !== undefined) {
-            el.placeholder = translations[key] || key;  // Met à jour le placeholder
+            el.placeholder = translations[key] || key;  
         } else {
             const link = el.querySelector("a[data-translate]");
             if (link) {
-                // On traduit d'abord le texte du lien
                 const linkKey = link.getAttribute("data-translate");
                 link.textContent = translations[linkKey] || linkKey;
 
                 // On remplace {link} par le code HTML du lien dans le texte principal
                 el.innerHTML = (translations[key] || key).replace("{link}", link.outerHTML);
             } else {
+                console.log(`Ancien texte: "${el.textContent}" -> Nouveau texte: "${translations[key] || key}"`);
                 el.textContent = translations[key] || key;
             }
         }

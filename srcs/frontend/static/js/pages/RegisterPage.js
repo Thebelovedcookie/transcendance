@@ -19,7 +19,7 @@ export class RegisterPage {
 
 							<div class="form-outline form-white mb-4">
 								<input type="email" id="typeEmailX" class="form-control form-control-lg" placeholder="Email" data-translate="email_placeholder"/>
-								<div id="emailError" class="text-danger small mt-1" style="display: none;" data-transfert= "Email-user"></div>
+								<div id="emailError" class="text-danger small mt-1" style="display: none;" data-translate="error-email"></div>
 							</div>
 
 							<div class="form-outline form-white mb-4">
@@ -30,7 +30,7 @@ export class RegisterPage {
 									</div>
 									<small class="text-white-50" data-translate="pwd-rules"></small>
 								</div>
-								<div id="passwordError" class="text-danger small mt-1" style="display: none;" data-translate="pwd-rules"></div>
+								<div id="passwordError" class="text-danger small mt-1" style="display: none;" data-translate="error-pwd"></div>
 							</div>
 
 							<div class="form-outline form-white mb-4">
@@ -41,10 +41,10 @@ export class RegisterPage {
 									</div>
 									<small class="text-white-50" data-translate="pwd-rules"></small>
 								</div>
-								<div id="confirmPasswordError" class="text-danger small mt-1" style="display: none;" data-translate="pwd-rules"></div>
+								<div id="confirmPasswordError" class="text-danger small mt-1" style="display: none;" data-translate="error-pwd2"></div>
 							</div>
 
-							<button class="btn btn-outline-light btn-lg px-5" type="submit" id="registerButton" data-translate = "Register"></button>
+							<button class="btn btn-outline-light btn-lg px-5" type="submit" id="registerButton" data-translate ="Register"></button>
 
 							<div class="d-flex justify-content-center text-center mt-4 pt-1">
 								<a href="#!" class="text-white"><i class="fab fa-facebook-f fa-lg"></i></a>
@@ -105,7 +105,18 @@ export class RegisterPage {
 			throw error;
 		}
 	}
-
+	//affichage des erreurs avec la bonne langue
+	showError(elementId) {
+		const el = document.getElementById(elementId);
+		if (el) {
+			el.style.display = "block"; // Affiche l'erreur
+			const key = el.getAttribute("data-translate");
+			if (this.translations && this.translations[key]) {
+				el.innerHTML = this.translations[key]; 
+			}
+		}
+	}
+	
 	//parsing of the Form
 	validateForm(e) {
 		e.preventDefault();  // Prevent form submission by default
@@ -159,11 +170,13 @@ export class RegisterPage {
 		// Validate confirm password
 		if (!confirmPassword.value.trim()) {
 			confirmPasswordError.textContent = 'Please confirm your password';
-			confirmPasswordError.style.display = 'block';
+			this.showError("confirmPasswordError");
+			// confirmPasswordError.style.display = 'block';
 			isValid = false;
 		} else if (password.value !== confirmPassword.value) {
 			confirmPasswordError.textContent = 'Passwords do not match';
-			confirmPasswordError.style.display = 'block';
+			this.showError("confirmPasswordError"); //modif SO
+			// confirmPasswordError.style.display = 'block';
 			isValid = false;
 		}
 
@@ -220,7 +233,8 @@ export class RegisterPage {
 		const confirmPasswordError = document.getElementById('confirmPasswordError');
 		if (password !== originalPassword && password !== '') {
 			confirmPasswordError.textContent = 'Passwords do not match';
-			confirmPasswordError.style.display = 'block';
+			this.showError("confirmPasswordError"); //modif SO
+			// confirmPasswordError.style.display = 'block';
 		} else {
 			confirmPasswordError.style.display = 'none';
 		}
