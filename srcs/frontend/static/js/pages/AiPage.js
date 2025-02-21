@@ -1,49 +1,24 @@
 import { aiMode, stopGameAi } from "../game_mode/ai_opponent/main_ai.js";
+import { Page } from './Page.js';
 
-export class AiPage {
+export class AiPage extends Page {
 	constructor() {
-		this.container = document.getElementById('dynamicPage');
-		this.game = null;
-		this.pause = false;
+		super();
 	}
 
-	async handle() {
-		this.setupEventListeners();
-		this.render();
-	}
+	//inherited from Page
+		//async handle();
+		//render();
+		//setupEventListeners();
+		//clean();
 
-	render() {
-		const gameContent = document.createElement('div');
-		gameContent.className = 'game-container';
-		gameContent.innerHTML = `
-		   <canvas id="pongGame" width="800" height="400"></canvas>
-		`;
 
-		this.container.innerHTML = '';
-		this.container.appendChild(gameContent);
-
+	startGame() {
 		this.game = aiMode("base");
 	}
 
-	setupEventListeners() {
-		this.keydownHandler = (e) => {
-			e.preventDefault();
-			if (e.key == "Escape") {
-				if (!this.pause && this.game) {
-					this.game.stopGameLoop();
-					this.pause = true;
-					this.game.drawPause();
-				} else if (this.game) {
-					this.pause = false;
-					this.game.sendUnpause();
-				}
-			}
-		};
-		window.addEventListener('keydown', this.keydownHandler);
-	}
-
 	clean() {
-		window.removeEventListener('keydown', this.keydownHandler);
+		super.clean();
 		stopGameAi();
 	}
 }

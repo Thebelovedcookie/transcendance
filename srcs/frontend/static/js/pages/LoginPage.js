@@ -84,46 +84,46 @@ export class LoginPage {
 	}
 
 	async sendToBackend(e) {
-	if (this.validateForm(e) == false) {
-		return false;
-	}
-
-	try {
-		// sending a post request to the backend -> (email, username, password)
-		//Who will allow us to login
-		/*---------------------------REQUEST-----------------------------*/
-		const response = await fetch('/api/login', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'X-CSRFToken': window.csrfToken,
-			},
-			credentials: 'same-origin',
-			body: JSON.stringify({ 'email': document.getElementById('typeEmailX').value,
-				'password': document.getElementById('typePasswordX').value
-			})
-		});
-		/*--------------------------ENDREQUEST----------------------------*/
-
-		//if we get a bad response
-		if (!response.ok) {
-			const errorText = await response.text();
-			console.error('Response error:', errorText);
-			throw new Error(`HTTP error! status: ${response.status}`);
+		if (this.validateForm(e) == false) {
+			return false;
 		}
 
-		const data = await response.json();
-		// window.router.updateAuthState();
-		//changing the page to ProfilePage
-		window.router.navigateTo('/profile');
+		try {
+			// sending a post request to the backend -> (email, username, password)
+			//Who will allow us to login
+			/*---------------------------REQUEST-----------------------------*/
+			const response = await fetch('/api/login', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-CSRFToken': window.csrfToken,
+				},
+				credentials: 'same-origin',
+				body: JSON.stringify({ 'email': document.getElementById('typeEmailX').value,
+					'password': document.getElementById('typePasswordX').value
+				})
+			});
+			/*--------------------------ENDREQUEST----------------------------*/
 
-	} catch (error) {
-		console.error('Error details:', error);
-		passwordError.textContent = 'User email or password is incorrect';
-		passwordError.style.display = 'block';
-		throw error;
+			//if we get a bad response
+			if (!response.ok) {
+				const errorText = await response.text();
+				console.error('Response error:', errorText);
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			const data = await response.json();
+			// window.router.updateAuthState();
+			//changing the page to ProfilePage
+			window.router.navigateTo('/profile');
+
+		} catch (error) {
+			console.error('Error details:', error);
+			passwordError.textContent = 'User email or password is incorrect';
+			passwordError.style.display = 'block';
+			throw error;
+		}
 	}
-}
 			
 	clean() {
 		return ;
