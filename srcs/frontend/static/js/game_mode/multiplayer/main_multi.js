@@ -129,7 +129,6 @@ class GameWebSocket {
 		if (this.gameLoopInterval) return;
 
 		this.gameLoopInterval = setInterval(() => {
-			// Update player positions based on key states
 			this.updatePlayerPositions();
 
 			this.drawGame();
@@ -138,7 +137,7 @@ class GameWebSocket {
 			if (this.frameCount >= (60 / this.sendRate)) {
 				this.frameCount = 0;
 			}
-		}, 1000 / 60);  // Still run at 60 FPS locally
+		}, 1000 / 60);
 	}
 
 	sendPause() {
@@ -148,6 +147,13 @@ class GameWebSocket {
 			type: "player.pause",
 		};
 		this.sendMessage(updates);
+	}
+
+	stopGameLoop() {
+		if (this.gameLoopInterval) {
+			clearInterval(this.gameLoopInterval);
+			this.gameLoopInterval = null;
+		}
 	}
 
 	sendUnpause() {
@@ -172,14 +178,6 @@ class GameWebSocket {
 		context.fillRect(canvas.width / 2 + 20, canvas.height / 2 - 100, rectWidth, rectHeight);
 	}
 	
-
-	stopGameLoop() {
-		if (this.gameLoopInterval) {
-			clearInterval(this.gameLoopInterval);
-			this.gameLoopInterval = null;
-		}
-	}
-
 	sendInfoStarting()
 	{
 		const data = {
@@ -219,7 +217,6 @@ class GameWebSocket {
 				this.getResult(data);
 				break;
 			case "error":
-				console.log(data.type);
 				console.error("Server error:", data.message);
 				break;
 			default:
