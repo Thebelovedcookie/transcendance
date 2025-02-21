@@ -158,6 +158,7 @@ class GameWebSocket {
 
 	sendInfoStarting()
 	{
+		console.log(this.typeOfMatch);
 		const data = {
 			type: "game.starting",
 			timestamp: Date.now(),
@@ -201,9 +202,24 @@ class GameWebSocket {
 	}
 
 	getResult(data) {
-		stopGame();
-		const end = new EndNormalGamePage(data.winner, data.loser);
-		end.handle();
+		if (this.typeOfMatch == "tournament") {
+			if (data.winner == "Player 1")
+			{
+				stopGame();
+				const end = new EndGamePage(this.infoMatch.playerOne, this.infoMatch.playerTwo, this.socketTournament, this.infoMatch);
+				end.handle();
+			}
+			else if (data.winner == "Player 2")
+			{
+				stopGame();
+				const end = new EndGamePage(this.infoMatch.playerTwo, this.infoMatch.playerOne, this.socketTournament, this.infoMatch);
+				end.handle();
+			}
+		} else {
+			stopGame();
+			const end = new EndNormalGamePage(data.winner, data.loser);
+			end.handle();
+		}
 	}
 
 	getInfoFromBackend(data)

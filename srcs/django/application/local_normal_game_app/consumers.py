@@ -82,9 +82,10 @@ class GameConsumer(AsyncWebsocketConsumer):
 		canvas_width = start_data.get("windowWidth", 0)
 		typeOfMatch = start_data.get("typeOfMatch", 0)
 
+		logger.info(typeOfMatch)
 		m["maxScore"] = 10
 		m["canvas"] = {"canvas_height": canvas_height, "canvas_width": canvas_width}
-		if typeOfMatch == "tournement":
+		if typeOfMatch == "tournament":
 			m["maxScore"] = 5
 
 		m["playerOne"].update({
@@ -138,7 +139,11 @@ class GameConsumer(AsyncWebsocketConsumer):
 			"scoreMax": m["maxScore"]
 		}
 		if m["status"]:
-			await self.send(text_data=json.dumps(response))
+			try:
+				await self.send(text_data=json.dumps(response))
+			except Exception as e:
+				print(f"Erreur lors de l'envoi des données : {e}")
+				m["status"] = False
 
 	async def calculBallMovement(self):
 		m = self.infoMatch["match"][0]

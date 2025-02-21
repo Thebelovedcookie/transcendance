@@ -33,11 +33,9 @@ class TournamentConsumer(WebsocketConsumer):
 		try:
 			# Decode Json data
 			data = json.loads(text_data)
-			logger.debug(f"Decoded data: {data}")
 
 			# search for the type of the message
 			message_type = data.get("type")
-			print(f"Message type received: {message_type}")
 
 			# Manage the type of the msg
 			if message_type == "tournament.starting":
@@ -115,11 +113,6 @@ class TournamentConsumer(WebsocketConsumer):
 
 			if count > 0:
 				return phase
-
-			# if count == 1:
-			#     for player in self.infoPlayer["players"]:
-			#         if player["phase"] == phase:
-			#             player["phase"] += 1
 			phase += 1
 		return phase
 

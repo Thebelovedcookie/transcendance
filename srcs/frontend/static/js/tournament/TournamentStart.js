@@ -75,6 +75,7 @@ export class TournamentStart {
 				break;
 			case "tournament.winner":
 				this.endTournement(data);
+				break;
 			case "error":
 				console.log(data.type);
 				console.error("Server error:", data.message);
