@@ -28,7 +28,7 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 		logger.info(f"WebSocket disconnected with code: {close_code}")
 		if len(self.infoMatch["match"]) != 0:
 			m = self.infoMatch["match"][0]
-			m["status"] = False
+			m["status"] = "False"
 
 	#Manage the info receive
 	async def receive(self, text_data):
@@ -46,6 +46,15 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 				return
 			elif message_type == "player.moved":
 				await self.moveChange(data)
+				return
+			elif message_type == "player.pause":
+				m = self.infoMatch['match'][0]
+				m["status"] = "pause"
+				return
+			elif message_type == "player.unpause":
+				m = self.infoMatch['match'][0]
+				m["status"] = "True"
+				asyncio.create_task(self.loop())
 				return
 			else:
 				response = {
@@ -66,7 +75,7 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 	# create game object with three players, status is True
 	async def createGame(self):
 		obj = {
-			'status': True,
+			'status': "True",
 			'playerOne': {
 			},
 			'playerTwo': {
@@ -141,11 +150,12 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 	# game loop, maintained until match status is False
 	async def loop(self):
 		m = self.infoMatch["match"][0]
-		while (m["status"]):
+		while (m["status"] == "True"):
 			await asyncio.sleep(1 / 60)
 			await self.calculBallMovement()
 			await self.send_gamestate()
-		if not m["status"]:
+
+		if m["status"] == "False":
 			self.infoMatch["match"].remove(m)
 
 	# send game state to js at frontend
@@ -160,7 +170,7 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 			"ball": m["ball"],
 			"scoreMax": m["maxScore"]
 		}
-		if m["status"]:
+		if m["status"] == "True":
 			await self.send(text_data=json.dumps(response))
 
 	# continue ball at current velocity
@@ -271,7 +281,7 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 		winner = []
 		loser = ["Player 1", "Player 2", "Player 3"]
 		if m["playerOne"]["score"] == m["maxScore"] or m["playerTwo"]["score"] == m["maxScore"] or m["playerThree"]["score"] == m["maxScore"]:
-			m["status"] = False
+			m["status"] = "False"
 			if m["playerOne"]["score"] == m["maxScore"]:
 				winner.append("Player 1")
 				loser.remove("Player 1")

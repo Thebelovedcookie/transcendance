@@ -11,6 +11,7 @@ class GameWebSocket {
 		canvas.width = canvas.height;
 		context.clearRect(0, 0, canvas.width, canvas.height);
 
+		this.pause = false;
 		this.socket = null;
 		this.isConnected = false;
 		this.gameLoopInterval = null;
@@ -140,8 +141,28 @@ class GameWebSocket {
 		}, 1000 / 60);  // Still run at 60 FPS locally
 	}
 
-	drawPause() {
+	sendPause() {
+		if (!this.isConnected) return;
 
+		const updates = {
+			type: "player.pause",
+		};
+		this.sendMessage(updates);
+	}
+
+	sendUnpause() {
+		if (!this.isConnected) return;
+
+		this.pause = false;
+		const updates = {
+			type: "player.unpause",
+		};
+		this.sendMessage(updates);
+	}
+
+	drawPause() {
+		this.pause = true;
+		this.sendPause();
 		const rectWidth = 50;
 		const rectHeight = 200;
 		
@@ -188,8 +209,11 @@ class GameWebSocket {
 	handleMessage(data) {
 		switch (data.type) {
 			case "game.state":
-				this.getInfoFromBackend(data);
-				this.startGameLoop();
+				if (this.pause == false)
+				{
+					this.getInfoFromBackend(data);
+					this.startGameLoop();
+				}
 				break;
 			case "game.result":
 				this.getResult(data);

@@ -18,7 +18,7 @@ class GameWebSocket {
 		this.infoMatch = infoMatch; // null for normal || contains name of player for tournament
 		/* end */
 
-		this.pause = false
+		this.pause = false;
 		this.socket = null;
 		this.isConnected = false;
 		this.gameLoopInterval = null;
