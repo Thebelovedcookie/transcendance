@@ -201,6 +201,7 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 		m["ball"]["vy"] = speed * math.sin(bounceAngle)
 		m["lastTouch"] = player["name"]
 
+	# check if location of ball overlaps location of paddle
 	def inPaddle(self, player):
 		m = self.infoMatch["match"][0]
 		angleBall = self.getAngleOfBall(m["canvas"], m["ball"])
@@ -300,9 +301,9 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 	# and bounded by the player's zone of movement
 	def movePaddle(self, player, direction):
 		dir = 0
-		if direction == "neg":  # movement is to "left" which is positive radians
+		if direction == "pos":
 			dir = 1
-		elif direction == "pos": # movement is to "right" which is negative radians
+		elif direction == "neg":
 			dir = -1
 		angleSpeed = 0.05
 		return self.clampAngle(player["startAngle"] + angleSpeed * dir, player["startZone"], player["endZone"] - player["deltaAngle"])

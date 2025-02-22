@@ -51,26 +51,26 @@ class GameWebSocket {
 	updatePlayerPositions() {
 		// Player 1 (Flèches)
 		if (this.keys.ArrowRight) {
-			this.sendMove("pos", "p1")
+			this.sendMove("neg", "p1")
 		}
 		if (this.keys.ArrowLeft) {
-			this.sendMove("neg", "p1")
+			this.sendMove("pos", "p1")
 		}
 
 		// Player 2 (W et S)
 		if (this.keys.s) {
-			this.sendMove("pos", "p2")
+			this.sendMove("neg", "p2")
 		}
 		if (this.keys.w) {
-			this.sendMove("neg", "p2")
+			this.sendMove("pos", "p2")
 		}
 
 		// Player 3 (B et N)
 		if (this.keys.b) {
-			this.sendMove("pos", "p3")
+			this.sendMove("neg", "p3")
 		}
 		if (this.keys.n) {
-			this.sendMove("neg", "p3")
+			this.sendMove("pos", "p3")
 		}
 	}
 
