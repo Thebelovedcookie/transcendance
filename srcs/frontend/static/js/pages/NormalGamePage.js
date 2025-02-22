@@ -1,4 +1,4 @@
-import { normalMode } from '../game_mode/normal/main.js';
+import { normalMode, stopGame } from '../game_mode/normal/main.js';
 import { Page } from './Page.js';
 
 export class NormalGamePage extends Page {
@@ -18,6 +18,11 @@ export class NormalGamePage extends Page {
 
 	startGame() {
 		this.game = normalMode(this.type, this.socketTournament, this.infoMatch);
+	}
+
+	clean() {
+		super.clean();
+		stopGame();
 	}
 }
 

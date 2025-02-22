@@ -170,8 +170,12 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 			"ball": m["ball"],
 			"scoreMax": m["maxScore"]
 		}
-		if m["status"] == "True":
-			await self.send(text_data=json.dumps(response))
+		if m["status"]:
+			try:
+				await self.send(text_data=json.dumps(response))
+			except Exception as e:
+				print(f"Erreur lors de l'envoi des données : {e}")
+				m["status"] = "False"
 
 	# continue ball at current velocity
 	async def calculBallMovement(self):
