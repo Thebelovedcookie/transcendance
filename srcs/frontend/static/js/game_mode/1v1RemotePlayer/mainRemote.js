@@ -21,9 +21,7 @@ class RemoteGameWebSocket {
 		this.ctrlUp;
 		this.ctrlDown;
 		this.matchId = null;
-		this.ballrequestgone = false;
 		this.playerId = null;
-		this.opponentId = null;
 		this.socket = null;
 		this.isConnected = false;
 		this.gameLoopInterval = null;
@@ -171,6 +169,11 @@ class RemoteGameWebSocket {
 			case "playerId":
 				this.playerId = data.playerId;
 				break;
+			case "reconnection":
+				console.log(data);
+				this.getBackInTheGame(data);
+				this.startGameLoop();
+				break;
 			case "game.init":
 				this.isItForMe(data);
 				//display waiting page
@@ -190,6 +193,52 @@ class RemoteGameWebSocket {
 				break;
 			default:
 				console.log("Unhandled message type:", data.type);
+		}
+	}
+
+	getBackInTheGame(data) {
+		this.matchId = data.matchId;
+		this.paddle_side = data.side;
+		this.ctrlDown = data.ctrlDown;
+		this.ctrlUp = data.ctrlUp;
+		this.playerId = data.id;
+		this.keys = {
+			[this.ctrlUp]: false,
+			[this.ctrlDown]: false
+		}
+		this.setupKeyboardControls();
+
+		this.gameState = {
+			me: {
+				x: data.me.x,
+				y: data.me.y,
+				width: data.me.width,
+				height: data.me.height,
+				color: data.me.color,
+				gravity: data.me.gravity,
+				score: data.me.score
+			},
+			opponent: {
+				x: data.opponent.x,
+				y: data.opponent.y,
+				width: data.opponent.width,
+				height: data.opponent.height,
+				color: data.opponent.color,
+				gravity: data.opponent.gravity,
+				score: data.opponent.score
+			},
+			ball: {
+				x: data.ball.x,
+				y: data.ball.y,
+				width: data.ball.width,
+				height: data.ball.height,
+				color: data.ball.color,
+				speed: data.ball.speed,
+				gravity: data.ball.gravity
+			},
+			score: {
+				scoreMax: data.message.scores.scoreMax
+			}
 		}
 	}
 
@@ -260,7 +309,6 @@ class RemoteGameWebSocket {
 		if (data.message.playerOne.id === this.playerId)
 		{
 			this.matchId = data.message.matchId;
-			this.opponentId = data.message.playerTwo.id;
 			this.paddle_side = data.message.playerOne.side;
 			this.ctrlUp = data.message.playerOne.ctrlUp;
 			this.ctrlDown = data.message.playerOne.ctrlDown;
@@ -274,7 +322,6 @@ class RemoteGameWebSocket {
 		else if (data.message.playerTwo.id === this.playerId)
 		{
 			this.matchId = data.message.matchId;
-			this.opponentId = data.message.playerOne.id;
 			this.paddle_side = data.message.playerTwo.side;
 			this.ctrlUp = data.message.playerTwo.ctrlUp;
 			this.ctrlDown = data.message.playerTwo.ctrlDown;

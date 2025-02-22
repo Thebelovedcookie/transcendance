@@ -124,7 +124,11 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 			"scoreMax": m["maxScore"]
 		}
 		if m["status"]:
-			await self.send(text_data=json.dumps(response))
+			try:
+				await self.send(text_data=json.dumps(response))
+			except Exception as e:
+				print(f"Erreur lors de l'envoi des données : {e}")
+				m["status"] = False
 	
 	######################## GAME LOGIC #############################
 
