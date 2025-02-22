@@ -63,6 +63,10 @@ clean: destroy
 	@sudo rm -rf /home/sonia42/ecole_42/transcendence/data/django_volume
 	@sudo rm -rf /home/sonia42/ecole_42/transcendence/data/frontend_volume
 
+prune:
+	@echo 'prune unused docker stuff to clear memory'
+	@sudo docker system prune --volumes -af
+
 help:
 	@echo    "build  : Services are built once and then tagged, by default as project-service."
 	@echo    "up     : Builds, (re)creates, starts, and attaches to containers for a service."
@@ -76,4 +80,4 @@ help:
 	@echo    "login  : This is the equivalent of docker exec targeting a Compose service."
 	@echo    "prune	 : erase unused docker stuff(container, image, etc) to clear memory"
 
-.PHONY: help build up start down destroy stop restart logs logs-api ps login-timescale login-api db-shell
+.PHONY: prune help build up start down destroy stop restart logs logs-api ps login-timescale login-api db-shell

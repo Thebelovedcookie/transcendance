@@ -140,7 +140,7 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 			"y": centerY,
 			"size": 15,
 			"color": "black",
-			"speed": 4,
+			"speed": 2,
 			"vx": 0,
 			"vy": 0
 		}
@@ -204,15 +204,14 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 	def executeBallStrike(self, m, player):
 		ballCenter = m["ball"]["y"] + m["ball"]["size"] / 2
 		paddleCenter = player["endAngle"] - player["deltaAngle"] / 2
-		relativeIntersectY = 0
-		if paddleCenter != 0:
-			relativeIntersectY = (paddleCenter - ballCenter) / paddleCenter
+		relativeIntersectY = m["canvas"]["radius"] * (paddleCenter - ballCenter) / player["deltaAngle"] / 2
 		bounceAngle = relativeIntersectY * math.pi / 3
 		speed = math.sqrt(math.pow(m["ball"]["vx"], 2) + math.pow(m["ball"]["vy"], 2))
 		m["ball"]["vx"] = -speed * math.cos(bounceAngle)
 		m["ball"]["vy"] = speed * math.sin(bounceAngle)
 		m["lastTouch"] = player["name"]
 
+	# check if location of ball overlaps location of paddle
 	def inPaddle(self, player):
 		m = self.infoMatch["match"][0]
 		angleBall = self.getAngleOfBall(m["canvas"], m["ball"])
@@ -297,7 +296,7 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 	def resetBall(self, m):
 		m["ball"]["x"] = m["canvas"]["centerX"]
 		m["ball"]["y"] = m["canvas"]["centerY"]
-		m["ball"]["speed"] = 4
+		m["ball"]["speed"] = 2
 		angle = random.random() * 2 * math.pi
 		m["ball"]["vx"] = m["ball"]["speed"] * math.cos(angle)
 		m["ball"]["vy"] = m["ball"]["speed"] * math.sin(angle)
@@ -312,9 +311,9 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 	# and bounded by the player's zone of movement
 	def movePaddle(self, player, direction):
 		dir = 0
-		if direction == "neg":  # movement is to "left" which is positive radians
+		if direction == "pos":
 			dir = 1
-		elif direction == "pos": # movement is to "right" which is negative radians
+		elif direction == "neg":
 			dir = -1
 		angleSpeed = 0.05
 		return self.clampAngle(player["startAngle"] + angleSpeed * dir, player["startZone"], player["endZone"] - player["deltaAngle"])
