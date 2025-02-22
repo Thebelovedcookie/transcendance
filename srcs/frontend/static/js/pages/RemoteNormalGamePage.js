@@ -17,11 +17,12 @@ export class RemoteNormalGamePage {
 		if (isLoggedIn) {
 			this.container.innerHTML = `
 				<div class="game-container">
-					<button class="back-button" data-path="/pong">
-						<i class="fas fa-arrow-left"></i> Back to Menu
+					<button class="back-button" data-path="/pong" data-translate="backMenu">
+						<i class="fas fa-arrow-left"></i> 
+						
 					</button>
 					<canvas id="pongGame" width="800" height="400"></canvas>
-					<div class="typewriter-text">Searching for opponent...</div>
+					<div class="typewriter-text" data-translate="searching"></div>
 				</div>
 			`;
 
@@ -29,9 +30,9 @@ export class RemoteNormalGamePage {
 		} else {
 			this.container.innerHTML = `
 				<div class="game-container">
-					<h1>Please login to play</h1>
-					<button class="back-button" data-path="/login">
-						<i class="fas fa-arrow-left"></i> Login
+					<h1 data-translate="logtoplay"></h1>
+					<button class="back-button" data-path="/login" data-translate="login">
+						<i class="fas fa-arrow-left"></i> 
 					</button>
 				</div>
 			`;

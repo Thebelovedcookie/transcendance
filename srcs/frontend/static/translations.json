@@ -5,6 +5,7 @@
         "2025 PongSite - All Rights Reserved" : "2025 PongSite - All Rights Reserved",
 
         "Login":"Login",
+		"login":"login",
         "Register": "Register",
 
         "modeSelect": "Select Your Game Mode",
@@ -12,6 +13,7 @@
 		"Classic1": "Classic 2-player battle against an online opponent",
 		"Duel Mode" : "Duel Mode",
         "Classic2" : "Classic 2-player game on a single keyboard",
+		"logtoplay":"Please login to play",
         
         "TriMode" : "Tri Mode",
         "Tridetails" : "Circular 3-player game on a single keyboard",
@@ -22,13 +24,15 @@
 
         "settinglog":"Please enter your login and password!",
         "pwd":"Password", 
+		"ErrorLogin":"Incorrect user email or password",
         "Enter-user":"Please enter your username",
         "error-email":"Please enter a valid email address",          
-        "email_placeholder":"Email",
+        "email_placeholder":"Email",	
         "pwd_placeholder":"Password",
         "error-pwd":"Please enter your password",
         "pwd2_placeholder":"Confirm Password",
-        "error-pwd2":"Please confirm your password", 
+        "error-pwd2":"Please confirm your password",
+		"error-pwd3":"Passwords do not match", 
         "user-placeholder":"Username",
         
         "emailerror": "Please enter your email",
@@ -46,12 +50,52 @@
         "digit-code":"Please enter the 6-digit code sent to your email",
         "code-placeholder":"Enter 6-digit code",
         "Invalid-Code":"Invalid verification code",
+		"codeErrorVerif":"Please enter a valid 6-digit code",
+		"stdErrorVerif":"An error occurred. Please try again.",
         "EmailVerification": "Email Verification",
+		"NewVerifCode":"New verification code has been sent to your email",
+		"FailResend":"Failed to resend verification code",
+	
 
 
         "page-error":"The page you are looking for does not exist",
         "error404":"Page Not Found",
-        "return-home":"Return to Home"
+        "return-home":"Return to Home",
+
+		"matchresult": "MATCH RESULT",
+		"victory": "VICTORY",
+		"ReturnGame": "RETURN TO GAME",
+		"defeat":"DEFEAT",
+		"Winner":"Winner",
+		"Loser":"Loser",
+		"forfait":"VICTORY BY FORFAIT",
+		"cons-error":"Failed to load user data:",
+
+		"online": "Online",
+		"offline": "Offline",
+		"EditProfile": "Edit Profile",
+		"memberdate":"Member since:",
+		"TotalGame":"Total Games",
+		"viewAll":"View All Matches ",
+		"WinRate": "Win Rate",
+		"perf":"Performance Stats",
+		"matchs":"Recent Matches",
+		"friends":"Friends",
+		"AllFriends":"All Friends",
+		"Searchfriends":"Search Friends",
+		"removeFriend":"Remove Friend",
+		"Nomatch":"No match history found",
+		"MatchHistory":"Match History",
+		"losses":"Losses:",
+		"wins":"Wins:",
+		"close":"Close",
+		"cancel":"Cancel",
+		"SaveChanges":"Save Changes",
+		"Lastseen":"Last seen",
+
+		"backMenu":"Back to Menu",
+		"searching":"Searching for opponent..."
+
 
     },
 
@@ -62,6 +106,7 @@
         "2025 PongSite - All Rights Reserved" : "2025 PongSite - Tous droits reserves",
 
         "Login":"Connexion",
+		"login":"connexion",
         "Register": "Inscription",
 
         "modeSelect": "Selectionner votre mode de jeu",
@@ -69,6 +114,7 @@
         "Classic1": "Duel Standard contre un adversaire en ligne",
         "Duel Mode" : "Mode duel",
         "Classic2" : "Duel Standard (meme clavier)",
+		"logtoplay":"Veuillez vous connecter pour jouer",
         
 
         "TriMode" : "Mode Tri",
@@ -80,13 +126,15 @@
         
         "settinglog":"Entrer votre login et mot de passe!",
         "pwd":"mot de passe",
+		"ErrorLogin":"Nom d'utilisateur ou mot de passe incorrect",
         "Enter-user":"Entrer votre nom d'utilisateur",
         "error-email":"Entrer une adresse email valide",
         "email_placeholder":"Email",
         "pwd_placeholder":"Mot de passe",
         "error-pwd":"Veuillez entrer votre mot de passe",
         "pwd2_placeholder":"Confirmer le mot de passe",
-        "error-pwd2":"Veuillez confirmer votre mot de passe", 
+        "error-pwd2":"Veuillez confirmer votre mot de passe",
+		"error-pwd3":"Les mots de passe ne correspondent pas", 
         "user-placeholder":"Nom d'utilisateur",
 
         "emailerror": "Entrer votre email",
@@ -103,12 +151,51 @@
         "recode": "renvoie du code de verification",
         "digit-code":"Entrer le code de 6 chiffres envoyé à votre email",
         "code-placeholder":"Entrer un code à 6 chiffres",
-        "Invalid-Code":"Code de verification invalide",
+		"Invalid-Code":"Code de verification invalide",
+		"codeErrorVerif":"Veuillez entrer un code de verification valide",
+		"stdErrorVerif":"Une erreur s'est produite. Veuillez réessayer.",        
         "EmailVerification": "Verification de l'email",
-
+		"NewVerifCode":"Nouveau code de verification a été envoyé à votre email",
+		"FailResend":"Echec de renvoi du code de verification",
+		
         "page-error":"La page que vous recherchez n'existe pas",
         "error404":"Page non trouvée",
-        "return-home":"Retour à l'accueil"
+        "return-home":"Retour à l'accueil",
+
+		"matchresult": "resultat du match",
+		"victory": "VICTOIRE",
+		"ReturnGame": "RETOUR AU JEU",
+		"defeat":"DEFAITE",
+		"Winner":"Gagnant",
+		"Loser":"Perdant",
+		"forfait":"VICTOIRE PAR FORFAIT",
+		"cons-error":"Echec de chargement des données utilisateur:",
+
+		"online": "Connecté",
+		"offline": "Déconnecté",
+		"EditProfile": "Editer le profil",
+		"memberdate":"Membre depuis:",
+		"TotalGame":"Total des jeux",
+		"viewAll":"Voir tous les matchs ",
+		"WinRate": "Taux de victoire",
+		"perf":"Statistiques de performance",
+		"matchs":"Matchs récents",
+		"friends":"Amis",
+		"AllFriends":"Tous les amis",
+		"Searchfriends":"Rechercher des amis",
+		"removeFriend":"Supprimer l'ami",
+		"Nomatch":"Aucun historique de match trouvé",
+		"MatchHistory":"Historique des matchs",
+		"losses":"Pertes:",
+		"wins":"Victoires:",
+		"close":"Fermer",
+		"cancel":"Annuler",
+		"SaveChanges":"Enregistrer les modifications",
+		"Lastseen":"Vu pour la dernière fois",
+		
+		"backMenu":"Retour au Menu",
+		"searching":"Recherche d'adversaire..."
+
         
     },
 

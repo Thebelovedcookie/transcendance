@@ -14,16 +14,16 @@ export class WinnerRemoteGamePage {
         gameContent.innerHTML = `
             <div class="match-result animate-fade-in">
                 <div class="result-header">
-                    <h2 class="match-title animate-slide-down" data-translate = "matchresult">MATCH RESULT</h2>
+                    <h2 class="match-title animate-slide-down" data-translate = "matchresult"></h2>
                     <div class="players-result">
                         <div class="winner-section">
-                            <span class="result-label" data-translate="victory">VICTORY</span>
+                            <span class="result-label" data-translate="victory"></span>
                         </div>
                     </div>
                 </div>
 
                 <button id="returnToGame" class="next-match-btn animate-fade-in-up">
-                    <span class="btn-text" data-translate = "ReturnGame">RETURN TO GAME</span>
+                    <span class="btn-text" data-translate = "ReturnGame"></span>
                     <div class="btn-animation-container">
                         <span class="btn-ping"></span>
                     </div>

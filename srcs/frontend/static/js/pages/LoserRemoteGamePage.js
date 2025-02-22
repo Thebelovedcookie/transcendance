@@ -17,7 +17,7 @@ export class LoserRemoteGamePage {
                     <h2 class="match-title animate-slide-down" data-translate = "matchresult">/h2>
                     <div class="players-result">
                         <div class="loser-section">
-                            <span class="result-label" data-translate ="defeat">DEFEAT</span>
+                            <span class="result-label" data-translate ="defeat"></span>
                         </div>
                     </div>
                 </div>

@@ -50,7 +50,7 @@ export class VerificationPage {
 		const codeError = document.getElementById('codeError');
 
 		if (!code || code.length !== 6) {
-			codeError.textContent = 'Please enter a valid 6-digit code';
+			codeError.textContent = translationsData["codeErrorVerif"];
 			codeError.style.display = 'block';
 			return;
 		}
@@ -77,12 +77,14 @@ export class VerificationPage {
 				// Redirect to login page
 				window.router.navigateTo('/login');
 			} else {
-				codeError.textContent = data.message || 'Invalid verification code';
+				// codeError.textContent = data.message || 'Invalid verification code';
+				codeError.textContent = data.message || translationsData["Invalid-Code"];
 				codeError.style.display = 'block';
 			}
 		} catch (error) {
 			console.error('Error:', error);
-			codeError.textContent = 'An error occurred. Please try again.';
+			// codeError.textContent = 'An error occurred. Please try again.';
+			codeError.textContent = translationsData["stdErrorVerif"];
 			codeError.style.display = 'block';
 		}
 	}
@@ -108,13 +110,14 @@ export class VerificationPage {
 			const data = await response.json();
 
 			if (response.ok) {
-				alert('New verification code has been sent to your email.');
+				alert(translationsData["NewVerifCode"]);
 			} else {
-				alert(data.message || 'Failed to resend verification code.');
+				alert(data.message || translationsData["FailResend"]);
 			}
 		} catch (error) {
 			console.error('Error:', error);
-			alert('An error occurred. Please try again.');
+			// alert('An error occurred. Please try again.');
+			alert(translationsData["stdErrorVerif"]);
 		} finally {
 			resendButton.disabled = false;
 		}

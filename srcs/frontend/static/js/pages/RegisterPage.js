@@ -105,18 +105,8 @@ export class RegisterPage {
 			throw error;
 		}
 	}
-	//affichage des erreurs avec la bonne langue
-	showError(elementId) {
-		const el = document.getElementById(elementId);
-		if (el) {
-			el.style.display = "block"; // Affiche l'erreur
-			const key = el.getAttribute("data-translate");
-			if (this.translations && this.translations[key]) {
-				el.innerHTML = this.translations[key]; 
-			}
-		}
-	}
 	
+
 	//parsing of the Form
 	validateForm(e) {
 		e.preventDefault();  // Prevent form submission by default
@@ -147,36 +137,35 @@ export class RegisterPage {
 
 		// Validate email
 		if (!email.value.trim()) {
-			emailError.textContent = 'Please enter your email';
+			// emailError.textContent = 'Please enter your email';
 			emailError.style.display = 'block';
 			isValid = false;
 		} else if (!this.isValidEmail(email.value)) {
-			emailError.textContent = 'Please enter a valid email address';
+			// emailError.textContent = 'Please enter a valid email address';
 			emailError.style.display = 'block';
 			isValid = false;
 		}
 
 		// Validate password
 		if (!password.value.trim()) {
-			passwordError.textContent = 'Please enter your password';
+			// passwordError.textContent = 'Please enter your password';
 			passwordError.style.display = 'block';
 			isValid = false;
 		} else if (password.value.length < 8) {
-			passwordError.textContent = 'Password must be at least 8 characters';
+			// passwordError.textContent = 'Password must be at least 8 characters';
 			passwordError.style.display = 'block';
 			isValid = false;
 		}
 
 		// Validate confirm password
 		if (!confirmPassword.value.trim()) {
-			confirmPasswordError.textContent = 'Please confirm your password';
-			this.showError("confirmPasswordError");
-			// confirmPasswordError.style.display = 'block';
+			// confirmPasswordError.textContent = 'Please confirm your password';
+			confirmPasswordError.style.display = 'block';
 			isValid = false;
 		} else if (password.value !== confirmPassword.value) {
-			confirmPasswordError.textContent = 'Passwords do not match';
-			this.showError("confirmPasswordError"); //modif SO
-			// confirmPasswordError.style.display = 'block';
+			// confirmPasswordError.textContent = 'Passwords do not match';
+			confirmPasswordError.textContent = translationsData["error-pwd3"];
+			confirmPasswordError.style.display = 'block';
 			isValid = false;
 		}
 
@@ -232,9 +221,9 @@ export class RegisterPage {
 		// Show/hide error message
 		const confirmPasswordError = document.getElementById('confirmPasswordError');
 		if (password !== originalPassword && password !== '') {
-			confirmPasswordError.textContent = 'Passwords do not match';
-			this.showError("confirmPasswordError"); //modif SO
-			// confirmPasswordError.style.display = 'block';
+			// confirmPasswordError.textContent = 'Passwords do not match';
+			confirmPasswordError.textContent = translationsData["error-pwd3"]
+			confirmPasswordError.style.display = 'block';
 		} else {
 			confirmPasswordError.style.display = 'none';
 		}
