@@ -131,7 +131,7 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 			"y": centerY,
 			"size": 15,
 			"color": "black",
-			"speed": 4,
+			"speed": 2,
 			"vx": 0,
 			"vy": 0
 		}
@@ -194,9 +194,7 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 	def executeBallStrike(self, m, player):
 		ballCenter = m["ball"]["y"] + m["ball"]["size"] / 2
 		paddleCenter = player["endAngle"] - player["deltaAngle"] / 2
-		relativeIntersectY = 0
-		if paddleCenter != 0:
-			relativeIntersectY = (paddleCenter - ballCenter) / paddleCenter
+		relativeIntersectY = m["canvas"]["radius"] * (paddleCenter - ballCenter) / player["deltaAngle"] / 2
 		bounceAngle = relativeIntersectY * math.pi / 3
 		speed = math.sqrt(math.pow(m["ball"]["vx"], 2) + math.pow(m["ball"]["vy"], 2))
 		m["ball"]["vx"] = -speed * math.cos(bounceAngle)
@@ -287,7 +285,7 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 	def resetBall(self, m):
 		m["ball"]["x"] = m["canvas"]["centerX"]
 		m["ball"]["y"] = m["canvas"]["centerY"]
-		m["ball"]["speed"] = 4
+		m["ball"]["speed"] = 2
 		angle = random.random() * 2 * math.pi
 		m["ball"]["vx"] = m["ball"]["speed"] * math.cos(angle)
 		m["ball"]["vy"] = m["ball"]["speed"] * math.sin(angle)
