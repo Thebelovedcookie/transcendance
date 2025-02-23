@@ -41,14 +41,14 @@ export function ballStyle(context, element)
 }
 
 export function drawDashedLine(context, canvas) {
-	const centerX = canvas.width / 2;
-	const centerY = canvas.height / 2;
-	const radius = canvas.height / 2;  // Rayon du cercle
-	const dashLength = 15;  // Longueur des segments
-	const spaceLength = 10; // Longueur des espaces
+	const centerX = canvas.centerX;
+	const centerY = canvas.centerY;
+	const radius = canvas.radius;  // Rayon du cercle
+	const dashLength = canvas.size;  // Longueur des segments
+	const spaceLength = canvas.size * 2 / 3; // Longueur des espaces
 
 	context.strokeStyle = "black";//'blue";
-	context.lineWidth = 2;
+	context.lineWidth = 1;
 	context.setLineDash([dashLength, spaceLength]); // Activer les pointillés
 
 	// Dessiner les 3 lignes à 120° d'écart
@@ -75,7 +75,7 @@ export function drawDashedLine(context, canvas) {
 
 //PlayerOne score Text
 export function displayScoreOne(context, scoreOne, canvas) {
-	const size = Math.round(canvas.width / 15);
+	const size = Math.round(canvas.dim / 15);
 	context.font = size + "px 'Press Start 2P'";
 	context.fillStyle = "red";
 	context.textAlign = "right"
@@ -84,13 +84,13 @@ export function displayScoreOne(context, scoreOne, canvas) {
 	context.shadowOffsetX = 1;
 	context.shadowOffsetY = 0;
 	context.shadowBlur = 3;
-	context.fillText(scoreOne, (canvas.width * 0.95), canvas.height - size);
+	context.fillText(scoreOne, (canvas.dim * 0.95), canvas.dim - size);
 	resetStyle(context);
 }
 
 //PlayerTwo score Text
 export function displayScoreTwo(context, scoreTwo, canvas){
-	const size = Math.round(canvas.width / 15);
+	const size = Math.round(canvas.dim / 15);
 	context.font = size + "px 'Press Start 2P'";
 	context.fillStyle = "blue";
 	context.textBaseline = "bottom";
@@ -99,13 +99,13 @@ export function displayScoreTwo(context, scoreTwo, canvas){
 	context.shadowOffsetX = -1;
 	context.shadowOffsetY = 0;
 	context.shadowBlur = 3;
-	context.fillText(scoreTwo, (canvas.width * 0.05) , canvas.height - size);
+	context.fillText(scoreTwo, (canvas.dim * 0.05) , canvas.dim - size);
 	resetStyle(context);
 }
 
 //PlayerThree score Text
 export function displayScoreThree(context, scoreThree, canvas){
-	const size = Math.round(canvas.width / 15);
+	const size = Math.round(canvas.dim / 15);
 	context.font = size + "px 'Press Start 2P'";
 	context.fillStyle = "green";
 	context.textBaseline = "top";
@@ -114,13 +114,13 @@ export function displayScoreThree(context, scoreThree, canvas){
 	context.shadowOffsetX = -1;
 	context.shadowOffsetY = 0;
 	context.shadowBlur = 3;
-	context.fillText(scoreThree, (canvas.width * 0.95) , size);
+	context.fillText(scoreThree, (canvas.dim * 0.95) , size);
 	resetStyle(context);
 }
 
 export function displayPlayerName(context, canvas)
 {
-	const size = Math.round(canvas.width / 40);
+	const size = Math.round(canvas.dim / 40);
 	context.font = size + "px 'Press Start 2P'";
 	context.shadowColor = "rgba(0, 0, 0, 0.7)";
 	context.shadowOffsetX = -1;
@@ -135,33 +135,33 @@ export function displayPlayerName(context, canvas)
 	context.textAlign = "right";
 	context.textBaseline = "bottom";
 	context.fillStyle = "red";
-	context.fillText('P1: ← (left) → (right)', canvas.width - size, canvas.width - size);
+	context.fillText('P1: ← (left) → (right)', canvas.dim - size, canvas.dim - size);
 
 	context.textAlign = "left";
 	context.textBaseline = "bottom";
 	context.fillStyle = "blue";
-	context.fillText("P2: w (up) s (down)", size, canvas.width - size);
+	context.fillText("P2: w (up) s (down)", size, canvas.dim - size);
 
 	context.textAlign = "right";
 	context.textBaseline = "top";
 	context.fillStyle = "green";
-	context.fillText("P3: b (left) n (right)", canvas.width - size, size);
+	context.fillText("P3: b (left) n (right)", canvas.dim - size, size);
 
 	resetStyle(context);
 }
 
-export function drawWalls(context, canvas) {
+export function drawWalls(context, canvas_info) {
 	context.fillStyle = "rgb(78, 78, 78)";  // Changed to darker gray
 	context.shadowColor = "rgba(128, 128, 128, 0.7)";  // Matching shadow
 	context.shadowOffsetX = 0;
 	context.shadowOffsetY = 0;
-	context.shadowBlur = 6;
+	context.shadowBlur = canvas_info.size / 2;
 
 	// Top wall
-	context.fillRect(0, 0, canvas.width, 5);
+	context.fillRect(0, 0, canvas_info.dim, canvas_info.size);
 
 	// Bottom wall
-	context.fillRect(0, canvas.height - 5, canvas.width, 5);
+	context.fillRect(0, canvas_info.dim - canvas_info.size, canvas_info.dim, canvas_info.size);
 
 	context.fillStyle = "rgba(78, 78, 78, 0.48)";  // Changed to darker gray
 	context.shadowColor = "rgba(128, 128, 128, 0.7)";  // Matching shadow
@@ -170,10 +170,10 @@ export function drawWalls(context, canvas) {
 	context.shadowBlur = 6;
 
 	// left wall
-	context.fillRect(0, 0, 5, canvas.height);
+	context.fillRect(0, 0, canvas_info.size, canvas_info.dim);
 
 	// Right wall
-	context.fillRect(canvas.width - 5, 0, 5, canvas.height);
+	context.fillRect(canvas_info.dim - canvas_info.size, 0, canvas_info.size, canvas_info.dim);
 
 	resetStyle(context);
 }
