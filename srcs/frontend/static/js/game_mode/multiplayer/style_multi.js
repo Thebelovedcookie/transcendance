@@ -43,7 +43,7 @@ export function ballStyle(context, element)
 export function drawDashedLine(context, canvas) {
 	const centerX = canvas.centerX;
 	const centerY = canvas.centerY;
-	const radius = canvas.radius;  // Rayon du cercle
+	const radius = canvas.radius + canvas.size;  // Rayon du cercle
 	const dashLength = canvas.size;  // Longueur des segments
 	const spaceLength = canvas.size * 2 / 3; // Longueur des espaces
 
@@ -151,29 +151,19 @@ export function displayPlayerName(context, canvas)
 }
 
 export function drawWalls(context, canvas_info) {
-	context.fillStyle = "rgb(78, 78, 78)";  // Changed to darker gray
-	context.shadowColor = "rgba(128, 128, 128, 0.7)";  // Matching shadow
-	context.shadowOffsetX = 0;
-	context.shadowOffsetY = 0;
-	context.shadowBlur = canvas_info.size / 2;
-
-	// Top wall
-	context.fillRect(0, 0, canvas_info.dim, canvas_info.size);
-
-	// Bottom wall
-	context.fillRect(0, canvas_info.dim - canvas_info.size, canvas_info.dim, canvas_info.size);
-
-	context.fillStyle = "rgba(78, 78, 78, 0.48)";  // Changed to darker gray
-	context.shadowColor = "rgba(128, 128, 128, 0.7)";  // Matching shadow
-	context.shadowOffsetX = 0;
-	context.shadowOffsetY = 0;
-	context.shadowBlur = 6;
-
-	// left wall
-	context.fillRect(0, 0, canvas_info.size, canvas_info.dim);
-
-	// Right wall
-	context.fillRect(canvas_info.dim - canvas_info.size, 0, canvas_info.size, canvas_info.dim);
+	context.strokeStyle = "rgba(128, 128, 128, 0.7)";
+	context.setLineDash([canvas_info.size/2, canvas_info.size/2]);
+	context.beginPath();
+	context.arc(
+		canvas_info.centerX,  // Centre de l'arène
+		canvas_info.centerY,  // Centre de l'arène
+		canvas_info.radius + canvas_info.size,   // Distance du centre (rayon)
+		0, // Angle de début (en radians)
+		2 * Math.PI   // Angle de fin
+	);
+	context.stroke();
+	context.closePath();
+	context.setLineDash([]);
 
 	resetStyle(context);
 }
