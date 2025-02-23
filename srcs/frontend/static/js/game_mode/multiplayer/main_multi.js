@@ -169,13 +169,10 @@ class GameWebSocket {
 	drawPause() {
 		this.pause = true;
 		this.sendPause();
-		const rectWidth = this.gameState.canvas.size * 1.7; //50;
-		const rectHeight = this.gameState.canvas.size * 10; //200;
+		const rectWidth = this.gameState.canvas.size * 1.7;
+		const rectHeight = this.gameState.canvas.size * 10;
 		
 		context.fillStyle = "black";
-
-		//context.fillRect(canvas.width / 2 - 70, canvas.height / 2 - 100, rectWidth, rectHeight);
-		//context.fillRect(canvas.width / 2 + 20, canvas.height / 2 - 100, rectWidth, rectHeight);
 
 		context.fillRect(this.gameState.canvas.dim / 2 - 3 * this.gameState.canvas.size, this.gameState.canvas.dim / 2 - 5 * this.gameState.canvas.size, rectWidth, rectHeight);
 		context.fillRect(this.gameState.canvas.dim / 2 + 1.5 * this.gameState.canvas.size, this.gameState.canvas.dim / 2 - 5 * this.gameState.canvas.size, rectWidth, rectHeight);
