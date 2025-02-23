@@ -238,6 +238,7 @@ class GameWebSocket {
 				centerX: data.canvas.centerX,
 				centerY: data.canvas.centerY,
 				radius: data.canvas.radius,
+				size: data.canvas.size,
 			},
 			player1: {
 				name: data.playerOne.name,
@@ -286,8 +287,8 @@ class GameWebSocket {
 
 	drawGame() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
-		drawDashedLine(context, canvas);
-		drawWalls(context, canvas)
+		drawDashedLine(context,  this.gameState.canvas);
+		drawWalls(context, this.gameState.canvas)
 		multiPaddle(context, this.gameState.player1, this.gameState.canvas);
 		multiPaddle(context, this.gameState.player2, this.gameState.canvas);
 		multiPaddle(context, this.gameState.player3, this.gameState.canvas);
@@ -297,11 +298,11 @@ class GameWebSocket {
 		const scoreTwo = this.gameState.player2.score ?? 0;
 		const scoreThree = this.gameState.player3.score ?? 0;
 
-		displayScoreOne(context, scoreOne, canvas);
-		displayScoreTwo(context, scoreTwo, canvas);
-		displayScoreThree(context, scoreThree, canvas);
+		displayScoreOne(context, scoreOne,  this.gameState.canvas);
+		displayScoreTwo(context, scoreTwo,  this.gameState.canvas);
+		displayScoreThree(context, scoreThree,  this.gameState.canvas);
 
-		displayPlayerName(context, canvas);
+		displayPlayerName(context,  this.gameState.canvas);
 	}
 
 	cleanup() {

@@ -93,52 +93,53 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 		canvas_height = start_data.get("windowHeight", 0)
 		canvas_width = start_data.get("windowWidth", 0)
 
-		canvas_dim = min(canvas_height, canvas_width)
+		canvas_dim = min(canvas_height, canvas_width) *.7
 		centerY = canvas_dim / 2
 		radius = centerY - 10
 		centerX = centerY
-		if canvas_width > canvas_dim:
-			centerX = canvas_width / 2
+
+		size = int(canvas_dim  / 45)
+
 		m["maxScore"] = 10
 		m["lastTouch"] = None
-		m["canvas"] = {"dim": canvas_dim, "centerX": centerX, "centerY": centerY, "radius": radius}
+		m["canvas"] = {"dim": canvas_dim, "centerX": centerX, "centerY": centerY, "radius": radius, "size": size}
 		m["playerOne"].update({
 			"name": "player1",
 			"color": "red",
 			"startAngle": 0,
-			"endAngle": math.pi / 6,
-			"deltaAngle": math.pi / 6,
+			"endAngle": math.pi / 8,
+			"deltaAngle": math.pi / 8,
 			"startZone": 0,
 			"endZone": 2 * math.pi / 3,
-			"width": 15,
+			"width": size,
 			"score": 0
 		})
 		m["playerTwo"].update({
 			"name": "player2",
 			"color": "blue",
 			"startAngle": 2 * math.pi / 3,
-			"endAngle": 2 * math.pi / 3 + math.pi / 6,
-			"deltaAngle": math.pi / 6,
+			"endAngle": 2 * math.pi / 3 + math.pi / 8,
+			"deltaAngle": math.pi / 8,
 			"startZone": 2 * math.pi / 3,
 			"endZone": 4 * math.pi / 3,
-			"width": 15,
+			"width": size,
 			"score": 0
 		})
 		m["playerThree"].update({
 			"name": "player3",
 			"color": "green",
 			"startAngle": 4 * math.pi / 3,
-			"endAngle": 4 * math.pi / 3 + math.pi / 6,
-			"deltaAngle": math.pi / 6,
+			"endAngle": 4 * math.pi / 3 + math.pi / 8,
+			"deltaAngle": math.pi / 8,
 			"startZone": 4 * math.pi / 3,
 			"endZone": 2 * math.pi,
-			"width": 15,
+			"width": size,
 			"score": 0
 		})
 		m["ball"] = {
 			"x": centerX,
 			"y": centerY,
-			"size": 15,
+			"size": size,
 			"color": "black",
 			"speed": 2,
 			"vx": 0,
@@ -315,7 +316,7 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 			dir = 1
 		elif direction == "neg":
 			dir = -1
-		angleSpeed = 0.05
+		angleSpeed = 0.025
 		return self.clampAngle(player["startAngle"] + angleSpeed * dir, player["startZone"], player["endZone"] - player["deltaAngle"])
 
 	# move paddles based on keyboard input sent from js frontend in data

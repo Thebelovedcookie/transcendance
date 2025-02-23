@@ -33,6 +33,7 @@ down:
 	@docker compose -f $(DC) down $(c)
 
 destroy:
+	@clear
 	@echo 'destroy - down'
 	@docker compose -f $(DC) down -v $(c)
 
