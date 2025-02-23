@@ -242,7 +242,7 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 				elif self.inPaddle(m["playerThree"]):
 					self.executeBallStrike(m, m["playerThree"])
 			# if ball has exited canvas, then change score
-		if distanceBall > m["canvas"]["radius"] * 1.4:
+		if distanceBall > m["canvas"]["radius"] + 5 * m["canvas"]["size"]:
 			self.manageScore(m)
 			# check for a winner
 			await self.checkScore(m)
