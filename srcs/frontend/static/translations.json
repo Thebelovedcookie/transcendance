@@ -7,6 +7,7 @@
         "Login":"Login",
 		"login":"login",
         "Register": "Register",
+		"Welcomemsg" : "Welcome, {username}!",
 
         "modeSelect": "Select Your Game Mode",
         "Battle Mode" :"Battle Mode",
@@ -74,6 +75,7 @@
 		"online": "Online",
 		"offline": "Offline",
 		"EditProfile": "Edit Profile",
+		"Change Photo":"Change Photo",
 		"memberdate":"Member since:",
 		"TotalGame":"Total Games",
 		"viewAll":"View All Matches ",
@@ -92,9 +94,17 @@
 		"cancel":"Cancel",
 		"SaveChanges":"Save Changes",
 		"Lastseen":"Last seen",
+		"Username":"Username",
+		"Email":"Email",
+		"Mypage":"Mypage",
+		"Settings":"Settings",
+		"Logout":"Logout",
+
 
 		"backMenu":"Back to Menu",
-		"searching":"Searching for opponent..."
+		"searching":"Searching for opponent...",
+		"searchUser_placeholder":"Search by username...",
+		"Search":"Search"
 
 
     },
@@ -108,6 +118,7 @@
         "Login":"Connexion",
 		"login":"connexion",
         "Register": "Inscription",
+		"Welcomemsg": "Bienvenue, {username}!",
 
         "modeSelect": "Selectionner votre mode de jeu",
         "Battle Mode" :"Mode bataille",
@@ -136,6 +147,8 @@
         "error-pwd2":"Veuillez confirmer votre mot de passe",
 		"error-pwd3":"Les mots de passe ne correspondent pas", 
         "user-placeholder":"Nom d'utilisateur",
+		"Username":"Utilisateur",
+		"Email":"Email",
 
         "emailerror": "Entrer votre email",
         "errorpwd" :"Entrer votre mot de passe",
@@ -174,6 +187,7 @@
 		"online": "Connecté",
 		"offline": "Déconnecté",
 		"EditProfile": "Editer le profil",
+		"Change Photo":"Changer la photo",
 		"memberdate":"Membre depuis:",
 		"TotalGame":"Total des jeux",
 		"viewAll":"Voir tous les matchs ",
@@ -192,9 +206,15 @@
 		"cancel":"Annuler",
 		"SaveChanges":"Enregistrer les modifications",
 		"Lastseen":"Vu pour la dernière fois",
+		"Mypage":"Ma page",
+		"Settings":"Paramètres",
+		"Logout":"se déconnecter",
+		
 		
 		"backMenu":"Retour au Menu",
-		"searching":"Recherche d'adversaire..."
+		"searching":"Recherche d'adversaire...",
+		"searchUser_placeholder":"Recherche par nom d'utilisateur...",
+		"Search":"Rechercher"
 
         
     },

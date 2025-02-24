@@ -24,14 +24,14 @@ export class Header {
 								<option value="ja">日本語</option>
 							</select>
 							${isLoggedIn ?
-								`<span class="text-light me-3">Welcome, ${username}!</span>
+								`<span class="text-light me-3" data-translate="Welcomemsg" data-username="" ></span>
 								 <div class="dropdown">
 									<img src="/static/img/anonymous.webp" class="rounded-circle" alt="Profile" width="40" height="40" style="cursor: pointer" data-bs-toggle="dropdown">
 									<ul class="dropdown-menu dropdown-menu-end">
-										<li><a class="dropdown-item" href="/profile" data-path="/profile">Mypage</a></li>
-										<li><a class="dropdown-item" href="/settings" data-path="/settings">Settings</a></li>
+										<li><a class="dropdown-item" href="/profile" data-path="/profile" data-translate="Mypage"></a></li>
+										<li><a class="dropdown-item" href="/settings" data-path="/settings" data-translate="Settings"></a></li>
 										<li><hr class="dropdown-divider"></li>
-										<li><a class="dropdown-item" href="/logout" data-path="/logout">Logout</a></li>
+										<li><a class="dropdown-item" href="/logout" data-path="/logout" data-translate="Logout"></a></li>
 									</ul>
 								 </div>` :
 								`<div class="dropdown">

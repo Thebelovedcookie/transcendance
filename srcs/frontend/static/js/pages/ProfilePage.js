@@ -71,9 +71,9 @@ export class ProfilePage {
 						<div class="profile-details">
 							<h1>${this.userData.username}</h1>
 							<p data-translate="memberdate">Member since: ${new Date(this.userData.join_date).toLocaleDateString()}</p>
-							<button class="edit-profile-btn">
+							<button class="edit-profile-btn" data-translate="EditProfile">
 								<i class="fas fa-edit"></i> 
-									<span data-translate="EditProfile"></span>
+									Edit Profile
 							</button>
 						</div>
 					</div>
@@ -307,24 +307,24 @@ export class ProfilePage {
 							<img src="${this.userData.image_path || this.default_path}" alt="Profile" id="avatarPreview">
 						</div>
 						<div class="avatar-edit">
-							<input type="file" id="avatarInput" accept="image/*">
+							<input type="file" id="avatarInput" accept="image/*" data-translate="ChangePhoto">
 							<label for="avatarInput">
 								<i class="fas fa-camera"></i>
 								Change Photo
 							</label>
 						</div>
 					</div>
-					<div class="form-group">
-						<label data-translate="user-placeholder">Username</label>
+					<div class="form-group" data-translate = "Username" >
+						<label>Username</label>
 						<input type="text" value="${this.userData.username}" class="form-input">
 					</div>
-					<div class="form-group">
-						<label data-translate="email_placeholder">Email</label>
+					<div class="form-group"  data-translate = "Email">
+						<label>Email</label>
 						<input type="email" value="${this.userData.email}" class="form-input">
 					</div>
 					<div class="modal-actions">
-						<button type="button" class="cancel-btn" data-translate="cancel"></button>
-						<button type="submit" class="save-btn" data-translate="SaveChanges"></button>
+						<button type="button" class="cancel-btn" data-translate ="cancel" >Cancel</button>
+						<button type="submit" class="save-btn" data-translate="SaveChanges" >Save Changes</button>
 					</div>
 				</form>
 				<button class="modal-close">&times;</button>
@@ -413,10 +413,10 @@ export class ProfilePage {
 		modal.className = 'friend-search-modal';
 		modal.innerHTML = `
 			<div class="modal-content">
-				<h2>Search Friends</h2>
+				<h2 data-translate = "Searchfriends"></h2>
 				<div class="search-container">
-					<input type="text" id="friendSearchInput" placeholder="Search by username..." class="form-input">
-					<button type="button" id="searchButton" class="search-btn">
+					<input type="text" id="friendSearchInput" placeholder="Search by username..." data-translate= "searchUser_placeholder" class="form-input">
+					<button type="button" id="searchButton" class="search-btn" data-translate="Search">
 						<i class="fas fa-search"></i> Search
 					</button>
 				</div>

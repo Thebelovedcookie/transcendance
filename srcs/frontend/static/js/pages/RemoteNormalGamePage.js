@@ -19,7 +19,7 @@ export class RemoteNormalGamePage {
 				<div class="game-container">
 					<button class="back-button" data-path="/pong" data-translate="backMenu">
 						<i class="fas fa-arrow-left"></i> 
-						
+						Back to Menu
 					</button>
 					<canvas id="pongGame" width="800" height="400"></canvas>
 					<div class="typewriter-text" data-translate="searching"></div>
@@ -32,7 +32,8 @@ export class RemoteNormalGamePage {
 				<div class="game-container">
 					<h1 data-translate="logtoplay"></h1>
 					<button class="back-button" data-path="/login" data-translate="login">
-						<i class="fas fa-arrow-left"></i> 
+						<i class="fas fa-arrow-left"></i>
+						login
 					</button>
 				</div>
 			`;
