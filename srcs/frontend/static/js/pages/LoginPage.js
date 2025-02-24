@@ -54,6 +54,11 @@ export class LoginPage {
 		document.getElementById('loginButton').addEventListener('click', (e) => this.sendToBackend(e));
 	}
 
+	isValidEmail(email) {
+		const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+		return emailRegex.test(email);
+	}
+
 	validateForm(e) {
 		const email		= document.getElementById('typeEmailX');
 		const password	= document.getElementById('typePasswordX');
@@ -66,24 +71,35 @@ export class LoginPage {
 		emailError.style.display = 'none';
 		passwordError.style.display = 'none';
 
-		// Validate email
+		// Validate email(if empty)
 		if (!email.value.trim()) {
+			emailError.textContent = 'Email is required';
+			emailError.style.display = 'block';
+			isValid = false;
+		} else if (!this.isValidEmail(email.value.trim())) {
+			emailError.textContent = 'Invalid email address';
 			emailError.style.display = 'block';
 			isValid = false;
 		}
 
 		// Validate password
 		if (!password.value.trim()) {
+			passwordError.textContent = 'Password is required';
+			passwordError.style.display = 'block';
+			isValid = false;
+		} else if (password.value.trim().length < 8) {
+			passwordError.textContent = 'Password must be at least 8 characters long';
 			passwordError.style.display = 'block';
 			isValid = false;
 		}
-
-		if (!isValid) {
-			e.preventDefault();
+		if (isValid) {
+			return true;
 		}
+		return false;
 	}
 
 	async sendToBackend(e) {
+		e.preventDefault();
 		if (this.validateForm(e) == false) {
 			return false;
 		}
@@ -105,26 +121,32 @@ export class LoginPage {
 			});
 			/*--------------------------ENDREQUEST----------------------------*/
 
+			const data = await response.json();
 			//if we get a bad response
 			if (!response.ok) {
-				const errorText = await response.text();
-				console.error('Response error:', errorText);
-				throw new Error(`HTTP error! status: ${response.status}`);
+				const message = data.message;
+				const code = data.code;
+				if (code == 'account_not_activated') {
+					// Store email for verification page
+					sessionStorage.setItem('pendingVerificationEmail', document.getElementById('typeEmailX').value);
+					// Navigate to verification page
+					window.router.navigateTo('/verify');
+					return false;
+				}
+				passwordError.textContent = message;
+				passwordError.style.display = 'block';
+				return false;
 			}
 
-			const data = await response.json();
-			// window.router.updateAuthState();
-			//changing the page to ProfilePage
 			window.router.navigateTo('/profile');
 
 		} catch (error) {
-			console.error('Error details:', error);
-			passwordError.textContent = 'User email or password is incorrect';
+			passwordError.textContent = 'failed to login';
 			passwordError.style.display = 'block';
 			throw error;
 		}
 	}
-			
+
 	clean() {
 		return ;
 	}

@@ -1,8 +1,14 @@
 export class VerificationPage {
 	constructor() {
+		this.email = sessionStorage.getItem('pendingVerificationEmail');
 	}
 
 	async handle() {
+		if (!this.email) {
+			window.router.navigateTo('/login');
+			return;
+		}
+
 		const content = `
 <section class="gradient-custom">
 	<div class="container py-5 h-100">
@@ -90,6 +96,12 @@ export class VerificationPage {
 	async resendCode(e) {
 		e.preventDefault();
 		const resendButton = document.getElementById('resendButton');
+
+		if (!this.email) {
+			alert('No email address found for verification');
+			return;
+		}
+
 		resendButton.disabled = true;
 
 		try {

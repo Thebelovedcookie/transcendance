@@ -33,21 +33,37 @@ def require_login(view_func):
 	return wrapper
 
 def login_user(request):
-	data = json.load(request)
-	email = data.get('email')
-	password = data.get('password')
-	user = authenticate(email=email, password=password)
+	# Declare variables at the top
+	data		= json.load(request)
+	email		= data.get('email')
+	password	= data.get('password')
+
+	# Validate required fields
+	if not email or not password:
+		return JsonResponse({
+			'status': 'error',
+			'message': 'Email and password are required'
+		}, status=400)
+
+	user = CustomUser.objects.filter(email=email).first()
 	if user is not None:
+		if not user.is_active:
+			return JsonResponse({
+				'status': 'error',
+				'message': 'Account is not activated',
+				'code': 'account_not_activated'
+			}, status=401)
+
 		login(request, user)
 		return JsonResponse({
 			'status': 'success',
-			'message': 'user logged in'
+			'message': 'Successfully logged in'
 		}, status=200)
-	else:
-		return JsonResponse({
-			'status': 'failure',
-			'message': 'bad user info'
-		}, status=401)
+
+	return JsonResponse({
+		'status': 'error',
+		'message': 'Invalid email or password'
+	}, status=401)
 
 def logout_user(request):
 	if request.method == 'POST':
