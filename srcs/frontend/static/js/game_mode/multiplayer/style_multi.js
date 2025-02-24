@@ -157,7 +157,7 @@ export function drawWalls(context, canvas_info) {
 	context.arc(
 		canvas_info.centerX,  // Centre de l'arène
 		canvas_info.centerY,  // Centre de l'arène
-		canvas_info.radius + canvas_info.size,   // Distance du centre (rayon)
+		canvas_info.radius + 0.8 * canvas_info.size,   // Distance du centre (rayon)
 		0, // Angle de début (en radians)
 		2 * Math.PI   // Angle de fin
 	);
