@@ -9,6 +9,8 @@ export class NextGamePage {
 		this.infoMatch     = infoMatch;
 		this.countdown     = 10;
 		this.timer         = null;
+		this.newGame = null;
+		this.terminate = false;
 	}
 
 	async handle() {
@@ -92,6 +94,8 @@ export class NextGamePage {
 	}
 
 	handleGameStart() {
+		if (this.terminate == true)
+			return;
 		clearInterval(this.timer);
 
 		const wrapper = document.querySelector('.prepare-game-wrapper');
@@ -101,13 +105,13 @@ export class NextGamePage {
 		// this.playStartSound();
 
 		setTimeout(() => {
-			const newGame = new NormalGamePage(
+			this.newGame = new NormalGamePage(
 				this.theme,
 				this.type,
 				this.socketTournament,
 				this.infoMatch
 			);
-			newGame.handle();
+			this.newGame.handle();
 		}, 500);
 	}
 
@@ -131,6 +135,13 @@ export class NextGamePage {
 	}
 
 	clean() {
+		this.terminate == true;
+		clearInterval(this.timer);
+		if (this.newGame)
+		{
+			this.newGame.clean();
+			this.newGame = null;
+		}
 		return ;
 	}
 }

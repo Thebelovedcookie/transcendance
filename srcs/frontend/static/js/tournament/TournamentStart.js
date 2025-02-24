@@ -8,6 +8,7 @@ export class TournamentStart {
 		this.playerNumber = playerNumber
 		this.playerName = playerName;
 		this.infoMatch = null;
+		this.game = null;
 	}
 
 	connect() {
@@ -92,8 +93,8 @@ export class TournamentStart {
 			playerTwo: data.player2,
 		}
 
-		const game = new NextGamePage("base", "tournament", this.socket, this.infoMatch);
-		game.handle();
+		this.game = new NextGamePage("base", "tournament", this.socket, this.infoMatch);
+		this.game.handle();
 	}
 
 	endTournement(data)
@@ -105,6 +106,9 @@ export class TournamentStart {
 	}
 
 	clean() {
+		this.socket.close();
+		if (this.game)
+			this.game.clean();
 		return ;
 	}
 }

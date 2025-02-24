@@ -12,6 +12,7 @@ class GameAISocket {
 		canvas.width = canvas.height * (16/9);
 		context.clearRect(0, 0, canvas.width, canvas.height);
 
+		this.pause = false;
 		this.hitAiLine = false;
 		this.socket = null;
 		this.isConnected = false;
@@ -240,7 +241,28 @@ class GameAISocket {
 		}
 	}
 
+	sendPause() {
+		if (!this.isConnected) return;
+
+		const updates = {
+			type: "player.pause",
+		};
+		this.sendMessage(updates);
+	}
+
+	sendUnpause() {
+		if (!this.isConnected) return;
+
+		this.pause = false;
+		const updates = {
+			type: "player.unpause",
+		};
+		this.sendMessage(updates);
+	}
+
 	drawPause() {
+		this.pause = true;
+		this.sendPause();
 		const rectWidth = 50;
 		const rectHeight = 200;
 		
@@ -279,8 +301,11 @@ class GameAISocket {
 	handleMessage(data) {
 		switch (data.type) {
 			case "game.state":
-				this.getInfoFromBackend(data);
-				this.startGameLoop();
+				if (this.pause == false)
+				{
+					this.getInfoFromBackend(data);
+					this.startGameLoop();
+				}
 				break;
 			case "match.result":
 				this.getResult(data);
@@ -343,24 +368,6 @@ class GameAISocket {
 			}
 		}
 	}
-
-	// checkScore() {
-	// 	if (this.gameState.scores.playerOne == 10 || this.gameState.scores.playerTwo == 10)
-	// 	{
-	// 		if (this.gameState.scores.playerOne == 10)
-	// 		{
-	// 			stopGameAi();
-	// 			const end = new EndNormalGamePage("PlayerOne");
-	// 			end.handle();
-	// 		}
-	// 		else
-	// 		{
-	// 			stopGameAi();
-	// 			const end = new EndNormalGamePage("PlayerTwo");
-	// 			end.handle();
-	// 		}
-	// 	}
-	// }
 
 	drawGame() {
 		context.clearRect(0, 0, canvas.width, canvas.height);

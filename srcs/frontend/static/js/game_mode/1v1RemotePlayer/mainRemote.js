@@ -113,7 +113,7 @@ class RemoteGameWebSocket {
 			if (this.frameCount >= (60 / this.sendRate)) {
 				this.frameCount = 0;
 			}
-		}, 1000 / 60);  // Still run at 60 FPS locally
+		}, 1000 / 60);
 	}
 
 	stopGameLoop() {

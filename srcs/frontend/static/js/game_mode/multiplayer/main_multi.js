@@ -11,6 +11,7 @@ class GameWebSocket {
 		canvas.width = canvas.height;
 		context.clearRect(0, 0, canvas.width, canvas.height);
 
+		this.pause = false;
 		this.socket = null;
 		this.isConnected = false;
 		this.gameLoopInterval = null;
@@ -51,26 +52,26 @@ class GameWebSocket {
 	updatePlayerPositions() {
 		// Player 1 (Flèches)
 		if (this.keys.ArrowRight) {
-			this.sendMove("pos", "p1")
+			this.sendMove("neg", "p1")
 		}
 		if (this.keys.ArrowLeft) {
-			this.sendMove("neg", "p1")
+			this.sendMove("pos", "p1")
 		}
 
 		// Player 2 (W et S)
 		if (this.keys.s) {
-			this.sendMove("pos", "p2")
+			this.sendMove("neg", "p2")
 		}
 		if (this.keys.w) {
-			this.sendMove("neg", "p2")
+			this.sendMove("pos", "p2")
 		}
 
 		// Player 3 (B et N)
 		if (this.keys.b) {
-			this.sendMove("pos", "p3")
+			this.sendMove("neg", "p3")
 		}
 		if (this.keys.n) {
-			this.sendMove("neg", "p3")
+			this.sendMove("pos", "p3")
 		}
 	}
 
@@ -128,7 +129,6 @@ class GameWebSocket {
 		if (this.gameLoopInterval) return;
 
 		this.gameLoopInterval = setInterval(() => {
-			// Update player positions based on key states
 			this.updatePlayerPositions();
 
 			this.drawGame();
@@ -137,20 +137,17 @@ class GameWebSocket {
 			if (this.frameCount >= (60 / this.sendRate)) {
 				this.frameCount = 0;
 			}
-		}, 1000 / 60);  // Still run at 60 FPS locally
+		}, 1000 / 60);
 	}
 
-	drawPause() {
+	sendPause() {
+		if (!this.isConnected) return;
 
-		const rectWidth = 50;
-		const rectHeight = 200;
-		
-		context.fillStyle = "black";
-		context.fillRect(canvas.width / 2 - 70, canvas.height / 2 - 100, rectWidth, rectHeight);
-	
-		context.fillRect(canvas.width / 2 + 20, canvas.height / 2 - 100, rectWidth, rectHeight);
+		const updates = {
+			type: "player.pause",
+		};
+		this.sendMessage(updates);
 	}
-	
 
 	stopGameLoop() {
 		if (this.gameLoopInterval) {
@@ -159,6 +156,28 @@ class GameWebSocket {
 		}
 	}
 
+	sendUnpause() {
+		if (!this.isConnected) return;
+
+		this.pause = false;
+		const updates = {
+			type: "player.unpause",
+		};
+		this.sendMessage(updates);
+	}
+
+	drawPause() {
+		this.pause = true;
+		this.sendPause();
+		const rectWidth = this.gameState.canvas.size * 1.7;
+		const rectHeight = this.gameState.canvas.size * 10;
+		
+		context.fillStyle = "black";
+
+		context.fillRect(this.gameState.canvas.dim / 2 - 3 * this.gameState.canvas.size, this.gameState.canvas.dim / 2 - 5 * this.gameState.canvas.size, rectWidth, rectHeight);
+		context.fillRect(this.gameState.canvas.dim / 2 + 1.5 * this.gameState.canvas.size, this.gameState.canvas.dim / 2 - 5 * this.gameState.canvas.size, rectWidth, rectHeight);
+	}
+	
 	sendInfoStarting()
 	{
 		const data = {
@@ -188,14 +207,16 @@ class GameWebSocket {
 	handleMessage(data) {
 		switch (data.type) {
 			case "game.state":
-				this.getInfoFromBackend(data);
-				this.startGameLoop();
+				if (this.pause == false)
+				{
+					this.getInfoFromBackend(data);
+					this.startGameLoop();
+				}
 				break;
 			case "game.result":
 				this.getResult(data);
 				break;
 			case "error":
-				console.log(data.type);
 				console.error("Server error:", data.message);
 				break;
 			default:
@@ -217,6 +238,7 @@ class GameWebSocket {
 				centerX: data.canvas.centerX,
 				centerY: data.canvas.centerY,
 				radius: data.canvas.radius,
+				size: data.canvas.size,
 			},
 			player1: {
 				name: data.playerOne.name,
@@ -265,8 +287,8 @@ class GameWebSocket {
 
 	drawGame() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
-		drawDashedLine(context, canvas);
-		drawWalls(context, canvas)
+		drawDashedLine(context,  this.gameState.canvas);
+		drawWalls(context, this.gameState.canvas)
 		multiPaddle(context, this.gameState.player1, this.gameState.canvas);
 		multiPaddle(context, this.gameState.player2, this.gameState.canvas);
 		multiPaddle(context, this.gameState.player3, this.gameState.canvas);
@@ -276,11 +298,11 @@ class GameWebSocket {
 		const scoreTwo = this.gameState.player2.score ?? 0;
 		const scoreThree = this.gameState.player3.score ?? 0;
 
-		displayScoreOne(context, scoreOne, canvas);
-		displayScoreTwo(context, scoreTwo, canvas);
-		displayScoreThree(context, scoreThree, canvas);
+		displayScoreOne(context, scoreOne,  this.gameState.canvas);
+		displayScoreTwo(context, scoreTwo,  this.gameState.canvas);
+		displayScoreThree(context, scoreThree,  this.gameState.canvas);
 
-		displayPlayerName(context, canvas);
+		displayPlayerName(context,  this.gameState.canvas);
 	}
 
 	cleanup() {

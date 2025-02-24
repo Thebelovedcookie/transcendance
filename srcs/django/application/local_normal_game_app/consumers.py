@@ -29,7 +29,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 		logger.info(f"WebSocket disconnected with code: {close_code}")
 		if len(self.infoMatch["match"]) != 0:
 			m = self.infoMatch["match"][0]
-			m["status"] = False
+			m["status"] = "False"
 
 	#Manage the info receive
 	async def receive(self, text_data):
@@ -49,6 +49,15 @@ class GameConsumer(AsyncWebsocketConsumer):
 			elif message_type == "player.moved":
 				await self.moveChange(data)
 				return
+			elif message_type == "player.pause":
+				m = self.infoMatch['match'][0]
+				m["status"] = "pause"
+				return
+			elif message_type == "player.unpause":
+				m = self.infoMatch['match'][0]
+				m["status"] = "True"
+				asyncio.create_task(self.loop())
+				return
 			else:
 				response = {
 					"type": "error",
@@ -67,7 +76,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 
 	async def createGame(self):
 		obj = {
-			'status': True,
+			'status': "True",
 			'playerOne': {
 			},
 			'playerTwo': {
@@ -82,7 +91,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 		canvas_width = start_data.get("windowWidth", 0)
 		typeOfMatch = start_data.get("typeOfMatch", 0)
 
-		logger.info(typeOfMatch)
 		m["maxScore"] = 10
 		m["canvas"] = {"canvas_height": canvas_height, "canvas_width": canvas_width}
 		if typeOfMatch == "tournament":
@@ -121,12 +129,13 @@ class GameConsumer(AsyncWebsocketConsumer):
 	async def loop(self):
 		m = self.infoMatch["match"][0]
 
-		while (m["status"]):
+		while (m["status"] == "True"):
 			await asyncio.sleep(1 / 60)
 			await self.calculBallMovement()
 			await self.send_gamestate()
 
-		self.infoMatch["match"].remove(m)
+		if m["status"] == "False":
+			self.infoMatch["match"].remove(m)
 
 	async def send_gamestate(self):
 		m = self.infoMatch["match"][0]
@@ -143,7 +152,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 				await self.send(text_data=json.dumps(response))
 			except Exception as e:
 				print(f"Erreur lors de l'envoi des données : {e}")
-				m["status"] = False
+				m["status"] = "False"
 
 	async def calculBallMovement(self):
 		m = self.infoMatch["match"][0]
@@ -204,10 +213,10 @@ class GameConsumer(AsyncWebsocketConsumer):
 	
 	async def checkScore(self, m):
 		if (m["playerOne"]["score"] == m["maxScore"]):
-			m["status"] = False
+			m["status"] = "False"
 			await self.sendMatchResult(m, "Player 1", "Player 2")
 		elif (m["playerTwo"]["score"] == m["maxScore"]):
-			m["status"] = False
+			m["status"] = "False"
 			await self.sendMatchResult(m, "Player 2", "Player 1")
 
 	#################### PLAYER MOVE ##########################
