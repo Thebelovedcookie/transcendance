@@ -7,7 +7,8 @@
         "Login":"Login",
 		"login":"login",
         "Register": "Register",
-		"Welcomemsg" : "Welcome, {username}!",
+		"Welcome1" : "Welcome",
+		
 
         "modeSelect": "Select Your Game Mode",
         "Battle Mode" :"Battle Mode",
@@ -22,6 +23,14 @@
         "Solodetails" :"Challenge yourself: train alone or battle an AI opponent",
         "Tournament" : "Tournament Mode",
         "Tournamentdetails":"Compete in Duel mode with multiple players on a single machine",
+
+		"solomode":"Solo Mode Type",
+		"practice":"Practice Mode",
+		"training1":"Train your skills without pressure",
+		"AI":"VS AI Mode",
+		"AI2":"Challenge our AI opponent",
+
+
 
         "settinglog":"Please enter your login and password!",
         "pwd":"Password", 
@@ -83,9 +92,12 @@
 		"perf":"Performance Stats",
 		"matchs":"Recent Matches",
 		"friends":"Friends",
+		"Infofriend":"Friend Info",
 		"AllFriends":"All Friends",
 		"Searchfriends":"Search Friends",
 		"removeFriend":"Remove Friend",
+		"warning1":"Are you sure you want to remove ",
+		"warning2":" from your friends list?This action cannot be undone.",
 		"Nomatch":"No match history found",
 		"MatchHistory":"Match History",
 		"losses":"Losses:",
@@ -118,7 +130,7 @@
         "Login":"Connexion",
 		"login":"connexion",
         "Register": "Inscription",
-		"Welcomemsg": "Bienvenue, {username}!",
+		"Welcome1": "Bienvenue",
 
         "modeSelect": "Selectionner votre mode de jeu",
         "Battle Mode" :"Mode bataille",
@@ -134,6 +146,12 @@
         "Solodetails" :"Challenge-toi en solo ou contre l'IA",
         "Tournament" : "Mode tournoi",
         "Tournamentdetails":"Participe a des duels avec plusieurs joueurs sur une seule machine",
+
+		"solomode":"Mode Solo",
+		"practice":"Mode Entrainement",
+		"training1":"Entrainement sans pression",
+		"AI":"Mode AI",
+		"AI2":"Challenge-toi contre notre IA",
         
         "settinglog":"Entrer votre login et mot de passe!",
         "pwd":"mot de passe",
@@ -188,7 +206,7 @@
 		"offline": "Déconnecté",
 		"EditProfile": "Editer le profil",
 		"Change Photo":"Changer la photo",
-		"memberdate":"Membre depuis:",
+		"memberdate":"Membre depuis: ",
 		"TotalGame":"Total des jeux",
 		"viewAll":"Voir tous les matchs ",
 		"WinRate": "Taux de victoire",
@@ -198,6 +216,8 @@
 		"AllFriends":"Tous les amis",
 		"Searchfriends":"Rechercher des amis",
 		"removeFriend":"Supprimer l'ami",
+		"warning1":"Etes-vous sûr de vouloir supprimer ",
+		"warning2":" de votre liste d'amis? Cette action est irréversible.",
 		"Nomatch":"Aucun historique de match trouvé",
 		"MatchHistory":"Historique des matchs",
 		"losses":"Pertes:",
@@ -205,7 +225,7 @@
 		"close":"Fermer",
 		"cancel":"Annuler",
 		"SaveChanges":"Enregistrer les modifications",
-		"Lastseen":"Vu pour la dernière fois",
+		"Lastseen":"dernière connexion",
 		"Mypage":"Ma page",
 		"Settings":"Paramètres",
 		"Logout":"se déconnecter",

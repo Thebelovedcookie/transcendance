@@ -70,7 +70,10 @@ export class ProfilePage {
 						</div>
 						<div class="profile-details">
 							<h1>${this.userData.username}</h1>
-							<p data-translate="memberdate">Member since: ${new Date(this.userData.join_date).toLocaleDateString()}</p>
+							<p>
+								<span data-translate="memberdate"></span>
+							 	<span> ${new Date(this.userData.join_date).toLocaleDateString()}</span>
+							 </p>
 							<button class="edit-profile-btn" data-translate="EditProfile">
 								<i class="fas fa-edit"></i> 
 									Edit Profile
@@ -154,7 +157,7 @@ export class ProfilePage {
 		const viewAllButton = remainingCount > 0 ? `
 			<button class="view-all-matches-btn">
 				<i class="fas fa-history"></i>
-				<span data-translate ="viewAll"> (${remainingCount} more)</span>
+				<span data-translate ="viewAll"> </span>
 			</button>
 		` : '';
 
@@ -307,18 +310,18 @@ export class ProfilePage {
 							<img src="${this.userData.image_path || this.default_path}" alt="Profile" id="avatarPreview">
 						</div>
 						<div class="avatar-edit">
-							<input type="file" id="avatarInput" accept="image/*" data-translate="ChangePhoto">
-							<label for="avatarInput">
+							<input type="file" id="avatarInput" accept="image/*" >
+							<label for="avatarInput" data-translate="ChangePhoto">
 								<i class="fas fa-camera"></i>
 								Change Photo
 							</label>
 						</div>
 					</div>
-					<div class="form-group" data-translate = "Username" >
-						<label>Username</label>
+					<div class="form-group"  >
+						<label data-translate ="Username">Username</label>
 						<input type="text" value="${this.userData.username}" class="form-input">
 					</div>
-					<div class="form-group"  data-translate = "Email">
+					<div class="form-group" >
 						<label>Email</label>
 						<input type="email" value="${this.userData.email}" class="form-input">
 					</div>
@@ -537,7 +540,7 @@ export class ProfilePage {
 		modal.className = 'friend-info-modal';
 		modal.innerHTML = `
 			<div class="modal-content">
-				<h2>Friend Info</h2>
+				<h2 data-translate= "Infofriend">Friend Info</h2>
 				<div class="friend-profile">
 					<div class="friend-avatar-large">
 						<img src="${friendInfo.profile_image}" alt="${friendInfo.username}">
@@ -546,11 +549,12 @@ export class ProfilePage {
 					<div class="friend-details">
 						<h3>${friendInfo.username}</h3>
 						<p class="status-text">
-							${friendInfo.is_online ? 'Online' : `Last seen ${new Date(friendInfo.lastSeen).toLocaleDateString()}`}
+							${friendInfo.is_online ? translationsData["online"] : `${translationsData["Lastseen"]} ${new Date(friendInfo.lastSeen).toLocaleDateString()}`}
 						</p>
+
 						<div class="stats-container">
 							<div class="stat-box">
-								<span class="stat-title"data-translate="wins"></span>
+								<span class="stat-title" data-translate="wins"></span>
 								<span class="stat-number wins">${friendInfo.wins}</span>
 							</div>
 							<div class="stat-box">
@@ -568,13 +572,14 @@ export class ProfilePage {
 								</span>
 							</div>
 						</div>
-						<button class="remove-friend-btn danger-btn">
-							<i class="fas fa-user-minus"></i> Remove Friend
+						<button class="remove-friend-btn danger-btn" data-translate="removeFriend">
+							<i class="fas fa-user-minus"></i> 
+								Remove Friend
 						</button>
 					</div>
 				</div>
 				<div class="modal-actions">
-					<button type="button" class="close-btn" data-translate="close"></button>
+					<button type="button" class="close-btn" data-translate="close">Close</button>
 				</div>
 				<button class="modal-close">&times;</button>
 			</div>
@@ -604,10 +609,14 @@ export class ProfilePage {
 		modal.className = 'confirm-modal';
 		modal.innerHTML = `
 			<div class="modal-content">
-				<h2>Remove Friend</h2>
-				<p class="warning-text">Are you sure you want to remove ${username} from your friends list? This action cannot be undone.</p>
+				<h2 data-translate = "removeFriend"></h2>
+				    <p class="warning-text">
+       					<span data-translate="warning1"></span>
+        				<span class="username">${username}</span>
+        				<span data-translate="warning2"></span>
+    				</p>
 				<div class="modal-actions">
-					<button type="button" class="cancel-btn" data-translate="cancel"></button>
+					<button type="button" class="cancel-btn" data-translate="cancel">Cancel</button>
 					<button type="button" class="confirm-btn danger-btn" data-translate="removeFriend"></button>
 				</div>
 			</div>
@@ -663,7 +672,7 @@ export class ProfilePage {
 		this.chart = new Chart(ctx, {
 			type: 'doughnut',
 			data: {
-				labels: ['Wins', 'Losses'],
+				labels: [translationsData["wins"], translationsData["losses"]],
 				datasets: [{
 					data: [this.userData.wins, this.userData.losses],
 					backgroundColor: [
@@ -709,14 +718,16 @@ export class ProfilePage {
 							</div>
 							<div class="friend-info">
 								<h3>${friend.username}</h3>
-								<p class="last-seen">${friend.is_online ? 'data-translate="online"' : `data-translate="Lastseen" ${new Date(friend.lastSeen).toLocaleDateString()}`}</p>
+								<p class="last-seen">
+									${friend.is_online ? translationsData["online"] : `${translationsData["Lastseen"]} ${new Date(friendInfo.lastSeen).toLocaleDateString()}`}
+								</p>
 								<div class="game-stats">
 									<div class="stat-item">
 										<span class="stat-label" data-translate="wins"></span>
 										<span class="stat-value wins">${friend.wins}</span>
 									</div>
 									<div class="stat-item">
-										<span class="stat-label" datat-translate = "losses"></span>
+										<span class="stat-label" datat-translate ="losses"></span>
 										<span class="stat-value losses">${friend.losses}</span>
 									</div>
 									<div class="stat-item">
@@ -724,7 +735,7 @@ export class ProfilePage {
 										<span class="stat-value totalGames">${friend.totalGames}</span>
 									</div>
 									<div class="stat-item">
-										<span class="stat-label" data-translate = "WinRate">:</span>
+										<span class="stat-label" data-translate ="WinRate">:</span>
 										<span class="stat-value win-rate">${this.calculateWinRate(friend.wins, friend.totalGames)}%</span>
 									</div>
 								</div>
@@ -797,7 +808,7 @@ export class ProfilePage {
 					`).join('')}
 				</div>
 				<div class="modal-actions">
-					<button type="button" class="close-btn" data-translate= "close"></button>
+					<button type="button" class="close-btn" data-translate="close"></button>
 				</div>
 				<button class="modal-close">&times;</button>
 			</div>
