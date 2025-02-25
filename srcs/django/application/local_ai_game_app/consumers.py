@@ -114,14 +114,13 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 		m["ball"] = {
 			"x": canvas_width / 2,
 			"y": canvas_height / 2,
-			"width": size,
-			"height": size,
+			"size": size,
 			"color": "black",
-			"speed": 5,
-			"gravity": 2,
+			"speed": 6,
 			"vx": 0,
-			"vy": 2
+			"vy": 0
 			}
+		self.resetBall(m)
 
 	async def loop(self):
 		m = self.infoMatch["match"][0]
@@ -159,7 +158,7 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 		if m["ball"]["y"] + m["ball"]["vy"] <= 0:
 			return True
 		# bottom wall
-		elif m["ball"]["y"] + m["ball"]["width"] + m["ball"]["vy"] >=  m["canvas"]["canvas_height"]:
+		elif m["ball"]["y"] + m["ball"]["size"] + m["ball"]["vy"] >=  m["canvas"]["canvas_height"]:
 			return True
 		else:
 			return False
@@ -170,7 +169,7 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 		# if impacting wall, reverse y velocity
 		if self.at_wall():
 			m["ball"]["vy"] *= -1
-		m["ball"]["x"] += m["ball"]["speed"]
+		m["ball"]["x"] += m["ball"]["vx"]
 		m["ball"]["y"] += m["ball"]["vy"]
 		await self.ballPaddleCollision(m)
 
@@ -180,19 +179,30 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 		if player["x"] < m["canvas"]["canvas_width"] / 2:
 			factor = 1
 		paddleCenter = player["y"] + player["height"] / 2
-		ballCenter = m["ball"]["y"] + m["ball"]["height"] / 2
+		ballCenter = m["ball"]["y"] + m["ball"]["size"] / 2
 		relativeIntersectY = (paddleCenter - ballCenter) / (player["height"] / 2)
 		bounceAngle = relativeIntersectY * 0.75
-		speed = math.sqrt(m["ball"]["speed"] * m["ball"]["speed"] + m["ball"]["vy"] * m["ball"]["vy"])
-		m["ball"]["speed"] = factor * speed * math.cos(bounceAngle)
+		speed = math.sqrt(m["ball"]["vx"] * m["ball"]["vx"] + m["ball"]["vy"] * m["ball"]["vy"])
+		m["ball"]["vx"] = factor * speed * math.cos(bounceAngle)
 		m["ball"]["vy"] = speed * math.sin(bounceAngle)
-		m["ball"]["x"] = player["x"] + factor * m["ball"]["width"]
+		m["ball"]["x"] = player["x"] + factor * m["ball"]["size"]
 
 	# place ball in center of canvas and give it a random initial velocity
 	def resetBall(self, m):
 		m["ball"]["x"] = m["canvas"]["canvas_width"] / 2
 		m["ball"]["y"] = m["canvas"]["canvas_height"]  / 2
-
+		angle = random.random() * math.pi / 3
+		ran = random.random()
+		direction = 1
+		if ran > 0.5:
+			direction = -1
+		ran = random.random()
+		phase = math.pi
+		if ran > 0.5:
+			phase = 0
+		angle = direction * angle + phase
+		m["ball"]["vx"] = m["ball"]["speed"] * math.cos(angle)
+		m["ball"]["vy"] = m["ball"]["speed"] * math.sin(angle)
 
 	# check if location of ball overlaps location of paddle
 	def inPaddle(self, player):
@@ -200,14 +210,14 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 
 		if player["x"] > m["canvas"]["canvas_width"] / 2:
 			if (m["ball"]["y"] + m["ball"]["vy"] <= player["y"] + player["height"]
-				and m["ball"]["x"] + m["ball"]["width"] + m["ball"]["speed"] >= player["x"]
+				and m["ball"]["x"] + m["ball"]["size"] + m["ball"]["vx"] >= player["x"]
 				and m["ball"]["y"] + m["ball"]["vy"] > player["y"]):
 				return True
 
 		if player["x"] < m["canvas"]["canvas_width"] / 2:
 			if (m["ball"]["y"] + m["ball"]["vy"] >= player["y"]
 				and m["ball"]["y"] + m["ball"]["vy"] <= player["y"] + player["height"]
-				and m["ball"]["x"] + m["ball"]["speed"] <= player["x"] + player["width"]):
+				and m["ball"]["x"] + m["ball"]["vx"] <= player["x"] + player["width"]):
 				return True
 
 		return False
@@ -217,11 +227,11 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 			self.executeBallStrike(m, m["playerTwo"])
 		elif self.inPaddle(m["playerOne"]):
 			self.executeBallStrike(m, m["playerOne"])
-		elif (m["ball"]["x"] + m["ball"]["speed"] < m["playerOne"]["x"]):
+		elif (m["ball"]["x"] + m["ball"]["vx"] < m["playerOne"]["x"]):
 			m["playerTwo"]["score"] += 1
 			self.resetBall(m)
 			await self.checkScore(m)
-		elif (m["ball"]["x"] + m["ball"]["speed"] > m["playerTwo"]["x"] + m["playerTwo"]["width"]):
+		elif (m["ball"]["x"] + m["ball"]["vx"] > m["playerTwo"]["x"] + m["playerTwo"]["width"]):
 			m["playerOne"]["score"] += 1
 			self.resetBall(m)
 			await self.checkScore(m)
