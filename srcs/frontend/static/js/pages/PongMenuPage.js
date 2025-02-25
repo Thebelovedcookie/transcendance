@@ -8,17 +8,17 @@ export class PongMenuPage {
 		modal.className = 'game-mode-modal';
 		modal.innerHTML = `
 			<div class="modal-content">
-				<h2>Select Solo Mode Type</h2>
+				<h2 data-tranlate ="solomode">Select Solo Mode Type</h2>
 				<div class="modal-options">
 					<div class="modal-option" data-path="/pong/solo">
 						<div class="option-icon">🎯</div>
-						<h3>Practice Mode</h3>
-						<p>Train your skills without pressure</p>
+						<h3 data-translate="practice">Practice Mode</h3>
+						<p data-translate = "training1">Train your skills without pressure</p>
 					</div>
 					<div class="modal-option" data-path="/pong/solo/ai">
 						<div class="option-icon">🤖</div>
-						<h3>VS AI Mode</h3>
-						<p>Challenge our AI opponent</p>
+						<h3 data-translate="AI">VS AI Mode</h3>
+						<p data-translate="AI2">Challenge our AI opponent</p>
 					</div>
 				</div>
 				<button class="modal-close">×</button>
