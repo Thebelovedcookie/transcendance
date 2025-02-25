@@ -15,7 +15,7 @@ class GameWebSocket {
 		this.socket = null;
 		this.isConnected = false;
 		this.gameLoopInterval = null;
-		this.gamestate = null;
+		this.gameState = null;
 		this.keys = {
 			w: false,
 			s: false,
@@ -171,9 +171,7 @@ class GameWebSocket {
 		this.sendPause();
 		const rectWidth = this.gameState.canvas.size * 1.7;
 		const rectHeight = this.gameState.canvas.size * 10;
-		
 		context.fillStyle = "black";
-
 		context.fillRect(this.gameState.canvas.dim / 2 - 3 * this.gameState.canvas.size, this.gameState.canvas.dim / 2 - 5 * this.gameState.canvas.size, rectWidth, rectHeight);
 		context.fillRect(this.gameState.canvas.dim / 2 + 1.5 * this.gameState.canvas.size, this.gameState.canvas.dim / 2 - 5 * this.gameState.canvas.size, rectWidth, rectHeight);
 	}

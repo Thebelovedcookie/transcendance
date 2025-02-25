@@ -93,7 +93,7 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 		canvas_height = start_data.get("windowHeight", 0)
 		canvas_width = start_data.get("windowWidth", 0)
 
-		canvas_dim = min(canvas_height, canvas_width) *.7
+		canvas_dim = min(canvas_height, canvas_width) * .8
 		centerY = canvas_dim / 2
 		radius = centerY - 10
 		centerX = centerY
@@ -141,7 +141,7 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 			"y": centerY,
 			"size": size,
 			"color": "black",
-			"speed": 2,
+			"speed": 4,
 			"vx": 0,
 			"vy": 0
 		}
@@ -301,7 +301,7 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 	def resetBall(self, m):
 		m["ball"]["x"] = m["canvas"]["centerX"]
 		m["ball"]["y"] = m["canvas"]["centerY"]
-		m["ball"]["speed"] = 2
+		m["ball"]["speed"] = 4
 		angle = random.random() * 2 * math.pi
 		m["ball"]["vx"] = m["ball"]["speed"] * math.cos(angle)
 		m["ball"]["vy"] = m["ball"]["speed"] * math.sin(angle)
