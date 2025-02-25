@@ -104,11 +104,13 @@ export class LoginPage {
 			return false;
 		}
 
+		let response;
+
 		try {
 			// sending a post request to the backend -> (email, username, password)
 			//Who will allow us to login
 			/*---------------------------REQUEST-----------------------------*/
-			const response = await fetch('/api/login', {
+			response = await fetch('/api/login', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -143,6 +145,9 @@ export class LoginPage {
 		} catch (error) {
 			passwordError.textContent = 'failed to login';
 			passwordError.style.display = 'block';
+			if (response.status == 403) {
+				window.router.refreshToken();
+			}
 			throw error;
 		}
 	}

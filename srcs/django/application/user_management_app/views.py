@@ -46,7 +46,7 @@ def login_user(request):
 		}, status=400)
 
 	user = CustomUser.objects.filter(email=email).first()
-	if user is not None:
+	if user is not None and user.check_password(password):
 		if not user.is_active:
 			return JsonResponse({
 				'status': 'error',
@@ -54,11 +54,18 @@ def login_user(request):
 				'code': 'account_not_activated'
 			}, status=401)
 
-		login(request, user)
-		return JsonResponse({
-			'status': 'success',
-			'message': 'Successfully logged in'
-		}, status=200)
+		try:
+			if authenticate(email=email, password=password):
+				login(request, user)
+				return JsonResponse({
+					'status': 'success',
+					'message': 'Successfully logged in'
+				}, status=200)
+		except Exception as e:
+			return JsonResponse({
+				'status': 'error',
+				'message': 'Invalid email or password'
+			}, status=401)
 
 	return JsonResponse({
 		'status': 'error',
