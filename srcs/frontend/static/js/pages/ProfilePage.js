@@ -540,7 +540,7 @@ export class ProfilePage {
 		modal.className = 'friend-info-modal';
 		modal.innerHTML = `
 			<div class="modal-content">
-				<h2 data-translate= "Infofriend"></h2>
+				<h2 data-translate= "friends"></h2>
 				<div class="friend-profile">
 					<div class="friend-avatar-large">
 						<img src="${friendInfo.profile_image}" alt="${friendInfo.username}">
@@ -607,7 +607,7 @@ export class ProfilePage {
 		modal.className = 'confirm-modal';
 		modal.innerHTML = `
 			<div class="modal-content">
-					<h2 data-translate = "removeFriend"></h2>
+					<h2 data-translate ="removeFriend"></h2>
 				    <p class="warning-text">
        					<span data-translate="warning1"></span>
         				<span class="username">${username}</span>
@@ -615,7 +615,7 @@ export class ProfilePage {
     				</p>
 				<div class="modal-actions">
 					<button type="button" class="cancel-btn" data-translate="cancel">Cancel</button>
-					<button type="button" class="confirm-btn danger-btn" data-translate="removeFriend"></button>
+					<button type="button" class="confirm-btn danger-btn" data-translate="removeFriend">Remove Friend</button>
 				</div>
 			</div>
 		`;
@@ -786,7 +786,7 @@ export class ProfilePage {
 		modal.className = 'match-history-modal';
 		modal.innerHTML = `
 			<div class="modal-content">
-				<h2>Match History</h2>
+				<h2 data-translate = "MatchHistory"></h2>
 				<div class="matches-list-container">
 					${this.userData.match_history.map(match => `
 						<div class="match-card ${match.result.toLowerCase()}">
@@ -802,7 +802,7 @@ export class ProfilePage {
 					`).join('')}
 				</div>
 				<div class="modal-actions">
-					<button type="button" class="close-btn">Close</button>
+					<button type="button" class="close-btn" data-translate="close">Close</button>
 				</div>
 				<button class="modal-close">&times;</button>
 			</div>

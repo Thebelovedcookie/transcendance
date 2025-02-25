@@ -119,7 +119,7 @@ export class LoginPage {
 
 		} catch (error) {
 			console.error('Error details:', error);
-			passwordError.textContent = 'User email or password is incorrect';
+			passwordError.textContent = translationsData["ErrorLogin"];
 			passwordError.style.display = 'block';
 			throw error;
 		}
