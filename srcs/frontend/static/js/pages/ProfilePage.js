@@ -24,7 +24,7 @@ export class ProfilePage {
 		try {
 			const response = await fetch('/api/profile/get', {
 				method: 'GET',
-				credentials: 'include',
+				credentials: 'same-origin',
 				headers: {
 					'Accept': 'application/json',
 					'Content-Type': 'application/json',
@@ -377,37 +377,33 @@ export class ProfilePage {
 		form.addEventListener('submit', async (e) => {
 			e.preventDefault();
 
-			const csrfToken = document.cookie
-			.split('; ')
-			.find(row => row.startsWith('csrftoken='))
-			?.split('=')[1];
-
 			const avatarInput = modal.querySelector('#avatarInput');
 
 			const formData = new FormData();
 			formData.append("username", modal.querySelector('input[type="text"]').value);
 			formData.append("email", modal.querySelector('input[type="email"]').value);
 			formData.append("image", avatarInput.files[0]);
+			let response;
 
 			try {
-				const response = await fetch('/api/profile/update', {
+				response = await fetch('/api/profile/update', {
 					method: 'POST',
-					credentials: 'include',
+					credentials: 'same-origin',
 					headers: {
-						'X-CSRFToken': csrfToken,
+						'X-CSRFToken': window.csrfToken,
 					},
 					body: formData
 				});
 
 				if (!response.ok) {
+					if (response.status == 403) {
+						window.router.refreshToken();
+					}
 					throw new Error(`HTTP error! status: ${response.status}`);
 				}
 
 				const result = await response.json();
 				if (result.status === 'success') {
-					console.log(response);
-					console.log('message');
-					console.log(result.message);
 					await this.loadUserData();
 					this.render();
 					modal.classList.add('fade-out');
@@ -465,20 +461,23 @@ export class ProfilePage {
 			const searchTerm = searchInput.value.trim();
 			if (!searchTerm) return;
 
-			const csrfToken = document.cookie
-				.split('; ')
-				.find(row => row.startsWith('csrftoken='))
-				?.split('=')[1];
+			let response;
 
 			try {
-				const response = await fetch('/api/search_user', {
+				response = await fetch('/api/search_user', {
 					method: 'POST',
+					credentials: 'same-origin',
 					headers: {
 						'Content-Type': 'application/json',
-						'X-CSRFToken': csrfToken,
+						'X-CSRFToken': window.csrfToken,
 					},
 					body: JSON.stringify({ 'search_term': searchTerm })  // キーを'search_term'に修正
 				});
+
+				if (response.status == 403) {
+					window.router.refreshToken();
+					throw new Error(response.status);
+				}
 
 				const result = await response.json();
 
@@ -503,15 +502,23 @@ export class ProfilePage {
 				const addFriendButtons = document.querySelectorAll('.add-friend-btn');
 				addFriendButtons.forEach(async (btn) => {
 					btn.addEventListener('click', async () => {
+						let response;
+
 						try {
-							const response = await fetch('/api/add_friend', {
+							response = await fetch('/api/add_friend', {
 								method: 'POST',
+								credentials: 'same-origin',
 								headers: {
 									'Content-Type': 'application/json',
-									'X-CSRFToken': csrfToken,
+									'X-CSRFToken': window.csrfToken,
 								},
 								body: JSON.stringify({ 'friend_id': btn.dataset.userid })
 							});
+
+							if (response.status == 403) {
+								window.router.refreshToken();
+								throw new Error(response.status);
+							}
 
 							const result = await response.json();
 
@@ -637,19 +644,22 @@ export class ProfilePage {
 
 		confirmBtn.addEventListener('click', async () => {
 			try {
-				const csrfToken = document.cookie
-					.split('; ')
-					.find(row => row.startsWith('csrftoken='))
-					?.split('=')[1];
+				let response;
 
-				const response = await fetch('/api/remove_friend', {
+				response = await fetch('/api/remove_friend', {
 					method: 'POST',
+					credentials: 'same-origin',
 					headers: {
 						'Content-Type': 'application/json',
-						'X-CSRFToken': csrfToken,
+						'X-CSRFToken': window.csrfToken,
 					},
 					body: JSON.stringify({ 'userid': userId })
 				});
+
+				if (response.status == 403) {
+					window.router.refreshToken();
+					throw new Error(response.status);
+				}
 
 				const result = await response.json();
 				if (result.status === 'success') {
@@ -853,18 +863,21 @@ export class ProfilePage {
 
 		confirmBtn.addEventListener('click', async () => {
 			try {
-				const csrfToken = document.cookie
-					.split('; ')
-					.find(row => row.startsWith('csrftoken='))
-					?.split('=')[1];
+				let response;
 
-				const response = await fetch('/api/delete_account', {
+				response = await fetch('/api/delete_account', {
 					method: 'POST',
+					credentials: 'same-origin',
 					headers: {
 						'Content-Type': 'application/json',
-						'X-CSRFToken': csrfToken,
+						'X-CSRFToken': window.csrfToken,
 					}
 				});
+
+				if (response.status == 403) {
+					window.router.refreshToken();
+					throw new Error(response.status);
+				}
 
 				const result = await response.json();
 				if (result.status === 'success') {

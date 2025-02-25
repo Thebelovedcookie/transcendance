@@ -5,21 +5,21 @@ export class LogoutPage {
 
 	async handle() {
 		try {
-			const csrfToken = document.cookie
-				.split('; ')
-				.find(row => row.startsWith('csrftoken='))
-				?.split('=')[1];
+			let response;
 
-			const response = await fetch('/api/logout', {
+			response = await fetch('/api/logout', {
 				method: 'POST',
-				credentials: 'include',
+				credentials: 'same-origin',
 				headers: {
-					'X-CSRFToken': csrfToken,
+					'X-CSRFToken': window.csrfToken,
 					'Content-Type': 'application/json'
 				}
 			});
 
 			if (!response.ok) {
+				if (response.status == 403) {
+					window.router.refreshToken();
+				}
 				throw new Error(`HTTP error! status: ${response.status}`);
 			}
 
