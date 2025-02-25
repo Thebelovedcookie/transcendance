@@ -22,7 +22,7 @@ class GameWebSocket {
 		this.socket = null;
 		this.isConnected = false;
 		this.gameLoopInterval = null;
-		this.gamestate = null;
+		this.gameState = null;
 		this.keys = {
 			w: false,
 			s: false,

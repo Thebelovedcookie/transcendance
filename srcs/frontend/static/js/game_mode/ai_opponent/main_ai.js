@@ -1,5 +1,5 @@
 import { EndNormalGamePage } from '../../pages/EndNormalGamePage.js';
-import { firstPaddle, secondPaddle, ballStyle, drawDashedLine, displayScoreOne, displayScoreTwo, drawWalls } from './style_ai.js';
+import { displayText, drawPaddle, ballStyle, drawDashedLine, displayScoreOne, displayScoreTwo, drawWalls } from './style_ai.js';
 let canvas = null;
 let context = null;
 let theme = "base";
@@ -17,7 +17,7 @@ class GameAISocket {
 		this.socket = null;
 		this.isConnected = false;
 		this.gameLoopInterval = null;
-		this.gamestate = null;
+		this.gameState = null;
 		this.directionY = 0;
 		this.positionP1 = 0;
 		this.keys = {
@@ -35,22 +35,22 @@ class GameAISocket {
 	predictedPath() {
 		let predictionX = this.gameState.ball.x;
 		let predictionY = this.gameState.ball.y;
-		let predictionSpeedX = this.gameState.ball.speed;
-		let predictionSpeedY = this.gameState.ball.gravity;
+		let predictionSpeedX = this.gameState.ball.vx;
+		let predictionSpeedY = this.gameState.ball.vy;
 
 		for (let i = 0; i < 60; i++) {
 			predictionX += predictionSpeedX;
 			predictionY += predictionSpeedY;
 
-			if (predictionX + this.gameState.ball.width > canvas.width || predictionX < 0) {
+			if (predictionX + this.gameState.ball.size > canvas.width || predictionX < 0) {
 				predictionSpeedX *= -1;
 			}
-			if (predictionY + this.gameState.ball.height > canvas.height || predictionY < 0) {
+			if (predictionY + this.gameState.ball.size > canvas.height || predictionY < 0) {
 				predictionSpeedY *= -1;
-				predictionY = predictionY + this.gameState.ball.height > canvas.height ? canvas.height - this.gameState.ball.height : predictionY;
+				predictionY = predictionY + this.gameState.ball.size > canvas.height ? canvas.height - this.gameState.ball.size : predictionY;
 			}
 
-			this.directionY = (predictionY + this.gameState.ball.height / 2);
+			this.directionY = (predictionY + this.gameState.ball.size / 2);
 		}
 
 		this.positionP1 = this.gameState.p1.y;
@@ -263,13 +263,11 @@ class GameAISocket {
 	drawPause() {
 		this.pause = true;
 		this.sendPause();
-		const rectWidth = 50;
-		const rectHeight = 200;
-		
+		const rectWidth = this.gameState.ball.size * 1.7;
+		const rectHeight = this.gameState.ball.size * 10;
 		context.fillStyle = "black";
-		context.fillRect(canvas.width / 2 - 70, canvas.height / 2 - 100, rectWidth, rectHeight);
-	
-		context.fillRect(canvas.width / 2 + 20, canvas.height / 2 - 100, rectWidth, rectHeight);
+		context.fillRect(canvas.width / 2 - 3 * this.gameState.ball.size, canvas.height / 2 - 5 * this.gameState.ball.size, rectWidth, rectHeight);
+		context.fillRect(canvas.width / 2 + 1.5 * this.gameState.ball.size, canvas.height / 2 - 5 * this.gameState.ball.size, rectWidth, rectHeight);
 	}
 
 	sendInfoStarting()
@@ -342,7 +340,6 @@ class GameAISocket {
 				width: data.playerOne.width,
 				height: data.playerOne.height,
 				color: data.playerOne.color,
-				gravity: data.playerOne.gravity,
 				score: data.playerOne.score
 			},
 			p2: {
@@ -351,17 +348,15 @@ class GameAISocket {
 				width: data.playerTwo.width,
 				height: data.playerTwo.height,
 				color: data.playerTwo.color,
-				gravity: data.playerTwo.gravity,
 				score: data.playerTwo.score
 			},
 			ball: {
 				x: data.ball.x,
 				y: data.ball.y,
-				width: data.ball.width,
-				height: data.ball.height,
+				size: data.ball.size,
 				color: data.ball.color,
-				speed: data.ball.speed,
-				gravity: data.ball.gravity
+				vx: data.ball.vx,
+				vy: data.ball.vy
 			},
 			score: {
 				scoreMax: data.scoreMax
@@ -372,8 +367,8 @@ class GameAISocket {
 	drawGame() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		drawWalls(context, canvas);
-		firstPaddle(context, this.gameState.p1);
-		secondPaddle(context, this.gameState.p2);
+		drawPaddle(context, this.gameState.p1);
+		drawPaddle(context, this.gameState.p2);
 		ballStyle(context, this.gameState.ball);
 		drawDashedLine(context, canvas);
 		const scoreOne = this.gameState.p1.score ?? 0;
@@ -381,6 +376,7 @@ class GameAISocket {
 
 		displayScoreOne(context, scoreOne, canvas);
 		displayScoreTwo(context, scoreTwo, canvas);
+		displayText(context, canvas);
 	}
 
 	cleanup() {
