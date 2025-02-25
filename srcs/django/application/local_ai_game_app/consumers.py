@@ -13,7 +13,7 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 	infoMatch = {
 		"match": []
 	}
-
+	#connection to the WebSocket
 	async def connect(self):
 		logger.info("WebSocket connection attempt")
 		try:
@@ -22,19 +22,23 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 		except Exception as e:
 			logger.error(f"WebSocket connection failed: {e}")
 
+	#interrupt the Websocket
 	async def disconnect(self, close_code):
 		logger.info(f"WebSocket disconnected with code: {close_code}")
 		if len(self.infoMatch["match"]) != 0:
 			m = self.infoMatch["match"][0]
 			m["status"] = "False"
 			
-
+	#Manage the info receive
 	async def receive(self, text_data):
 		try:
+			# Decode Json data
 			data = json.loads(text_data)
 
+			# search for the type of the message
 			message_type = data.get("type")
 
+			# Manage the type of the msg
 			if message_type == "game.starting":
 				await self.initialisation(data)
 				asyncio.create_task(self.loop())
@@ -57,6 +61,7 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 					"message": f"Unknown message type: {message_type}"
 				}
 
+			# Envoyer la réponse au client
 			await self.send(text_data=json.dumps(response))
 
 		except json.JSONDecodeError:
@@ -68,6 +73,8 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 
 	######################## GAME INIT #############################
 
+	# initialize all characteristics of players and ball
+	# based on info of window size
 	async def initialisation(self, data):
 		start_data = data.get("start", {})
 		canvas_height = start_data.get("windowHeight", 0)
@@ -82,13 +89,17 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 			}
 		self.infoMatch['match'].append(obj)
 		m = self.infoMatch["match"][0]
+
+		canvas_dim = min(canvas_height, canvas_width)
+		size = int(canvas_dim  / 45)
+
 		m["maxScore"] = 10
-		m["canvas"] = {"canvas_height": canvas_height, "canvas_width": canvas_width}
+		m["canvas"] = {"canvas_height": canvas_height, "canvas_width": canvas_width, "size": size}
 		m["playerOne"].update({
 			"x": 5,
 			"y": canvas_height * 0.4,
-			"width": canvas_width / 80,
-			"height": canvas_height / 6,
+			"width": size,
+			"height": size * 9,
 			"color": "black",
 			"gravity": 2,
 			"score": 0
@@ -96,8 +107,8 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 		m["playerTwo"].update({
 			"x": canvas_width - 20,
 			"y": canvas_height * 0.4,
-			"width": canvas_width / 80,
-			"height": canvas_height / 6,
+			"width": size,
+			"height": size * 9,
 			"color": "black",
 			"gravity": 2,
 			"score": 0
@@ -105,8 +116,8 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 		m["ball"] = {
 			"x": canvas_width / 2,
 			"y": canvas_height / 2,
-			"width": 15,
-			"height": 15,
+			"width": size,
+			"height": size,
 			"color": "black",
 			"speed": 5,
 			"gravity": 2
@@ -141,12 +152,23 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 	
 	######################## GAME LOGIC #############################
 
+	#check if movement in y-dir result in wall impact
+	def at_wall(self):
+		m = self.infoMatch["match"][0]
+		# top wall
+		if m["ball"]["y"] + m["ball"]["gravity"] <= 0:
+			return True
+		# bottom wall
+		elif m["ball"]["y"] + m["ball"]["width"] + m["ball"]["gravity"] >=  m["canvas"]["canvas_height"]:
+			return True
+		else:
+			return False
+
 	async def calculBallMovement(self):
 		m = self.infoMatch["match"][0]
 
-		if (m["ball"]["y"] + m["ball"]["gravity"] <= 0
-			or m["ball"]["y"] + m["ball"]["width"] + m["ball"]["gravity"]
-			>=  m["canvas"]["canvas_height"]):
+		# if impacting wall, reverse y velocity
+		if self.at_wall():
 			m["ball"]["gravity"] *= -1
 			m["ball"]["x"] += m["ball"]["speed"]
 			m["ball"]["y"] += m["ball"]["gravity"]
