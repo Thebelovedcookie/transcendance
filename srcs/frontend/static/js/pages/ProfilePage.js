@@ -183,7 +183,9 @@ export class ProfilePage {
 				</div>
 				<div class="friend-info">
 					<h3>${friend.username}</h3>
-					<p class="last-seen">${friend.is_online ? 'Online' : `Last seen ${new Date(friend.lastSeen).toLocaleDateString()}`}</p>
+					<p class="last-seen">
+					${friend.is_online ? translationsData["online"] : `${translationsData["Lastseen"]} ${new Date(friendInfo.lastSeen).toLocaleDateString()}`}
+					</p>
 					<div class="game-stats">
 						<div class="stat-item">
 							<span class="stat-label" data-translate="wins"></span>

@@ -18,15 +18,15 @@ export class TournamentPage {
 		gameContent.className = 'tournament-container';
 		gameContent.innerHTML = `
 			<div class="tournament-header">
-				<h1>Tournament Mode</h1>
-				<p class="subtitle">Create your tournament bracket</p>
+				<h1 data-translate="Tournament"></h1>
+				<p class="subtitle" data-translate= "Tournamentdetails2"></p>
 			</div>
 
 			<div class="tournament-setup">
 				<div class="players-section">
-					<h3>Tournament Players</h3>
+					<h3 data-translate ="Tourplayers"></h3>
 					<div class="players-counter">
-						<span class="counter-label">Players: </span>
+						<span class="counter-label" data-translate="players"></span>
 						<span class="counter-value">${this.numberOfPlayers}</span>
 						<span class="counter-max">/ ${this.maxPlayers}</span>
 					</div>
@@ -38,7 +38,7 @@ export class TournamentPage {
 					<div class="player-controls">
 						<button id="add" class="tournament-btn add-btn" ${this.numberOfPlayers >= this.maxPlayers ? 'disabled' : ''}>
 							<i class="fas fa-plus"></i>
-							Add Player
+							<span data-translate="Add Player"></span>
 						</button>
 					</div>
 				</div>
@@ -46,7 +46,7 @@ export class TournamentPage {
 				<div class="tournament-actions">
 					<button id="play" class="tournament-btn start-btn">
 						<i class="fas fa-play"></i>
-						Start Tournament
+						<span data-translate="StartTournament"></span>
 					</button>
 				</div>
 			</div>
@@ -65,7 +65,7 @@ export class TournamentPage {
 				<div class="player-input-container" data-player="${i}">
 					<div class="input-wrapper">
 						<span class="player-number">#${i}</span>
-						<input class="tournament-input" type="text" placeholder="Enter player name">
+						<input class="tournament-input" type="text" placeholder="Enter player name" data-translate ="name_placeholder">
 						<button type="button" class="close remove-player-btn" aria-label="Remove player" ${this.numberOfPlayers <= this.minPlayers ? 'disabled' : ''}>
 							<span aria-hidden="true">&times;</span>
 						</button>
@@ -95,7 +95,7 @@ export class TournamentPage {
 			});
 
 			if (emptyNames) {
-				errors.push('All players must have names');
+				errors.push(translationsData["nameError"]);
 			}
 		}
 
@@ -117,7 +117,7 @@ export class TournamentPage {
 			duplicateIndexes.forEach(index => {
 				inputs[index].classList.add('invalid');
 			});
-			errors.push('Duplicate player names are not allowed');
+			errors.push(translationsData["DuplicateError"]);
 		}
 
 		return errors;
@@ -128,7 +128,7 @@ export class TournamentPage {
 		modal.className = 'validation-modal';
 		modal.innerHTML = `
 			<div class="modal-content">
-				<h3>Please Fix the Following:</h3>
+				<h3 data-translate="FixError"></h3>
 				<ul>
 					${errors.map(error => `<li>${error}</li>`).join('')}
 				</ul>
@@ -157,7 +157,7 @@ export class TournamentPage {
 				newPlayerInput.innerHTML = `
 					<div class="input-wrapper">
 						<span class="player-number">#${this.numberOfPlayers}</span>
-						<input class="tournament-input" type="text" placeholder="Enter player name">
+						<input class="tournament-input" type="text" placeholder="Enter player name" data-translate ="name_placeholder">
 						<button type="button" class="close remove-player-btn" aria-label="Remove player">
 							<span aria-hidden="true">&times;</span>
 						</button>

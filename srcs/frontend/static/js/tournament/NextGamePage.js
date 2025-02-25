@@ -25,10 +25,10 @@ export class NextGamePage {
 				<div class="tournament-match-header">
 					<div class="player-card left animate-slide-right">
 						<div class="player-name-container">
-							<span class="player-label">LEFT PLAYER</span>
+							<span class="player-label" data-translate="leftplayer"></span>
 							<h2 class="glow-text">${this.infoMatch.playerOne}</h2>
 							<div class="key-info">
-								<span class="key-label">Controls:</span>
+								<span class="key-label" data-translate="Controls"></span>
 								<div class="key-buttons">
 									<span class="key">W</span>
 									<span class="key">S</span>
@@ -41,10 +41,10 @@ export class NextGamePage {
 
 					<div class="player-card right animate-slide-left">
 						<div class="player-name-container">
-							<span class="player-label">RIGHT PLAYER</span>
+							<span class="player-label" data-translate="rightplayer"></span>
 							<h2 class="glow-text">${this.infoMatch.playerTwo}</h2>
 							<div class="key-info">
-								<span class="key-label">Controls:</span>
+								<span class="key-label" data-translate="Controls"></span>
 								<div class="key-buttons">
 									<span class="key">↑</span>
 									<span class="key">↓</span>
@@ -58,11 +58,11 @@ export class NextGamePage {
 					<div class="countdown-circle">
 						<span id="countdown-number">${this.countdown}</span>
 					</div>
-					<div class="ready-text">GET READY!</div>
+					<div class="ready-text" data-translate="ready"></div>
 				</div>
 
 				<button id="nextGame2" class="start-game-btn animate-pulse">
-					<span class="btn-text">PRESS TO START</span>
+					<span class="btn-text" data-translate="start"></span>
 					<div class="btn-animation-container">
 						<span class="btn-ping"></span>
 						<span class="btn-ping"></span>
