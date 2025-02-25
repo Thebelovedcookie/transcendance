@@ -73,8 +73,10 @@ export class RegisterPage {
 			return false;
 		}
 
+		let response;
+
 		try {
-			const response = await fetch('/api/register', {
+			response = await fetch('/api/register', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -89,9 +91,15 @@ export class RegisterPage {
 			});
 
 			if (!response.ok) {
-				const errorText = await response.text();
-				console.error('Response error:', errorText);
-				throw new Error(`HTTP error! status: ${response.status}`);
+				if (response.status == 403) {
+					window.router.refreshToken();
+					confirmPasswordError.textContent = 'Failed to register. Please try again.';
+					confirmPasswordError.style.display = 'block';
+				} else if (response.status == 400) {
+					emailError.textContent = 'Email already registered.';
+					emailError.style.display = 'block';
+				}
+				return false;
 			}
 
 			const data = await response.json();
@@ -101,7 +109,11 @@ export class RegisterPage {
 			// Navigate to verification page
 			window.router.navigateTo('/verify');
 		} catch (error) {
-			console.error('Error details:', error);
+			if (response.status == 403) {
+				confirmPasswordError.textContent = 'failed to register';
+				confirmPasswordError.style.display = 'block';
+				window.router.refreshToken();
+			}
 			throw error;
 		}
 	}
@@ -132,11 +144,20 @@ export class RegisterPage {
 		if (!username.value.trim()) {
 			usernameError.style.display = 'block';
 			isValid = false;
+		} else if (username.value.length >= 150) {
+			usernameError.textContent = 'username is too long';
+			usernameError.style.display = 'block';
+			username.classList.add('is-invalid');
+			isValid = false;
 		}
 
 		// Validate email
 		if (!email.value.trim()) {
 			emailError.textContent = 'Please enter your email';
+			emailError.style.display = 'block';
+			isValid = false;
+		} else if (email.value.length >= 255) {
+			emailError.textContent = 'email is too long';
 			emailError.style.display = 'block';
 			isValid = false;
 		} else if (!this.isValidEmail(email.value)) {
@@ -170,6 +191,24 @@ export class RegisterPage {
 		return isValid;
 	}
 
+	validateUsername(e) {
+		const username = e.target;
+		const usernameError = document.getElementById('usernameError');
+		usernameError.textContent = 'username is not valid';
+
+		if (!username.value.trim()) {
+			usernameError.textContent = 'username is empty';
+			usernameError.style.display = 'block';
+		} else if (username.value.length >= 150) {
+			usernameError.textContent = 'username is too long';
+			usernameError.style.display = 'block';
+			username.classList.add('is-invalid');
+		} else {
+			usernameError.style.display = 'none';
+			username.classList.remove('is-invalid');
+		}
+	}
+
 	isValidEmail(email) {
 		const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 		return emailRegex.test(email);
@@ -178,8 +217,13 @@ export class RegisterPage {
 	validateEmail(e) {
 		const email = e.target;
 		const emailError = document.getElementById('emailError');
+		emailError.textContent = 'email is not valid';
 
 		if (!this.isValidEmail(email.value)) {
+			emailError.style.display = 'block';
+			email.classList.add('is-invalid');
+		} else if (email.value.length >= 255) {
+			emailError.textContent = 'email is too long';
 			emailError.style.display = 'block';
 			email.classList.add('is-invalid');
 		} else {
@@ -228,6 +272,7 @@ export class RegisterPage {
 
 	addEventListeners() {
 		// Add event listeners with correct binding
+		document.getElementById('typeUsernameX').addEventListener('input', (e) => this.validateUsername(e));
 		document.getElementById('registerButton').addEventListener('click', (e) => this.sendToBackend(e));
 		document.getElementById('typePasswordX').addEventListener('input', (e) => this.updatePasswordStrength(e));
 		document.getElementById('typeConfirmPasswordX').addEventListener('input', (e) => this.updatePasswordConfirmStrength(e));

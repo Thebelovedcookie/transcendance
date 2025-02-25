@@ -1,10 +1,33 @@
 export class VerificationPage {
 	constructor() {
-		this.email = sessionStorage.getItem('pendingVerificationEmail');
+		this.email = null;
+		this.maxRetries = 5;
+		this.retryInterval = 500;
+	}
+
+	async tryGetEmail() {
+		let retryCount = 0;
+
+		while (retryCount < this.maxRetries) {
+			console.log("retryCount: ", retryCount);
+			this.email = sessionStorage.getItem('pendingVerificationEmail');
+
+			if (this.email) {
+				return true;
+			}
+
+			await new Promise(resolve => setTimeout(resolve, this.retryInterval));
+			retryCount++;
+		}
+
+		return false;
 	}
 
 	async handle() {
-		if (!this.email) {
+		const emailFound = await this.tryGetEmail();
+
+		if (!emailFound) {
+			console.error('Failed to get verification email after multiple attempts');
 			window.router.navigateTo('/login');
 			return;
 		}
