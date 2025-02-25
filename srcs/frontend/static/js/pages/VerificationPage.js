@@ -84,8 +84,10 @@ export class VerificationPage {
 			return;
 		}
 
+		let response;
+
 		try {
-			const response = await fetch('/api/verify_email', {
+			response = await fetch('/api/verify_email', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -108,11 +110,17 @@ export class VerificationPage {
 			} else {
 				codeError.textContent = data.message || 'Invalid verification code';
 				codeError.style.display = 'block';
+				if (response.status == 403) {
+					window.router.refreshToken();
+				}
 			}
 		} catch (error) {
 			console.error('Error:', error);
 			codeError.textContent = 'An error occurred. Please try again.';
 			codeError.style.display = 'block';
+			if (response.status == 403) {
+				window.router.refreshToken();
+			}
 		}
 	}
 
@@ -126,9 +134,10 @@ export class VerificationPage {
 		}
 
 		resendButton.disabled = true;
+		let response;
 
 		try {
-			const response = await fetch('/api/resend_verification', {
+			response = await fetch('/api/resend_verification', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -146,10 +155,16 @@ export class VerificationPage {
 				alert('New verification code has been sent to your email.');
 			} else {
 				alert(data.message || 'Failed to resend verification code.');
+				if (response.status == 403) {
+					window.router.refreshToken();
+				}
 			}
 		} catch (error) {
 			console.error('Error:', error);
 			alert('An error occurred. Please try again.');
+			if (response.status == 403) {
+				window.router.refreshToken();
+			}
 		} finally {
 			resendButton.disabled = false;
 		}

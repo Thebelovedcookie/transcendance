@@ -27,7 +27,6 @@ export class ProfilePage {
 				credentials: 'include',
 				headers: {
 					'Accept': 'application/json',
-					'X-CSRFToken': window.csrfToken,
 					'Content-Type': 'application/json',
 				}
 			});

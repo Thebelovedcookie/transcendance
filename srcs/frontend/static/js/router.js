@@ -42,7 +42,6 @@ class Router {
 
 		this.initializeAuth()
 			.then(() => {
-				// this.initializeCsrfToken();
 				this.initializeRoutes();
 				this.setupEventListeners();
 				this.handleLocation();
@@ -98,19 +97,6 @@ class Router {
 			this.onlineSocket = new WebSocket(wsUrl, protocols);
 		} catch (error) {
 			console.error("WebSocket connection error:", error);
-		}
-	}
-
-	async initializeCsrfToken() {
-		try {
-			const response = await fetch('/api/csrf', {
-				credentials: 'same-origin'
-			});
-			const data = await response.json();
-			// global variable to use the CSRF token in the RegisterPage.js
-			window.csrfToken = data.csrf_token;
-		} catch (error) {
-			console.error('Failed to initialize CSRF token:', error);
 		}
 	}
 
