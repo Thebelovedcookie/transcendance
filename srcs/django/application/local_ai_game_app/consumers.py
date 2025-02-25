@@ -101,7 +101,6 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 			"width": size,
 			"height": size * 9,
 			"color": "black",
-			"gravity": 2,
 			"score": 0
 			})
 		m["playerTwo"].update({
@@ -110,7 +109,6 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 			"width": size,
 			"height": size * 9,
 			"color": "black",
-			"gravity": 2,
 			"score": 0
 			})
 		m["ball"] = {
@@ -120,7 +118,9 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 			"height": size,
 			"color": "black",
 			"speed": 5,
-			"gravity": 2
+			"gravity": 2,
+			"vx": 0,
+			"vy": 2
 			}
 
 	async def loop(self):
@@ -156,10 +156,10 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 	def at_wall(self):
 		m = self.infoMatch["match"][0]
 		# top wall
-		if m["ball"]["y"] + m["ball"]["gravity"] <= 0:
+		if m["ball"]["y"] + m["ball"]["vy"] <= 0:
 			return True
 		# bottom wall
-		elif m["ball"]["y"] + m["ball"]["width"] + m["ball"]["gravity"] >=  m["canvas"]["canvas_height"]:
+		elif m["ball"]["y"] + m["ball"]["width"] + m["ball"]["vy"] >=  m["canvas"]["canvas_height"]:
 			return True
 		else:
 			return False
@@ -169,55 +169,61 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 
 		# if impacting wall, reverse y velocity
 		if self.at_wall():
-			m["ball"]["gravity"] *= -1
-			m["ball"]["x"] += m["ball"]["speed"]
-			m["ball"]["y"] += m["ball"]["gravity"]
-		else:
-			m["ball"]["x"] += m["ball"]["speed"]
-			m["ball"]["y"] += m["ball"]["gravity"]
-		await self.ballWallCollision(m)
+			m["ball"]["vy"] *= -1
+		m["ball"]["x"] += m["ball"]["speed"]
+		m["ball"]["y"] += m["ball"]["vy"]
+		await self.ballPaddleCollision(m)
 
-	async def ballWallCollision(self, m):
-		if (m["ball"]["y"] + m["ball"]["gravity"] <= m["playerTwo"]["y"] + m["playerTwo"]["height"]
-			and m["ball"]["x"] + m["ball"]["width"] + m["ball"]["speed"] >= m["playerTwo"]["x"]
-			and m["ball"]["y"] + m["ball"]["gravity"] > m["playerTwo"]["y"]):
+	# update ball velocities and last touch following strike
+	def executeBallStrike(self, m, player):
+		factor = -1
+		if player["x"] < m["canvas"]["canvas_width"] / 2:
+			factor = 1
+		paddleCenter = player["y"] + player["height"] / 2
+		ballCenter = m["ball"]["y"] + m["ball"]["height"] / 2
+		relativeIntersectY = (paddleCenter - ballCenter) / (player["height"] / 2)
+		bounceAngle = relativeIntersectY * 0.75
+		speed = math.sqrt(m["ball"]["speed"] * m["ball"]["speed"] + m["ball"]["vy"] * m["ball"]["vy"])
+		m["ball"]["speed"] = factor * speed * math.cos(bounceAngle)
+		m["ball"]["vy"] = speed * math.sin(bounceAngle)
+		m["ball"]["x"] = player["x"] + factor * m["ball"]["width"]
 
-			paddleCenter = m["playerTwo"]["y"] + m["playerTwo"]["height"] / 2
-			ballCenter = m["ball"]["y"] + m["ball"]["height"] / 2
-			relativeIntersectY = (paddleCenter - ballCenter) / (m["playerTwo"]["height"] / 2)
+	# place ball in center of canvas and give it a random initial velocity
+	def resetBall(self, m):
+		m["ball"]["x"] = m["canvas"]["canvas_width"] / 2
+		m["ball"]["y"] = m["canvas"]["canvas_height"]  / 2
 
-			bounceAngle = relativeIntersectY * 0.75
 
-			speed = math.sqrt(m["ball"]["speed"] * m["ball"]["speed"] + m["ball"]["gravity"] * m["ball"]["gravity"])
-			m["ball"]["speed"] = -speed * math.cos(bounceAngle)
-			m["ball"]["gravity"] = speed * math.sin(bounceAngle)
-			m["ball"]["x"] = m["playerTwo"]["x"] - m["ball"]["width"]
+	# check if location of ball overlaps location of paddle
+	def inPaddle(self, player):
+		m = self.infoMatch["match"][0]
 
-		elif (m["ball"]["y"] + m["ball"]["gravity"] >= m["playerOne"]["y"]
-			and m["ball"]["y"] + m["ball"]["gravity"] <= m["playerOne"]["y"] + m["playerOne"]["height"]
-			and m["ball"]["x"] + m["ball"]["speed"] <= m["playerOne"]["x"] + m["playerOne"]["width"]):
+		if player["x"] > m["canvas"]["canvas_width"] / 2:
+			if (m["ball"]["y"] + m["ball"]["vy"] <= player["y"] + player["height"]
+				and m["ball"]["x"] + m["ball"]["width"] + m["ball"]["speed"] >= player["x"]
+				and m["ball"]["y"] + m["ball"]["vy"] > player["y"]):
+				return True
 
-			paddleCenter = m["playerOne"]["y"] + m["playerOne"]["height"] / 2
-			ballCenter = m["ball"]["y"] + m["ball"]["height"] / 2
-			relativeIntersectY = (paddleCenter - ballCenter) / (m["playerOne"]["height"] / 2)
+		if player["x"] < m["canvas"]["canvas_width"] / 2:
+			if (m["ball"]["y"] + m["ball"]["vy"] >= player["y"]
+				and m["ball"]["y"] + m["ball"]["vy"] <= player["y"] + player["height"]
+				and m["ball"]["x"] + m["ball"]["speed"] <= player["x"] + player["width"]):
+				return True
 
-			bounceAngle = relativeIntersectY * 0.75
+		return False
 
-			speed = math.sqrt(m["ball"]["speed"] * m["ball"]["speed"] + m["ball"]["gravity"] * m["ball"]["gravity"])
-			m["ball"]["speed"] = speed * math.cos(bounceAngle)
-			m["ball"]["gravity"] = speed * math.sin(bounceAngle)
-			m["ball"]["x"] = m["playerOne"]["x"] + m["ball"]["width"]
-
+	async def ballPaddleCollision(self, m):
+		if self.inPaddle(m["playerTwo"]):
+			self.executeBallStrike(m, m["playerTwo"])
+		elif self.inPaddle(m["playerOne"]):
+			self.executeBallStrike(m, m["playerOne"])
 		elif (m["ball"]["x"] + m["ball"]["speed"] < m["playerOne"]["x"]):
 			m["playerTwo"]["score"] += 1
-			m["ball"]["x"] = m["canvas"]["canvas_width"] / 2
-			m["ball"]["y"] = m["canvas"]["canvas_height"]  / 2
+			self.resetBall(m)
 			await self.checkScore(m)
-
 		elif (m["ball"]["x"] + m["ball"]["speed"] > m["playerTwo"]["x"] + m["playerTwo"]["width"]):
 			m["playerOne"]["score"] += 1
-			m["ball"]["x"] = m["canvas"]["canvas_width"] / 2
-			m["ball"]["y"] = m["canvas"]["canvas_height"]  / 2
+			self.resetBall(m)
 			await self.checkScore(m)
 		
 	async def checkScore(self, m):
