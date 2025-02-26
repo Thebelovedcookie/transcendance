@@ -1,4 +1,4 @@
-import { firstPaddleSolo, ballSoloStyle, drawDashedLineSolo, drawWallsSolo, displayText } from './style.js';
+import { firstPaddleSolo, ballSoloStyle, drawDashedLineSolo, drawGoalLine, drawWallsSolo, displayText } from './style.js';
 
 //----------------------GLOBAL GAME ELEMENT----------------------------//
 
@@ -14,15 +14,16 @@ function init_canvasSolo(){
 	contextSolo = canvasSolo.getContext("2d");
 	canvasSolo.width = window.innerWidth;
 	canvasSolo.height = window.innerWidth * (16/9);
+	canvasSolo.size = Math.round(Math.min(canvasSolo.height, canvasSolo.width) / 45);
 
 	//----------------------------OBJET--------------------------------//
 
-	//first paddle right side
+	//paddle right side
 	playerOneSolo = new Element({
 		x: canvasSolo.width - 20,
 		y: canvasSolo.height * 0.4,
-		width: canvasSolo.width / 80,
-		height: canvasSolo.height / 6,
+		width: canvasSolo.size,
+		height: canvasSolo.size * 9,
 		color: "#808080",
 		gravity: 2,
 	})
@@ -31,8 +32,8 @@ function init_canvasSolo(){
 	ballSolo = new Element({
 		x: canvasSolo.width / 2,
 		y: canvasSolo.height / 2,
-		width: 15,
-		height: 15,
+		width: canvasSolo.size,
+		height: canvasSolo.size,
 		color: "#808080",
 		speed: 8,
 		gravity: 3,
@@ -161,11 +162,8 @@ function ballSoloWallCollision(){
 function resetBallSolo() {
 	ballSolo.x = canvasSolo.width / 2;
 	ballSolo.y = canvasSolo.height / 2;
-
 	const angle = (Math.random() * Math.PI / 4 - Math.PI / 8);
-
 	const current_speed = Math.sqrt(ballSolo.speed * ballSolo.speed + ballSolo.gravity * ballSolo.gravity);
-	
 	ballSolo.speed = current_speed * Math.cos(angle);
 	ballSolo.gravity = current_speed *  Math.sin(angle);
 }
@@ -182,6 +180,7 @@ function drawElementsSolo(){
 		firstPaddleSolo(contextSolo, playerOneSolo);
 		ballSoloStyle(contextSolo, ballSolo);
 		drawDashedLineSolo(contextSolo, canvasSolo);
+		drawGoalLine(contextSolo, canvasSolo);
 		displayText(contextSolo, canvasSolo);
 	}
 }
