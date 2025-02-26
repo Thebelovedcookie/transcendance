@@ -928,7 +928,7 @@ export class ProfilePage {
 				console.error('Failed to delete account:', error);
 			}
 		});
-
+		
 	}
 
 	clean() {

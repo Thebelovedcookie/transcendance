@@ -1,6 +1,6 @@
 {
 	"en": {
-		"language": "English",
+		"language": "language",
 		"PLAY" : "PLAY",
 		"2025 PongSite - All Rights Reserved" : "2025 PongSite - All Rights Reserved",
 
@@ -72,6 +72,7 @@
 		"sign":"Sign Up",
 		"sign-in":"Sign In",
 		"createaccount": "Create your account",
+
 
 		"Verify-Email": "Verify Email",
 		"recode": "Resend verification code",
@@ -145,7 +146,7 @@
 	},
 
 	"fr": {
-		"language": "Francais",
+		"language": "langue",
 
 		"PLAY" : "JOUER",
 		"2025 PongSite - All Rights Reserved" : "2025 PongSite - Tous droits reserves",

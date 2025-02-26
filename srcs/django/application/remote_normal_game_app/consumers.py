@@ -92,6 +92,8 @@ class PongConsumer(AsyncWebsocketConsumer):
 		client = self.scope["client"]
 		toRemove = next((c for c in self.infoPlayer["players"] if c["client"] == client), None)
 
+		findMatch = None
+		
 		if (toRemove):
 			findMatch = next(
 			(m for m in self.infoMatch["match"] 
@@ -255,14 +257,16 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 		elif (m["ball"]["x"] + m["ball"]["speed"] < m["playerOne"]["x"]):
 			m["playerTwo"]["score"] += 1
-			m["ball"]["x"] = m["canvas"]["canvas_width"] / 2
-			m["ball"]["y"] = m["canvas"]["canvas_height"]  / 2
+			self.resetBall(m)
+			#m["ball"]["x"] = m["canvas"]["canvas_width"] / 2
+			#m["ball"]["y"] = m["canvas"]["canvas_height"]  / 2
 			await self.checkScore(m)
 
 		elif (m["ball"]["x"] + m["ball"]["speed"] > m["playerTwo"]["x"] + m["playerTwo"]["width"]):
 			m["playerOne"]["score"] += 1
-			m["ball"]["x"] = m["canvas"]["canvas_width"] / 2
-			m["ball"]["y"] = m["canvas"]["canvas_height"]  / 2
+			self.resetBall(m)
+			#m["ball"]["x"] = m["canvas"]["canvas_width"] / 2
+			#m["ball"]["y"] = m["canvas"]["canvas_height"]  / 2
 			await self.checkScore(m)
 
 	async def checkScore(self, m):
@@ -380,6 +384,9 @@ class PongConsumer(AsyncWebsocketConsumer):
 			canvas_height = canvas.get("canvasHeight", 0)
 			canvas_width = canvas.get("canvasWidth", 0)
 
+			canvas_dim = min(canvas_height, canvas_width)
+			size = int(canvas_dim  / 45)
+
 			matchPlaying["canvas"] = {"canvas_height": canvas_height, "canvas_width": canvas_width}
 			if (matchPlaying["playerOne"]["id"] == playerId):
 				matchPlaying["playerOne"].update({
@@ -387,10 +394,9 @@ class PongConsumer(AsyncWebsocketConsumer):
 					"side": "left",
 					"x": 5,
 					"y": canvas_height * 0.4,
-					"width": canvas_width / 80,
-					"height": canvas_height / 6,
+					"width": size,
+					"height": size * 9,
 					"color": "black",
-					"gravity": 2,
 					"score": 0
 					})
 			elif (matchPlaying["playerTwo"]["id"] == playerId):
@@ -399,20 +405,43 @@ class PongConsumer(AsyncWebsocketConsumer):
 					"side": "right",
 					"x": canvas_width - 20,
 					"y": canvas_height * 0.4,
-					"width": canvas_width / 80,
-					"height": canvas_height / 6,
+					"width": size,
+					"height": size * 9,
 					"color": "black",
-					"gravity": 2,
 					"score": 0
 					})
 			matchPlaying["ball"] = {
 				"x": canvas_width / 2,
 				"y": canvas_height / 2,
-				"width": 15,
-				"height": 15,
+				"width": size,
+				"height": size,
 				"color": "black",
 				"speed": 5,
-				"gravity": 2
+				"gravity": 2,
+				"vx": 0,
+				"vy": 0
 				}
+			#self.resetBall(m)
 
 			return matchId
+	
+	# place ball in center of canvas and give it a random initial velocity
+	def resetBall(self, m):
+		m["ball"]["x"] = m["canvas"]["canvas_width"] / 2
+		m["ball"]["y"] = m["canvas"]["canvas_height"]  / 2
+
+		angle = random.random() * math.pi / 3
+		ran = random.random()
+		direction = 1
+		if ran > 0.5:
+			direction = -1
+		ran = random.random()
+		phase = math.pi
+		if ran > 0.5:
+			phase = 0
+		angle = direction * angle + phase
+		m["ball"]["speed"] = 6 * math.cos(angle)
+		m["ball"]["gravity"] = 6 * math.sin(angle)
+		#m["ball"]["vx"] = m["ball"]["speed"] * math.cos(angle)
+		#m["ball"]["vy"] = m["ball"]["speed"] * math.sin(angle)
+
