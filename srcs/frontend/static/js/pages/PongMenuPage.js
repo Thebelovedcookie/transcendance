@@ -8,7 +8,7 @@ export class PongMenuPage {
 		modal.className = 'game-mode-modal';
 		modal.innerHTML = `
 			<div class="modal-content">
-				<h2 data-tranlate ="solomode">Select Solo Mode Type</h2>
+				<h2 data-translate ="solomode">Select Solo Mode Type</h2>
 				<div class="modal-options">
 					<div class="modal-option" data-path="/pong/solo">
 						<div class="option-icon">🎯</div>
@@ -26,6 +26,17 @@ export class PongMenuPage {
 		`;
 
 		document.body.appendChild(modal);
+		console.log("Modal Solo Mode affiché ! Mise à jour des traductions...");
+
+		// Met à jour les traductions juste après l'ajout du modal
+		modal.querySelectorAll("[data-translate]").forEach(el => {
+			const key = el.getAttribute("data-translate");
+			if (translationsData[key]) {
+				el.textContent = translationsData[key];
+			} else {
+				console.warn(`Clé de traduction manquante pour: ${key}`);
+			}
+		});
 
 		// Close modal when clicking outside or on close button
 		modal.addEventListener('click', (e) => {

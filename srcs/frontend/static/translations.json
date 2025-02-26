@@ -40,6 +40,7 @@
 		"tourchampion":"TOURNAMENT CHAMPION",
 		"returnMenu":"RETURN TO MENU",
 		"nextmatch":"NEXT MATCH",
+		"emptynames": "All players must have names",
 
 		"solomode":"Solo Mode Type",
 		"practice":"Practice Mode",
@@ -181,6 +182,7 @@
 		"tourchampion":"CHAMPION DU TOURNOI",
 		"returnMenu":"RETOUR AU MENU",
 		"nextmatch":"Prochain match",
+		"emptynames": "Tous les joueurs doivent avoir un nom",
 
 		"solomode":"Mode Solo",
 		"practice":"Mode Entrainement",

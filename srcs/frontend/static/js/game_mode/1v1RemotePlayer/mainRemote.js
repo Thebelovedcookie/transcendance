@@ -4,7 +4,6 @@ import { ForfaitRemoteGamePage } from '../../pages/ForfaitRemoteGamePage.js';
 import { firstPaddle, secondPaddle, ballStyle, drawDashedLine, displayScoreOne, displayScoreTwo, drawWalls} from './style.js';
 let canvas = null;
 let context = null;
-let theme = "base";
 
 class RemoteGameWebSocket {
 	constructor() {

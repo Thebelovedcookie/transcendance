@@ -1,4 +1,4 @@
-import { firstPaddleSolo, ballSoloStyle, drawDashedLineSolo, drawWallsSolo, displayText } from './style.js';
+import { firstPaddleSolo, ballSoloStyle, drawDashedLineSolo, drawGoalLine, drawWallsSolo, displayText } from './style.js';
 
 //----------------------GLOBAL GAME ELEMENT----------------------------//
 
@@ -14,15 +14,16 @@ function init_canvasSolo(){
 	contextSolo = canvasSolo.getContext("2d");
 	canvasSolo.width = window.innerWidth;
 	canvasSolo.height = window.innerWidth * (16/9);
+	canvasSolo.size = Math.round(Math.min(canvasSolo.height, canvasSolo.width) / 45);
 
 	//----------------------------OBJET--------------------------------//
 
-	//first paddle right side
+	//paddle right side
 	playerOneSolo = new Element({
 		x: canvasSolo.width - 20,
 		y: canvasSolo.height * 0.4,
-		width: canvasSolo.width / 80,
-		height: canvasSolo.height / 6,
+		width: canvasSolo.size,
+		height: canvasSolo.size * 9,
 		color: "#808080",
 		gravity: 2,
 	})
@@ -31,17 +32,20 @@ function init_canvasSolo(){
 	ballSolo = new Element({
 		x: canvasSolo.width / 2,
 		y: canvasSolo.height / 2,
-		width: 15,
-		height: 15,
+		width: canvasSolo.size,
+		height: canvasSolo.size,
 		color: "#808080",
 		speed: 8,
-		gravity: 3,
+		vx: 0,
+		vy: 0,
 	})
 
 	controllerSolo = {
 		"ArrowUp": {pressedSolo: false, func: movePaddleUpP2Solo},
 		"ArrowDown": {pressedSolo: false, func: movePaddleDownP2Solo},
 		}
+
+	resetBallSolo();
 }
 
 //----------------------------CLASS--------------------------------//
@@ -54,7 +58,9 @@ class Element{
 		this.height = options.height;
 		this.color = options.color;
 		this.speed = options.speed || 2;
-		this.gravity = options.gravity;
+		this.gravity = options.gravity || 0;
+		this.vx = options.vx || 0;
+		this.vy = options.vy || 0;
 	}
 }
 
@@ -107,10 +113,10 @@ function movePaddleDownP2Solo() {
 //make ballSolo bounce
 function ballSoloBounce(){
 	let nextX = ballSolo.x + ballSolo.speed;
-	let nextY = ballSolo.y + ballSolo.gravity;
+	let nextY = ballSolo.y + ballSolo.vy;
 
 	if(nextY <= 10 || nextY + ballSolo.height >= canvasSolo.height - 10){
-		ballSolo.gravity *= -1;
+		ballSolo.vy *= -1;
 		if (nextY <= 10) {
 			ballSolo.y = 10;
 		}
@@ -126,7 +132,7 @@ function ballSoloBounce(){
 		ballSolo.x += ballSolo.speed;
 	}
 
-	ballSolo.y += ballSolo.gravity;
+	ballSolo.y += ballSolo.vy;
 
 	ballSoloWallCollision();
 }
@@ -144,9 +150,9 @@ function ballSoloWallCollision(){
 		// calculate bounce angle depending on the position of the ball on the paddle
 		const bounceAngle = relativeIntersectY * 0.75;
 
-		const speed = Math.sqrt(ballSolo.speed * ballSolo.speed + ballSolo.gravity * ballSolo.gravity);
+		const speed = Math.sqrt(ballSolo.speed * ballSolo.speed + ballSolo.vy * ballSolo.vy);
 		ballSolo.speed = -speed * Math.cos(bounceAngle);
-		ballSolo.gravity = speed * Math.sin(bounceAngle);
+		ballSolo.vy = speed * Math.sin(bounceAngle);
 
 		ballSolo.x = playerOneSolo.x - ballSolo.width;
 	}
@@ -161,13 +167,15 @@ function ballSoloWallCollision(){
 function resetBallSolo() {
 	ballSolo.x = canvasSolo.width / 2;
 	ballSolo.y = canvasSolo.height / 2;
-
-	const angle = (Math.random() * Math.PI / 4 - Math.PI / 8);
-
-	const current_speed = Math.sqrt(ballSolo.speed * ballSolo.speed + ballSolo.gravity * ballSolo.gravity);
-	
-	ballSolo.speed = current_speed * Math.cos(angle);
-	ballSolo.gravity = current_speed *  Math.sin(angle);
+	var angle = Math.random() * Math.PI / 3;
+	const ran = Math.random();
+	var direction = 1;
+	if (ran > 0.5) {
+		direction = -1;
+	}
+	angle = angle * direction;
+	ballSolo.vx = ballSolo.speed * Math.cos(angle);
+	ballSolo.vy = ballSolo.speed *  Math.sin(angle);
 }
 
 function drawElementsSolo(){
@@ -182,6 +190,7 @@ function drawElementsSolo(){
 		firstPaddleSolo(contextSolo, playerOneSolo);
 		ballSoloStyle(contextSolo, ballSolo);
 		drawDashedLineSolo(contextSolo, canvasSolo);
+		drawGoalLine(contextSolo, canvasSolo);
 		displayText(contextSolo, canvasSolo);
 	}
 }
@@ -202,7 +211,8 @@ export function resetGameSolo()
 	ballSolo.width = canvasSolo.size;
 	ballSolo.height = canvasSolo.size;
 	ballSolo.speed = 8;
-	ballSolo.gravity = 3;
+	ballSolo.vx = 0;
+	ballSolo.vy = 0;
 
 	controllerSolo = {
 		"ArrowUp": {pressedSolo: false, func: movePaddleUpP2Solo},

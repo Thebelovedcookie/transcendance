@@ -1,5 +1,5 @@
 import { EndNormalGamePage } from '../../pages/EndNormalGamePage.js';
-import { displayText, drawPaddle, ballStyle, drawDashedLine, displayScoreOne, displayScoreTwo, drawWalls } from './style_ai.js';
+import { displayText, drawPaddle, ballStyle, drawDashedLine, drawGoalLine, displayScoreOne, displayScoreTwo, drawWalls } from './style_ai.js';
 let canvas = null;
 let context = null;
 let theme = "base";
@@ -371,6 +371,8 @@ class GameAISocket {
 		drawPaddle(context, this.gameState.p2);
 		ballStyle(context, this.gameState.ball);
 		drawDashedLine(context, canvas, this.gameState.ball.size);
+		drawGoalLine(context, canvas, this.gameState.ball.size, 0);
+		drawGoalLine(context, canvas, this.gameState.ball.size, canvas.width);
 		const scoreOne = this.gameState.p1.score ?? 0;
 		const scoreTwo = this.gameState.p2.score ?? 0;
 
