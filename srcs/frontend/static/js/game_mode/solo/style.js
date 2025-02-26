@@ -34,14 +34,36 @@ export function ballSoloStyle(contextSolo, elementSolo)
 }
 
 export function drawDashedLineSolo(contextSolo, canvasSolo) {
-	const dashLength = 20;
-	const spaceLength = 10;
+	const dashLength = canvasSolo.size;
+	const spaceLength = canvasSolo.size * 0.8;
 	const centerX = canvasSolo.width / 2;
 	const startY = 0;
 	const endY = canvasSolo.height;
 
 	contextSolo.strokeStyle = "#808080";  // Changed to darker gray
 	contextSolo.lineWidth = 2;
+
+	let currentY = startY;
+	contextSolo.beginPath();
+
+	while (currentY < endY) {
+		contextSolo.moveTo(centerX, currentY);
+		contextSolo.lineTo(centerX, currentY + dashLength);
+		currentY += dashLength + spaceLength;
+	}
+
+	contextSolo.stroke();
+}
+
+export function drawGoalLine(contextSolo, canvasSolo) {
+	const dashLength = canvasSolo.size / 2;
+	const spaceLength = canvasSolo.size / 2;
+	const centerX = canvasSolo.width;
+	const startY = 0;
+	const endY = canvasSolo.height;
+
+	contextSolo.strokeStyle = "#808080";  // Changed to darker gray
+	contextSolo.lineWidth = 1;
 
 	let currentY = startY;
 	contextSolo.beginPath();
@@ -63,13 +85,13 @@ export function drawWallsSolo(contextSolo, canvasSolo) {
 	contextSolo.shadowBlur = 6;
 
 	// Top wall
-	contextSolo.fillRect(0, 0, canvasSolo.width, 5);
+	contextSolo.fillRect(0, 0, canvasSolo.width, canvasSolo.size / 2);
 
 	// Bottom wall
-	contextSolo.fillRect(0, canvasSolo.height - 5, canvasSolo.width, 5);
+	contextSolo.fillRect(0, canvasSolo.height - canvasSolo.size / 2, canvasSolo.width, canvasSolo.size / 2);
 	contextSolo.fillStyle = "rgba(128, 128, 128, 0.48)";  // Matching shadow
 	// left wall
-	contextSolo.fillRect(0, 0, 5, canvasSolo.height);
+	contextSolo.fillRect(0, 0, canvasSolo.size / 2, canvasSolo.height);
 
 	resetStyleSolo(contextSolo);
 }
@@ -93,7 +115,12 @@ export function displayText(contextSolo, canvasSolo)
 	contextSolo.textAlign = "right";
 	contextSolo.textBaseline = "top";
 	contextSolo.fillStyle = "black";
-	contextSolo.fillText('Controls: o (up) l (down)', canvasSolo.size, canvasSolo.size);
+	contextSolo.fillText('Controls: ↑ (up) ↓ (down)', canvasSolo.width - canvasSolo.size * 2, canvasSolo.size);
+
+	contextSolo.textAlign = "left";
+	contextSolo.textBaseline = "top";
+	contextSolo.fillStyle = "rgb(78, 78, 78)";
+	contextSolo.fillText('Pause game: Esc', canvasSolo.size * 2, canvasSolo.size);
 
 	resetStyleSolo(contextSolo);
 }
