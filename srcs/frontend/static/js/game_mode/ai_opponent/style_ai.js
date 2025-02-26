@@ -150,21 +150,8 @@ export function drawWalls(context, canvas, size) {
 
 	// Top wall
 	context.fillRect(0, 0, canvas.width, size / 2);
-
 	// Bottom wall
 	context.fillRect(0, canvas.height - size / 2, canvas.width, size / 2);
-
-	context.fillStyle = "rgba(78, 78, 78, 0.48)";  // Changed to darker gray
-	context.shadowColor = "rgba(128, 128, 128, 0.7)";  // Matching shadow
-	context.shadowOffsetX = 0;
-	context.shadowOffsetY = 0;
-	context.shadowBlur = 6;
-
-	// left wall
-	//context.fillRect(0, 0, size / 2, canvas.height);
-
-	// Right wall
-	//context.fillRect(canvas.width - size / 2, 0, size / 2, canvas.height);
 
 	resetStyle(context);
 }

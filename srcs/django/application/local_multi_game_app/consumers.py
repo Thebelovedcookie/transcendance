@@ -141,7 +141,7 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 			"y": centerY,
 			"size": size,
 			"color": "black",
-			"speed": 4,
+			"speed": 8,
 			"vx": 0,
 			"vy": 0
 		}
