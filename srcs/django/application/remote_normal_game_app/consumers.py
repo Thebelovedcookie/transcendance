@@ -215,8 +215,11 @@ class PongConsumer(AsyncWebsocketConsumer):
 				or m["ball"]["y"] + m["ball"]["width"] + m["ball"]["gravity"]
 				>=  m["canvas"]["canvas_height"]):
 				m["ball"]["gravity"] *= -1
-			m["ball"]["x"] += m["ball"]["speed"]
-			m["ball"]["y"] += m["ball"]["gravity"]
+				m["ball"]["x"] += m["ball"]["speed"]
+				m["ball"]["y"] += m["ball"]["gravity"]
+			else:
+				m["ball"]["x"] += m["ball"]["speed"]
+				m["ball"]["y"] += m["ball"]["gravity"]
 			await self.ballWallCollision(m)
 
 	async def ballWallCollision(self, m):
@@ -367,25 +370,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 	##################### INITIALISATION ##########################
 
-	# place ball in center of canvas and give it a random initial velocity
-	def resetBall(self, m):
-		m["ball"]["x"] = m["canvas"]["canvas_width"] / 2
-		m["ball"]["y"] = m["canvas"]["canvas_height"]  / 2
-		angle = random.random() * math.pi / 3
-		ran = random.random()
-		direction = 1
-		if ran > 0.5:
-			direction = -1
-		ran = random.random()
-		phase = math.pi
-		if ran > 0.5:
-			phase = 0
-		angle = direction * angle + phase
-		m["ball"]["vx"] = m["ball"]["speed"] * math.cos(angle)
-		m["ball"]["vy"] = m["ball"]["speed"] * math.sin(angle)
-		m["ball"]["speed"] = 8 * math.cos(angle)
-		m["ball"]["gravity"] = 8 * math.sin(angle)
-
 	async def initialisation(self, data):
 		matchId = data.get("matchId", None)
 		matchPlaying = next((m for m in self.infoMatch["match"] if m["matchId"] == matchId), None)
@@ -396,18 +380,15 @@ class PongConsumer(AsyncWebsocketConsumer):
 			canvas_height = canvas.get("canvasHeight", 0)
 			canvas_width = canvas.get("canvasWidth", 0)
 
-			canvas_dim = min(canvas_height, canvas_width)
-			size = int(canvas_dim  / 45)
-
-			matchPlaying["canvas"] = {"canvas_height": canvas_height, "canvas_width": canvas_width, "size": size}
+			matchPlaying["canvas"] = {"canvas_height": canvas_height, "canvas_width": canvas_width}
 			if (matchPlaying["playerOne"]["id"] == playerId):
 				matchPlaying["playerOne"].update({
 					"id": playerId,
 					"side": "left",
 					"x": 5,
 					"y": canvas_height * 0.4,
-					"width": size,
-					"height": size * 9,
+					"width": canvas_width / 80,
+					"height": canvas_height / 6,
 					"color": "black",
 					"gravity": 2,
 					"score": 0
@@ -418,8 +399,8 @@ class PongConsumer(AsyncWebsocketConsumer):
 					"side": "right",
 					"x": canvas_width - 20,
 					"y": canvas_height * 0.4,
-					"width": size,
-					"height": size * 9,
+					"width": canvas_width / 80,
+					"height": canvas_height / 6,
 					"color": "black",
 					"gravity": 2,
 					"score": 0
@@ -427,15 +408,11 @@ class PongConsumer(AsyncWebsocketConsumer):
 			matchPlaying["ball"] = {
 				"x": canvas_width / 2,
 				"y": canvas_height / 2,
-				"size": size,
-				"width": size,
-				"height": size,
+				"width": 15,
+				"height": 15,
 				"color": "black",
 				"speed": 5,
-				"gravity": 2,
-				"vx": 0,
-				"vy": 0
+				"gravity": 2
 				}
-			self.resetBall(m)
 
 			return matchId

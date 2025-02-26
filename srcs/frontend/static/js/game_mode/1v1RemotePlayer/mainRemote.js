@@ -4,6 +4,7 @@ import { ForfaitRemoteGamePage } from '../../pages/ForfaitRemoteGamePage.js';
 import { firstPaddle, secondPaddle, ballStyle, drawDashedLine, displayScoreOne, displayScoreTwo, drawWalls} from './style.js';
 let canvas = null;
 let context = null;
+let theme = "base";
 
 class RemoteGameWebSocket {
 	constructor() {
@@ -64,6 +65,7 @@ class RemoteGameWebSocket {
 			const host = window.location.host;
 			const wsUrl = `${protocol}//${host}/ws/pong/`;
 
+			//creer un id aleatoire
 			console.log("Attempting to connect:", wsUrl);
 			this.socket = new WebSocket(wsUrl);
 
@@ -174,6 +176,7 @@ class RemoteGameWebSocket {
 				break;
 			case "game.init":
 				this.isItForMe(data);
+				//display waiting page
 				break;
 			case "game_state":
 				this.updateGame(data);
@@ -227,14 +230,11 @@ class RemoteGameWebSocket {
 			ball: {
 				x: data.ball.x,
 				y: data.ball.y,
-				size: data.ball.size,
 				width: data.ball.width,
 				height: data.ball.height,
 				color: data.ball.color,
 				speed: data.ball.speed,
-				gravity: data.ball.gravity,
-				vx: data.ball.vx,
-				vy: data.ball.vy
+				gravity: data.ball.gravity
 			},
 			score: {
 				scoreMax: data.message.scores.scoreMax
@@ -292,14 +292,11 @@ class RemoteGameWebSocket {
 			ball: {
 				x: data.message.ball.x,
 				y: data.message.ball.y,
-				size: data.message.ball.size,
 				width: data.message.ball.width,
 				height: data.message.ball.height,
 				color: data.message.ball.color,
 				speed: data.message.ball.speed,
-				gravity: data.message.ball.gravity,
-				vx: data.message.ball.vx,
-				vy: data.message.ball.vy
+				gravity: data.message.ball.gravity
 			},
 			score: {
 				scoreMax: data.message.scores.scoreMax
@@ -375,7 +372,7 @@ export function normalMode() {
 
 export function stopGame() {
 	if (gameSocket) {
-		gameSocket.cleanup();
+		gameSocket.cleanup(); // this function is not working properly
 		gameSocket.stopGameLoop();
 		gameSocket.socket.close();
 		gameSocket = null;
