@@ -13,7 +13,6 @@ import { RegisterPage } from './pages/RegisterPage.js';
 import { ProfilePage } from './pages/ProfilePage.js';
 import { SettingPage } from './pages/SettingPage.js';
 import { LogoutPage } from './pages/LogoutPage.js';
-import { TicTacToeGamePage } from './tic_tac_toe/TicTacToeGamePage.js';
 import { AiPage } from './pages/AiPage.js';
 import { Header } from './pages/Header.js';
 import { MultiPage } from './pages/MultiPage.js';
@@ -112,7 +111,6 @@ class Router {
 		this.routes.set('/profile', new ProfilePage());
 		this.routes.set('/settings', new SettingPage());
 		this.routes.set('/logout', new LogoutPage());
-		this.routes.set('/tictactoe', new TicTacToeGamePage());
 		this.routes.set('/pong/solo/ai', new AiPage());
 		this.routes.set('/pong/multi', new MultiPage());
 		this.routes.set('/pong/remote', new RemoteNormalGamePage());
@@ -178,7 +176,6 @@ class Router {
 	//add the history
 	navigateTo(path) {
 		window.history.pushState({}, '', path);
-		// this.handleLocation();
 		window.dispatchEvent(new PopStateEvent('popstate'));
 	}
 	/*--------------------------------------------------------------------------------------*/
