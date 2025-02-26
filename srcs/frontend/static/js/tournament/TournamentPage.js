@@ -96,7 +96,7 @@ export class TournamentPage {
 			});
 
 			if (emptyNames) {
-				errors.push('All players must have names');
+				errors.push(translationsData["emptynames"]);
 			}
 		}
 
