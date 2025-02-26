@@ -40,7 +40,7 @@ function init_canvasSolo(){
 
 	controllerSolo = {
 		"ArrowUp": {pressedSolo: false, func: movePaddleUpP2Solo},
-		"l": {pressedSolo: false, func: movePaddleDownP2Solo},
+		"ArrowDown": {pressedSolo: false, func: movePaddleDownP2Solo},
 		}
 }
 
@@ -78,7 +78,7 @@ const executeMovesSolo = () => {
 	})}
 
 function movePaddleUpP2Solo() {
-	if (controllerSolo["o"].pressedSolo == true) {
+	if (controllerSolo["ArrowUp"].pressedSolo == true) {
 		const nextY = playerOneSolo.y - playerOneSolo.gravity * 7;
 
 		if (nextY > 10) {
@@ -90,7 +90,7 @@ function movePaddleUpP2Solo() {
 }
 
 function movePaddleDownP2Solo() {
-	if (controllerSolo["l"].pressedSolo == true) {
+	if (controllerSolo["ArrowDown"].pressedSolo == true) {
 		const nextY = playerOneSolo.y + playerOneSolo.gravity * 7;
 
 		if (nextY + playerOneSolo.height < canvasSolo.height - 10) {
@@ -190,6 +190,7 @@ export function resetGameSolo()
 {
 	canvasSolo.height = window.innerHeight * 0.8;
 	canvasSolo.width = canvasSolo.height * (16/9);
+	canvasSolo.size = Math.round(Math.min(canvasSolo.height, canvasSolo.width) / 45);
 	playerOneSolo.x = canvasSolo.width - 20;
 	playerOneSolo.y = canvasSolo.height * 0.4;
 	playerOneSolo.width = canvasSolo.width / 80;
@@ -204,8 +205,8 @@ export function resetGameSolo()
 	ballSolo.gravity = 3;
 
 	controllerSolo = {
-		"o": {pressedSolo: false, func: movePaddleUpP2Solo},
-		"l": {pressedSolo: false, func: movePaddleDownP2Solo},
+		"ArrowUp": {pressedSolo: false, func: movePaddleUpP2Solo},
+		"ArrowDown": {pressedSolo: false, func: movePaddleDownP2Solo},
 		}
 	window.addEventListener("keydown", keyDownHandlerSolo);
 	window.addEventListener("keyup", keyUpHandlerSolo);
