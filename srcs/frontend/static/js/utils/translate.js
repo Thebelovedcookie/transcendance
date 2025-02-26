@@ -8,7 +8,7 @@ async function loadTranslations(lang) {
             throw new Error(`Erreur de chargement des traductions: ${response.statusText}`);
         }
         const translations = await response.json();
-        console.log("Données chargées depuis JSON :", translations);
+        // console.log("Données chargées depuis JSON :", translations);
         return translations[lang] || {};
     } catch (error) {
         console.error("Erreur lors du chargement des traductions :", error);
@@ -19,7 +19,7 @@ async function loadTranslations(lang) {
 async function updateTexts(lang) {
     console.log("Mise à jour du texte en:", lang);
     const translations = await loadTranslations(lang);
-    console.log("Traductions chargées :", translations);
+    // console.log("Traductions chargées :", translations);
 
 	// Sauvegarde les traductions pour les erreurs
 	translationsData = translations; 
