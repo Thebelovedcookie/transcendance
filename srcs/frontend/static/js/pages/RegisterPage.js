@@ -19,7 +19,7 @@ export class RegisterPage {
 
 							<div class="form-outline form-white mb-4">
 								<input type="email" id="typeEmailX" class="form-control form-control-lg" placeholder="Email" data-translate="email_placeholder"/>
-								<div id="emailError" class="text-danger small mt-1" style="display: none;" data-transfert= "Email-user"></div>
+								<div id="emailError" class="text-danger small mt-1" style="display: none;" data-translate= "error-email"></div>
 							</div>
 
 							<div class="form-outline form-white mb-4">
@@ -135,34 +135,29 @@ export class RegisterPage {
 		}
 
 		// Validate email
-		if (!email.value.trim()) {
-			emailError.textContent = 'Please enter your email';
+		if (!email.value.trim()) {		
 			emailError.style.display = 'block';
 			isValid = false;
-		} else if (!this.isValidEmail(email.value)) {
-			emailError.textContent = 'Please enter a valid email address';
+		} else if (!this.isValidEmail(email.value)) {			
 			emailError.style.display = 'block';
 			isValid = false;
 		}
 
 		// Validate password
-		if (!password.value.trim()) {
-			passwordError.textContent = 'Please enter your password';
+		if (!password.value.trim()) {		
 			passwordError.style.display = 'block';
 			isValid = false;
 		} else if (password.value.length < 8) {
-			passwordError.textContent = 'Password must be at least 8 characters';
 			passwordError.style.display = 'block';
 			isValid = false;
 		}
 
 		// Validate confirm password
 		if (!confirmPassword.value.trim()) {
-			confirmPasswordError.textContent = 'Please confirm your password';
 			confirmPasswordError.style.display = 'block';
 			isValid = false;
 		} else if (password.value !== confirmPassword.value) {
-			confirmPasswordError.textContent = 'Passwords do not match';
+			confirmPasswordError.textContent = translationsData["error-pwd3"];;
 			confirmPasswordError.style.display = 'block';
 			isValid = false;
 		}
@@ -219,7 +214,7 @@ export class RegisterPage {
 		// Show/hide error message
 		const confirmPasswordError = document.getElementById('confirmPasswordError');
 		if (password !== originalPassword && password !== '') {
-			confirmPasswordError.textContent = 'Passwords do not match';
+			confirmPasswordError.textContent = translationsData["error-pwd3"];
 			confirmPasswordError.style.display = 'block';
 		} else {
 			confirmPasswordError.style.display = 'none';
