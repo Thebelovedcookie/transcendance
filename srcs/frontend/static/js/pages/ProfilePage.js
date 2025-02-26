@@ -1,3 +1,5 @@
+import { SafeText } from '../utils/safetext.js';
+
 export class ProfilePage {
 	constructor() {
 		this.container = document.getElementById('dynamicPage');
@@ -68,7 +70,7 @@ export class ProfilePage {
 							<span class="online-status ${this.userData.is_online ? 'online' : ''}"></span>
 						</div>
 						<div class="profile-details">
-							<h1>${this.userData.username}</h1>
+							<h1>${SafeText.escape(this.userData.username)}</h1>
 							<p>Member since: ${new Date(this.userData.join_date).toLocaleDateString()}</p>
 							<button class="edit-profile-btn">
 								<i class="fas fa-edit"></i> Edit Profile
@@ -146,7 +148,7 @@ export class ProfilePage {
 		const matchesList = visibleMatches.map(match => `
 			<div class="match-card ${match.result.toLowerCase()}">
 				<div class="match-info">
-					<span class="match-opponent">vs ${match.opponent ? match.opponent.username : 'Deleted User'}</span>
+					<span class="match-opponent">vs ${SafeText.escape(match.opponent ? match.opponent.username : 'Deleted User')}</span>
 					<span class="match-score">${match.user_score} - ${match.opponent_score}</span>
 				</div>
 				<div class="match-details">
@@ -160,7 +162,7 @@ export class ProfilePage {
 		const viewAllButton = remainingCount > 0 ? `
 			<button class="view-all-matches-btn">
 				<i class="fas fa-history"></i>
-				View All Matches (${remainingCount} more)
+				View All Matches (${SafeText.escape(remainingCount)} more)
 			</button>
 		` : '';
 
@@ -179,30 +181,30 @@ export class ProfilePage {
 		const remainingCount = allFriends.length - MAX_VISIBLE_FRIENDS;
 
 		const friendsList = visibleFriends.map(friend => `
-			<div class="friend-card" data-userid="${friend.id}">
+			<div class="friend-card" data-userid="${SafeText.escape(friend.id)}">
 				<div class="friend-avatar-container">
-					<img src="${friend.profile_image || '/static/img/anonymous.webp'}" alt="${friend.username}" class="friend-avatar">
-					<span class="online-status ${friend.is_online ? 'online' : ''}"></span>
+					<img src="${SafeText.escape(friend.profile_image || '/static/img/anonymous.webp')}" alt="${SafeText.escape(friend.username)}" class="friend-avatar">
+					<span class="online-status ${SafeText.escape(friend.is_online ? 'online' : '')}"></span>
 				</div>
 				<div class="friend-info">
-					<h3>${friend.username}</h3>
-					<p class="last-seen">${friend.is_online ? 'Online' : `Last seen ${new Date(friend.lastSeen).toLocaleDateString()}`}</p>
+					<h3>${SafeText.escape(friend.username)}</h3>
+					<p class="last-seen">${SafeText.escape(friend.is_online ? 'Online' : `Last seen ${new Date(friend.lastSeen).toLocaleDateString()}`)}</p>
 					<div class="game-stats">
 						<div class="stat-item">
 							<span class="stat-label">Wins:</span>
-							<span class="stat-value wins">${friend.wins}</span>
+							<span class="stat-value wins">${SafeText.escape(friend.wins)}</span>
 						</div>
 						<div class="stat-item">
 							<span class="stat-label">Losses:</span>
-							<span class="stat-value losses">${friend.losses}</span>
+							<span class="stat-value losses">${SafeText.escape(friend.losses)}</span>
 						</div>
 						<div class="stat-item">
 							<span class="stat-label">Total Games:</span>
-							<span class="stat-value totalGames">${friend.totalGames}</span>
+							<span class="stat-value totalGames">${SafeText.escape(friend.totalGames)}</span>
 						</div>
 						<div class="stat-item">
 							<span class="stat-label">Win Rate:</span>
-							<span class="stat-value win-rate">${this.calculateWinRate(friend.wins, friend.totalGames)}%</span>
+							<span class="stat-value win-rate">${SafeText.escape(this.calculateWinRate(friend.wins, friend.totalGames))}%</span>
 						</div>
 					</div>
 				</div>
@@ -213,7 +215,7 @@ export class ProfilePage {
 		const viewAllButton = remainingCount > 0 ? `
 			<button class="view-all-friends-btn">
 				<i class="fas fa-users"></i>
-				View All Friends (${remainingCount} more)
+				View All Friends (${SafeText.escape(remainingCount)} more)
 			</button>
 		` : '';
 
@@ -315,7 +317,7 @@ export class ProfilePage {
 				<form id="editProfileForm">
 					<div class="avatar-upload">
 						<div class="avatar-preview">
-							<img src="${this.userData.image_path || this.default_path}" alt="Profile" id="avatarPreview">
+							<img src="${SafeText.escape(this.userData.image_path || this.default_path)}" alt="Profile" id="avatarPreview">
 						</div>
 						<div class="avatar-edit">
 							<input type="file" id="avatarInput" accept="image/*">
@@ -327,11 +329,11 @@ export class ProfilePage {
 					</div>
 					<div class="form-group">
 						<label>Username</label>
-						<input type="text" value="${this.userData.username}" class="form-input">
+						<input type="text" value="${SafeText.escape(this.userData.username)}" class="form-input">
 					</div>
 					<div class="form-group">
 						<label>Email</label>
-						<input type="email" value="${this.userData.email}" class="form-input">
+						<input type="email" value="${SafeText.escape(this.userData.email)}" class="form-input">
 					</div>
 					<div class="modal-actions">
 						<button type="button" class="cancel-btn">Cancel</button>
@@ -485,9 +487,9 @@ export class ProfilePage {
 					resultsContainer.innerHTML = result.data.map(user => `
 						<div class="search-result-item">
 							<div class="user-info">
-								<img src="${user.profile_image || '/static/img/anonymous.webp'}" alt="${user.username}" class="user-avatar">
+								<img src="${user.profile_image || '/static/img/anonymous.webp'}" alt="${SafeText.escape(user.username)}" class="user-avatar">
 								<div class="user-details">
-									<h3>${user.username}</h3>
+									<h3>${SafeText.escape(user.username)}</h3>
 									<span class="status ${user.is_online ? 'online' : ''}">${user.is_online ? 'Online' : 'Offline'}</span>
 								</div>
 							</div>
@@ -558,26 +560,26 @@ export class ProfilePage {
 				<h2>Friend Info</h2>
 				<div class="friend-profile">
 					<div class="friend-avatar-large">
-						<img src="${friendInfo.profile_image}" alt="${friendInfo.username}">
-						<span class="online-status ${friendInfo.is_online ? 'online' : ''}"></span>
+						<img src="${SafeText.escape(friendInfo.profile_image)}" alt="${SafeText.escape(friendInfo.username)}">
+						<span class="online-status ${SafeText.escape(friendInfo.is_online ? 'online' : '')}"></span>
 					</div>
 					<div class="friend-details">
-						<h3>${friendInfo.username}</h3>
+						<h3>${SafeText.escape(friendInfo.username)}</h3>
 						<p class="status-text">
-							${friendInfo.is_online ? 'Online' : `Last seen ${new Date(friendInfo.lastSeen).toLocaleDateString()}`}
+							${SafeText.escape(friendInfo.is_online ? 'Online' : `Last seen ${new Date(friendInfo.lastSeen).toLocaleDateString()}`)}
 						</p>
 						<div class="stats-container">
 							<div class="stat-box">
 								<span class="stat-title">Wins</span>
-								<span class="stat-number wins">${friendInfo.wins}</span>
+								<span class="stat-number wins">${SafeText.escape(friendInfo.wins)}</span>
 							</div>
 							<div class="stat-box">
 								<span class="stat-title">Losses</span>
-								<span class="stat-number losses">${friendInfo.losses}</span>
+								<span class="stat-number losses">${SafeText.escape(friendInfo.losses)}</span>
 							</div>
 							<div class="stat-box">
 								<span class="stat-title">Total Games</span>
-								<span class="stat-number total">${friendInfo.totalGames}</span>
+								<span class="stat-number total">${SafeText.escape(friendInfo.totalGames)}</span>
 							</div>
 							<div class="stat-box">
 								<span class="stat-title">Win Rate</span>
@@ -721,30 +723,30 @@ export class ProfilePage {
 				<h2>All Friends</h2>
 				<div class="friends-list-container">
 					${this.userData.friends.map(friend => `
-						<div class="friend-card" data-userid="${friend.id}">
+						<div class="friend-card" data-userid="${SafeText.escape(friend.id)}">
 							<div class="friend-avatar-container">
-								<img src="${friend.profile_image || '/static/img/anonymous.webp'}" alt="${friend.username}" class="friend-avatar">
-								<span class="online-status ${friend.is_online ? 'online' : ''}"></span>
+								<img src="${SafeText.escape(friend.profile_image || '/static/img/anonymous.webp')}" alt="${SafeText.escape(friend.username)}" class="friend-avatar">
+								<span class="online-status ${SafeText.escape(friend.is_online ? 'online' : '')}"></span>
 							</div>
 							<div class="friend-info">
-								<h3>${friend.username}</h3>
+								<h3>${SafeText.escape(friend.username)}</h3>
 								<p class="last-seen">${friend.is_online ? 'Online' : `Last seen ${new Date(friend.lastSeen).toLocaleDateString()}`}</p>
 								<div class="game-stats">
 									<div class="stat-item">
 										<span class="stat-label">Wins:</span>
-										<span class="stat-value wins">${friend.wins}</span>
+										<span class="stat-value wins">${SafeText.escape(friend.wins)}</span>
 									</div>
 									<div class="stat-item">
 										<span class="stat-label">Losses:</span>
-										<span class="stat-value losses">${friend.losses}</span>
+										<span class="stat-value losses">${SafeText.escape(friend.losses)}</span>
 									</div>
 									<div class="stat-item">
 										<span class="stat-label">Total Games:</span>
-										<span class="stat-value totalGames">${friend.totalGames}</span>
+										<span class="stat-value totalGames">${SafeText.escape(friend.totalGames)}</span>
 									</div>
 									<div class="stat-item">
 										<span class="stat-label">Win Rate:</span>
-										<span class="stat-value win-rate">${this.calculateWinRate(friend.wins, friend.totalGames)}%</span>
+										<span class="stat-value win-rate">${SafeText.escape(this.calculateWinRate(friend.wins, friend.totalGames))}%</span>
 									</div>
 								</div>
 							</div>
@@ -805,12 +807,12 @@ export class ProfilePage {
 					${this.userData.match_history.map(match => `
 						<div class="match-card ${match.result.toLowerCase()}">
 							<div class="match-info">
-								<span class="match-opponent">vs ${match.opponent ? match.opponent.username : 'Deleted User'}</span>
-								<span class="match-score">${match.user_score} - ${match.opponent_score}</span>
+								<span class="match-opponent">vs ${SafeText.escape(match.opponent ? match.opponent.username : 'Deleted User')}</span>
+								<span class="match-score">${SafeText.escape(match.user_score)} - ${SafeText.escape(match.opponent_score)}</span>
 							</div>
 							<div class="match-details">
-								<span class="match-result">${match.result}</span>
-								<span class="match-date">${new Date(match.played_at).toLocaleDateString()}</span>
+								<span class="match-result">${SafeText.escape(match.result)}</span>
+								<span class="match-date">${SafeText.escape(new Date(match.played_at).toLocaleDateString())}</span>
 							</div>
 						</div>
 					`).join('')}
@@ -895,3 +897,5 @@ export class ProfilePage {
 		return ;
 	}
 }
+
+

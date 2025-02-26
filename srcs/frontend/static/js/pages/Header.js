@@ -1,3 +1,5 @@
+import { SafeText } from '../utils/safetext';
+
 export class Header {
 	constructor() {
 		this.container = document.getElementById('header-container');
@@ -24,7 +26,7 @@ export class Header {
 								<option value="ja">日本語</option>
 							</select>
 							${isLoggedIn ?
-								`<span class="text-light me-3">Welcome, ${username}!</span>
+								`<span class="text-light me-3">Welcome, ${SafeText.escape(username)}!</span>
 								 <div class="dropdown">
 									<img src="/static/img/anonymous.webp" class="rounded-circle" alt="Profile" width="40" height="40" style="cursor: pointer" data-bs-toggle="dropdown">
 									<ul class="dropdown-menu dropdown-menu-end">
@@ -50,7 +52,7 @@ export class Header {
 			const savedLang = localStorage.getItem("selectedLang") || "en";
 			document.getElementById("languageSelector").value = savedLang;
 			await updateTexts(savedLang);
-	
+
 			// Ajouter un écouteur d'événements pour changer la langue
 			document.getElementById("languageSelector").addEventListener("change", async (event) => {
 				const selectedLang = event.target.value;
@@ -61,7 +63,7 @@ export class Header {
 			console.error('Failed to render header:', error);
 		}
 	}
-	
+
 	clean() {
 		return ;
 	}
