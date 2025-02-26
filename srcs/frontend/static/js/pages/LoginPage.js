@@ -143,7 +143,8 @@ export class LoginPage {
 			window.router.navigateTo('/profile');
 
 		} catch (error) {
-			passwordError.textContent = 'failed to login';
+			console.error('Error details:', error);
+			passwordError.textContent = translationsData["ErrorLogin"];
 			passwordError.style.display = 'block';
 			if (response.status == 403) {
 				window.router.refreshToken();

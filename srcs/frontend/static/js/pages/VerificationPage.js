@@ -40,23 +40,23 @@ export class VerificationPage {
 				<div class="card bg-dark text-white" style="border-radius: 1rem;">
 					<div class="card-body p-5 text-center">
 						<div class="mb-md-5 mt-md-4 pb-5">
-							<h2 class="fw-bold mb-2 text-uppercase">Email Verification</h2>
-							<p class="text-white-50 mb-5">Please enter the 6-digit code sent to your email</p>
+							<h2 class="fw-bold mb-2 text-uppercase" data-translate="EmailVerification"></h2>
+							<p class="text-white-50 mb-5" data-translate="digit-code"></p>
 
 							<div class="form-outline form-white mb-4">
 								<input type="text" id="verificationCode" class="form-control form-control-lg"
-									maxlength="6" placeholder="Enter 6-digit code" />
-								<div id="codeError" class="text-danger small mt-1" style="display: none;">
-									Invalid verification code
+									maxlength="6" placeholder="Enter 6-digit code" data-translate="code-placeholder"/>
+								<div id="codeError" class="text-danger small mt-1" style="display: none;" data-translate="Invalid-Code">
+
 								</div>
 							</div>
 
-							<button class="btn btn-outline-light btn-lg px-5" type="submit" id="verifyButton">
-								Verify Email
+							<button class="btn btn-outline-light btn-lg px-5" type="submit" id="verifyButton" data-translate="Verify-Email">
+
 							</button>
 
 							<div class="mt-3">
-								<button class="btn btn-link text-white-50" id="resendButton">
+								<button class="btn btn-link text-white-50" id="resendButton" data-translate="recode">
 									Resend verification code
 								</button>
 							</div>
@@ -108,7 +108,7 @@ export class VerificationPage {
 				// Redirect to login page
 				window.router.navigateTo('/login');
 			} else {
-				codeError.textContent = data.message || 'Invalid verification code';
+				codeError.textContent = data.message || translationsData["Invalid-Code"];
 				codeError.style.display = 'block';
 				if (response.status == 403) {
 					window.router.refreshToken();
@@ -116,7 +116,7 @@ export class VerificationPage {
 			}
 		} catch (error) {
 			console.error('Error:', error);
-			codeError.textContent = 'An error occurred. Please try again.';
+			codeError.textContent = translationsData["stdErrorVerif"];;
 			codeError.style.display = 'block';
 			if (response.status == 403) {
 				window.router.refreshToken();
@@ -161,7 +161,7 @@ export class VerificationPage {
 			}
 		} catch (error) {
 			console.error('Error:', error);
-			alert('An error occurred. Please try again.');
+			alert(translationsData["stdErrorVerif"]);
 			if (response.status == 403) {
 				window.router.refreshToken();
 			}

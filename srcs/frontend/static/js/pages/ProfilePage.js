@@ -71,19 +71,23 @@ export class ProfilePage {
 						</div>
 						<div class="profile-details">
 							<h1>${SafeText.escape(this.userData.username)}</h1>
-							<p>Member since: ${new Date(this.userData.join_date).toLocaleDateString()}</p>
-							<button class="edit-profile-btn">
-								<i class="fas fa-edit"></i> Edit Profile
+							<p>
+								<span data-translate="memberdate"></span>
+							 	<span> ${new Date(this.userData.join_date).toLocaleDateString()}</span>
+							 </p>
+							<button class="edit-profile-btn" data-translate="EditProfile">
+								<i class="fas fa-edit"></i>
+									Edit Profile
 							</button>
 						</div>
 					</div>
 					<div class="profile-stats">
 						<div class="stat-card">
-							<h3>Total Games</h3>
+							<h3 data-translate="TotalGame"></h3>
 							<p>${this.userData.total_games}</p>
 						</div>
 						<div class="stat-card">
-							<h3>Win Rate</h3>
+							<h3 data-translate="WinRate"></h3>
 							<p>${this.userData.win_percent}%</p>
 						</div>
 					</div>
@@ -91,14 +95,14 @@ export class ProfilePage {
 
 				<div class="profile-content">
 					<div class="profile-section stats-section">
-						<h2>Performance Stats</h2>
+						<h2 data-translate= "perf"></h2>
 						<div class="chart-container">
 							<canvas id="performanceChart"></canvas>
 						</div>
 					</div>
 
 					<div class="profile-section history-section">
-						<h2>Recent Matches</h2>
+						<h2 data-translate = "matchs" ></h2>
 						<div class="match-history">
 							${this.renderMatchHistory()}
 						</div>
@@ -106,9 +110,10 @@ export class ProfilePage {
 
 					<div class="profile-section friends-section">
 						<div class="friends-header">
-							<h2>Friends</h2>
+							<h2 data-translate = "friends" ></h2>
 							<button class="search-friends-btn">
-								<i class="fas fa-search"></i> Search Friends
+								<i class="fas fa-search"></i>
+									<span data-translate="Searchfriends"></span>
 							</button>
 						</div>
 						<div id="friends-list">
@@ -162,7 +167,7 @@ export class ProfilePage {
 		const viewAllButton = remainingCount > 0 ? `
 			<button class="view-all-matches-btn">
 				<i class="fas fa-history"></i>
-				View All Matches (${SafeText.escape(remainingCount)} more)
+				<span data-translate ="viewAll"> </span>
 			</button>
 		` : '';
 
@@ -191,19 +196,19 @@ export class ProfilePage {
 					<p class="last-seen">${SafeText.escape(friend.is_online ? 'Online' : `Last seen ${new Date(friend.lastSeen).toLocaleDateString()}`)}</p>
 					<div class="game-stats">
 						<div class="stat-item">
-							<span class="stat-label">Wins:</span>
+							<span class="stat-label" data-translate="wins"></span>
 							<span class="stat-value wins">${SafeText.escape(friend.wins)}</span>
 						</div>
 						<div class="stat-item">
-							<span class="stat-label">Losses:</span>
+							<span class="stat-label" data-translate="losses"></span>
 							<span class="stat-value losses">${SafeText.escape(friend.losses)}</span>
 						</div>
 						<div class="stat-item">
-							<span class="stat-label">Total Games:</span>
+							<span class="stat-label" data-translate="TotalGame">:</span>
 							<span class="stat-value totalGames">${SafeText.escape(friend.totalGames)}</span>
 						</div>
 						<div class="stat-item">
-							<span class="stat-label">Win Rate:</span>
+							<span class="stat-label" data-translate ="WinRate">:</span>
 							<span class="stat-value win-rate">${SafeText.escape(this.calculateWinRate(friend.wins, friend.totalGames))}%</span>
 						</div>
 					</div>
@@ -215,7 +220,7 @@ export class ProfilePage {
 		const viewAllButton = remainingCount > 0 ? `
 			<button class="view-all-friends-btn">
 				<i class="fas fa-users"></i>
-				View All Friends (${SafeText.escape(remainingCount)} more)
+					<span data-translate ="viewAll"> </span>
 			</button>
 		` : '';
 
@@ -313,7 +318,7 @@ export class ProfilePage {
 		modal.className = 'edit-profile-modal';
 		modal.innerHTML = `
 			<div class="modal-content">
-				<h2>Edit Profile</h2>
+				<h2 data-translate"="EditProfile"></h2>
 				<form id="editProfileForm">
 					<div class="avatar-upload">
 						<div class="avatar-preview">
@@ -321,14 +326,14 @@ export class ProfilePage {
 						</div>
 						<div class="avatar-edit">
 							<input type="file" id="avatarInput" accept="image/*">
-							<label for="avatarInput">
+							<label for="avatarInput" data-translate="ChangePhoto">
 								<i class="fas fa-camera"></i>
 								Change Photo
 							</label>
 						</div>
 					</div>
 					<div class="form-group">
-						<label>Username</label>
+						<label data-translate ="Username">Username</label>
 						<input type="text" value="${SafeText.escape(this.userData.username)}" class="form-input">
 					</div>
 					<div class="form-group">
@@ -336,8 +341,8 @@ export class ProfilePage {
 						<input type="email" value="${SafeText.escape(this.userData.email)}" class="form-input">
 					</div>
 					<div class="modal-actions">
-						<button type="button" class="cancel-btn">Cancel</button>
-						<button type="submit" class="save-btn">Save Changes</button>
+						<button type="button" class="cancel-btn" data-translate ="cancel" >Cancel</button>
+						<button type="submit" class="save-btn" data-translate="SaveChanges" >Save Changes</button>
 					</div>
 				</form>
 				<button class="modal-close">&times;</button>
@@ -424,8 +429,8 @@ export class ProfilePage {
 			<div class="modal-content">
 				<h2>Search Friends</h2>
 				<div class="search-container">
-					<input type="text" id="friendSearchInput" placeholder="Search by username..." class="form-input">
-					<button type="button" id="searchButton" class="search-btn">
+					<input type="text" id="friendSearchInput" placeholder="Search by username..." data-translate= "searchUser_placeholder" class="form-input">
+					<button type="button" id="searchButton" class="search-btn" data-translate="Search">
 						<i class="fas fa-search"></i> Search
 					</button>
 				</div>
@@ -433,7 +438,7 @@ export class ProfilePage {
 					<!-- Search results will be displayed here -->
 				</div>
 				<div class="modal-actions">
-					<button type="button" class="cancel-btn">Close</button>
+					<button type="button" class="cancel-btn" data-translate="close">Close</button>
 				</div>
 				<button class="modal-close">&times;</button>
 			</div>
@@ -557,7 +562,7 @@ export class ProfilePage {
 		modal.className = 'friend-info-modal';
 		modal.innerHTML = `
 			<div class="modal-content">
-				<h2>Friend Info</h2>
+				<h2 data-translate= "friends"></h2>
 				<div class="friend-profile">
 					<div class="friend-avatar-large">
 						<img src="${SafeText.escape(friendInfo.profile_image)}" alt="${SafeText.escape(friendInfo.username)}">
@@ -570,31 +575,31 @@ export class ProfilePage {
 						</p>
 						<div class="stats-container">
 							<div class="stat-box">
-								<span class="stat-title">Wins</span>
+								<span class="stat-title" data-translate="wins"></span>
 								<span class="stat-number wins">${SafeText.escape(friendInfo.wins)}</span>
 							</div>
 							<div class="stat-box">
-								<span class="stat-title">Losses</span>
+								<span class="stat-title" data-translate="losses"></span>
 								<span class="stat-number losses">${SafeText.escape(friendInfo.losses)}</span>
 							</div>
 							<div class="stat-box">
-								<span class="stat-title">Total Games</span>
+								<span class="stat-title" data-translate="TotalGame"></span>
 								<span class="stat-number total">${SafeText.escape(friendInfo.totalGames)}</span>
 							</div>
 							<div class="stat-box">
-								<span class="stat-title">Win Rate</span>
+								<span class="stat-title" data-translate="WinRate"></span
 								<span class="stat-number win-rate">
 									${this.calculateWinRate(friendInfo.wins, friendInfo.totalGames)}%
 								</span>
 							</div>
 						</div>
-						<button class="remove-friend-btn danger-btn">
+						<button class="remove-friend-btn danger-btn" data-translate="removeFriend">
 							<i class="fas fa-user-minus"></i> Remove Friend
 						</button>
 					</div>
 				</div>
 				<div class="modal-actions">
-					<button type="button" class="close-btn">Close</button>
+					<button type="button" class="close-btn" data-translate="close">Close</button>
 				</div>
 				<button class="modal-close">&times;</button>
 			</div>
@@ -624,11 +629,15 @@ export class ProfilePage {
 		modal.className = 'confirm-modal';
 		modal.innerHTML = `
 			<div class="modal-content">
-				<h2>Remove Friend</h2>
-				<p class="warning-text">Are you sure you want to remove ${username} from your friends list? This action cannot be undone.</p>
+					<h2 data-translate ="removeFriend"></h2>
+				    <p class="warning-text">
+       					<span data-translate="warning1"></span>
+        				<span class="username">${username}</span>
+        				<span data-translate="warning2"></span>
+    				</p>
 				<div class="modal-actions">
-					<button type="button" class="cancel-btn">Cancel</button>
-					<button type="button" class="confirm-btn danger-btn">Remove Friend</button>
+					<button type="button" class="cancel-btn" data-translate="cancel">Cancel</button>
+					<button type="button" class="confirm-btn danger-btn" data-translate="removeFriend">Remove Friend</button>
 				</div>
 			</div>
 		`;
@@ -686,7 +695,7 @@ export class ProfilePage {
 		this.chart = new Chart(ctx, {
 			type: 'doughnut',
 			data: {
-				labels: ['Wins', 'Losses'],
+				labels: [translationsData["wins"], translationsData["losses"]],
 				datasets: [{
 					data: [this.userData.wins, this.userData.losses],
 					backgroundColor: [
@@ -720,7 +729,7 @@ export class ProfilePage {
 		modal.className = 'friend-info-modal';
 		modal.innerHTML = `
 			<div class="modal-content">
-				<h2>All Friends</h2>
+				<h2 data-translate="AllFriends"></h2>
 				<div class="friends-list-container">
 					${this.userData.friends.map(friend => `
 						<div class="friend-card" data-userid="${SafeText.escape(friend.id)}">
@@ -733,19 +742,19 @@ export class ProfilePage {
 								<p class="last-seen">${friend.is_online ? 'Online' : `Last seen ${new Date(friend.lastSeen).toLocaleDateString()}`}</p>
 								<div class="game-stats">
 									<div class="stat-item">
-										<span class="stat-label">Wins:</span>
+										<span class="stat-label" data-translate="wins"></span>
 										<span class="stat-value wins">${SafeText.escape(friend.wins)}</span>
 									</div>
 									<div class="stat-item">
-										<span class="stat-label">Losses:</span>
+										<span class="stat-label" datat-translate ="losses"></span>
 										<span class="stat-value losses">${SafeText.escape(friend.losses)}</span>
 									</div>
 									<div class="stat-item">
-										<span class="stat-label">Total Games:</span>
+										<span class="stat-label" data-translate="TotalGame">:</span>
 										<span class="stat-value totalGames">${SafeText.escape(friend.totalGames)}</span>
 									</div>
 									<div class="stat-item">
-										<span class="stat-label">Win Rate:</span>
+										<span class="stat-label" data-translate ="WinRate">:</span>
 										<span class="stat-value win-rate">${SafeText.escape(this.calculateWinRate(friend.wins, friend.totalGames))}%</span>
 									</div>
 								</div>
@@ -754,7 +763,7 @@ export class ProfilePage {
 					`).join('')}
 				</div>
 				<div class="modal-actions">
-					<button type="button" class="close-btn">Close</button>
+					<button type="button" class="close-btn" data-translate="close">Close</button>
 				</div>
 				<button class="modal-close">&times;</button>
 			</div>
@@ -802,7 +811,7 @@ export class ProfilePage {
 		modal.className = 'match-history-modal';
 		modal.innerHTML = `
 			<div class="modal-content">
-				<h2>Match History</h2>
+				<h2 data-translate = "MatchHistory"></h2>
 				<div class="matches-list-container">
 					${this.userData.match_history.map(match => `
 						<div class="match-card ${match.result.toLowerCase()}">
@@ -818,7 +827,7 @@ export class ProfilePage {
 					`).join('')}
 				</div>
 				<div class="modal-actions">
-					<button type="button" class="close-btn">Close</button>
+					<button type="button" class="close-btn" data-translate="close">Close</button>
 				</div>
 				<button class="modal-close">&times;</button>
 			</div>

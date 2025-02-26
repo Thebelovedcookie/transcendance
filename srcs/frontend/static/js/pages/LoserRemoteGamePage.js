@@ -14,7 +14,7 @@ export class LoserRemoteGamePage {
         gameContent.innerHTML = `
             <div class="match-result animate-fade-in">
                 <div class="result-header">
-                    <h2 class="match-title animate-slide-down" data-translate = "matchresult">/h2>
+                    <h2 class="match-title animate-slide-down" data-translate = "matchresult">MATCH RESULT</h2>
                     <div class="players-result">
                         <div class="loser-section">
                             <span class="result-label" data-translate ="defeat">DEFEAT</span>
@@ -23,7 +23,7 @@ export class LoserRemoteGamePage {
                 </div>
 
                 <button id="returnToGame" class="next-match-btn animate-fade-in-up">
-                    <span class="btn-text" data-translate="ReturnGame"></span>
+                    <span class="btn-text" data-translate="ReturnGame">RETURN TO GAME</span>
                     <div class="btn-animation-container">
                         <span class="btn-ping"></span>
                     </div>

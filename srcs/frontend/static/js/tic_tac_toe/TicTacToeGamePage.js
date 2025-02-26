@@ -25,7 +25,7 @@ export class TicTacToeGamePage {
 				<div cellIndex="8" class="cell"></div>
 			</div>
 			<h2 id="statusText"></h2>
-			<button class="play-btn" id="restartButton"> Restart </button>
+			<button class="play-btn" id="restartButton" data-translate ="Restart"> Restart </button>
 		`;
 
 		this.container.innerHTML = '';
