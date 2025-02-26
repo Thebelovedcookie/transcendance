@@ -1,10 +1,9 @@
 import { WinnerRemoteGamePage } from '../../pages/WinnerRemoteGamePage.js';
 import { LoserRemoteGamePage } from '../../pages/LoserRemoteGamePage.js';
 import { ForfaitRemoteGamePage } from '../../pages/ForfaitRemoteGamePage.js';
-import { firstPaddle, secondPaddle, ballStyle, drawDashedLine, displayScoreOne, displayScoreTwo, drawWalls} from './style.js';
+import { drawPaddle, ballStyle, drawGoalLine, drawDashedLine, displayScoreOne, displayScoreTwo, drawWalls, displayText} from './style.js';
 let canvas = null;
 let context = null;
-let theme = "base";
 
 class RemoteGameWebSocket {
 	constructor() {
@@ -338,17 +337,20 @@ class RemoteGameWebSocket {
 
 	drawGame() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
-		firstPaddle(context, this.gameState.me);
-		firstPaddle(context, this.gameState.opponent);
-		ballStyle(context, this.gameState.ball);
-		drawDashedLine(context, canvas);
 		drawWalls(context, canvas);
+		drawPaddle(context, this.gameState.me);
+		drawPaddle(context, this.gameState.opponent);
+		ballStyle(context, this.gameState.ball);
+		drawDashedLine(context, canvas, this.gameState.ball.width);
+		drawGoalLine(context, canvas, this.gameState.ball.width, 0);
+		drawGoalLine(context, canvas, this.gameState.ball.width, canvas.width);
 
 		const scoreOne = this.gameState.me.score ?? 0;
 		const scoreTwo = this.gameState.opponent.score ?? 0;
 
-		displayScoreOne(context, scoreOne, canvas);
-		displayScoreTwo(context, scoreTwo, canvas);
+		displayScoreOne(context, scoreOne, canvas, this.gameState.ball.width);
+		displayScoreTwo(context, scoreTwo, canvas, this.gameState.ball.width);
+		displayText(context, canvas, this.gameState.ball.width);
 	}
 
 	cleanup() {
