@@ -13,7 +13,7 @@ export class EndGamePage {
 		this.setupEventListeners();
 	}
 
-	render() {
+	async render() {
 		const gameContent = document.createElement('div');
 		gameContent.className = 'match-result-container';
 		gameContent.innerHTML = `
@@ -44,6 +44,8 @@ export class EndGamePage {
 
 		this.container.innerHTML = '';
 		this.container.appendChild(gameContent);
+		const savedLang = localStorage.getItem("selectedLang") || "en";
+		await updateTexts(savedLang);
 	}
 
 	setupEventListeners() {
