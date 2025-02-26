@@ -92,6 +92,8 @@ class PongConsumer(AsyncWebsocketConsumer):
 		client = self.scope["client"]
 		toRemove = next((c for c in self.infoPlayer["players"] if c["client"] == client), None)
 
+		findMatch = None
+		
 		if (toRemove):
 			findMatch = next(
 			(m for m in self.infoMatch["match"] 
