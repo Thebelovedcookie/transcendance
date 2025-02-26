@@ -116,7 +116,7 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 			"y": canvas_height / 2,
 			"size": size,
 			"color": "black",
-			"speed": 6,
+			"speed": 8,
 			"vx": 0,
 			"vy": 0
 			}
