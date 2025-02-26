@@ -42,6 +42,7 @@ export class Header {
 								`<div class="dropdown">
 									<img src="/static/img/anonymous.webp" class="rounded-circle" alt="Profile" width="40" height="40" style="cursor: pointer" data-bs-toggle="dropdown">
 									<ul class="dropdown-menu dropdown-menu-end">
+										<li><a class="dropdown-item" href="/settings" data-path="/settings" data-translate="Settings"></a></li>
 										<li><a class="dropdown-item" href="/login" data-path="/login" data-translate="Login">Login</a></li>
 										<li><a class="dropdown-item" href="/register" data-path="/register" data-translate="Register">Register</a></li>
 									</ul>
