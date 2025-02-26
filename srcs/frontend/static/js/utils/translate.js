@@ -82,3 +82,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     const savedLang = localStorage.getItem("selectedLang") || "en";
     await updateTexts(savedLang);
 });
+
+// gestion des modal a tester mais pas fonctionnel
+
+
+document.querySelectorAll(".modal-content").forEach(modal => {
+    modal.addEventListener("mouseenter", function () {
+        console.log("Mise à jour du texte du modal :", modal);
+        
+        modal.querySelectorAll("[data-translate]").forEach(el => {
+            const key = el.getAttribute("data-translate");
+            if (translationsData[key]) {
+                el.textContent = translationsData[key];
+            } else {
+                console.warn(`Clé de traduction manquante pour: ${key}`);
+            }
+        });
+    });
+});
+
+
