@@ -227,11 +227,14 @@ class RemoteGameWebSocket {
 			ball: {
 				x: data.ball.x,
 				y: data.ball.y,
+				size: data.ball.size,
 				width: data.ball.width,
 				height: data.ball.height,
 				color: data.ball.color,
 				speed: data.ball.speed,
-				gravity: data.ball.gravity
+				gravity: data.ball.gravity,
+				vx: data.ball.vx,
+				vy: data.ball.vy
 			},
 			score: {
 				scoreMax: data.message.scores.scoreMax
@@ -289,11 +292,14 @@ class RemoteGameWebSocket {
 			ball: {
 				x: data.message.ball.x,
 				y: data.message.ball.y,
+				size: data.message.ball.size,
 				width: data.message.ball.width,
 				height: data.message.ball.height,
 				color: data.message.ball.color,
 				speed: data.message.ball.speed,
-				gravity: data.message.ball.gravity
+				gravity: data.message.ball.gravity,
+				vx: data.message.ball.vx,
+				vy: data.message.ball.vy
 			},
 			score: {
 				scoreMax: data.message.scores.scoreMax
