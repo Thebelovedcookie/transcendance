@@ -193,14 +193,14 @@ export function resetGameSolo()
 	canvasSolo.size = Math.round(Math.min(canvasSolo.height, canvasSolo.width) / 45);
 	playerOneSolo.x = canvasSolo.width - 20;
 	playerOneSolo.y = canvasSolo.height * 0.4;
-	playerOneSolo.width = canvasSolo.width / 80;
-	playerOneSolo.height = canvasSolo.height / 6;
+	playerOneSolo.width = canvasSolo.size;
+	playerOneSolo.height = canvasSolo.size * 9;
 	playerOneSolo.gravity = 2;
 
 	ballSolo.x = canvasSolo.width / 2;
 	ballSolo.y = canvasSolo.height / 2;
-	ballSolo.width = 15;
-	ballSolo.height = 15;
+	ballSolo.width = canvasSolo.size;
+	ballSolo.height = canvasSolo.size;
 	ballSolo.speed = 8;
 	ballSolo.gravity = 3;
 
@@ -229,14 +229,11 @@ export function paused() {
 }
 
 export function drawPause() {
-
-	const rectWidth = 50;
-	const rectHeight = 200;
-	
+	const rectWidth = canvasSolo.size * 1.7;
+	const rectHeight = canvasSolo.size * 10;
 	contextSolo.fillStyle = "black";
-	contextSolo.fillRect(canvasSolo.width / 2 - 70, canvasSolo.height / 2 - 100, rectWidth, rectHeight);
-
-	contextSolo.fillRect(canvasSolo.width / 2 + 20, canvasSolo.height / 2 - 100, rectWidth, rectHeight);
+	contextSolo.fillRect(canvasSolo.width / 2 - 3 * canvasSolo.size, canvasSolo.height / 2 - 5 * canvasSolo.size, rectWidth, rectHeight);
+	contextSolo.fillRect(canvasSolo.width / 2 + 1.5 * canvasSolo.size, canvasSolo.height / 2 - 5 * canvasSolo.size, rectWidth, rectHeight);
 }
 
 export function soloMode(){

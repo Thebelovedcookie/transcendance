@@ -84,8 +84,7 @@ function resetStyleSolo(contextSolo)
 
 export function displayText(contextSolo, canvasSolo)
 {
-	const size = Math.round(canvasSolo.width);
-	contextSolo.font = size + "px 'Press Start 2P'";
+	contextSolo.font = canvasSolo.size * 1.5 + "px 'Press Start 2P'";
 	contextSolo.shadowColor = "rgba(0, 0, 0, 0.7)";
 	contextSolo.shadowOffsetX = -1;
 	contextSolo.shadowOffsetY = 0;
@@ -94,7 +93,7 @@ export function displayText(contextSolo, canvasSolo)
 	contextSolo.textAlign = "right";
 	contextSolo.textBaseline = "top";
 	contextSolo.fillStyle = "black";
-	contextSolo.fillText('Controls: o (up) l (down)', canvasSolo.height - 5, canvasSolo.width);
+	contextSolo.fillText('Controls: o (up) l (down)', canvasSolo.size, canvasSolo.size);
 
 	resetStyleSolo(contextSolo);
 }
