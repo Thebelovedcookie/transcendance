@@ -268,8 +268,6 @@ class GameWebSocket {
 				x: data.ball.x,
 				y: data.ball.y,
 				size: data.ball.size,
-				width: data.ball.width,
-				height: data.ball.height,
 				color: data.ball.color,
 				speed: data.ball.speed,
 				vx: data.ball.vx,

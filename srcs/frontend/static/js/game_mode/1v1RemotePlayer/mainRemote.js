@@ -4,6 +4,7 @@ import { ForfaitRemoteGamePage } from '../../pages/ForfaitRemoteGamePage.js';
 import { firstPaddle, secondPaddle, ballStyle, drawDashedLine, displayScoreOne, displayScoreTwo, drawWalls} from './style.js';
 let canvas = null;
 let context = null;
+let theme = "base";
 
 class RemoteGameWebSocket {
 	constructor() {
@@ -64,6 +65,7 @@ class RemoteGameWebSocket {
 			const host = window.location.host;
 			const wsUrl = `${protocol}//${host}/ws/pong/`;
 
+			//creer un id aleatoire
 			console.log("Attempting to connect:", wsUrl);
 			this.socket = new WebSocket(wsUrl);
 
@@ -174,6 +176,7 @@ class RemoteGameWebSocket {
 				break;
 			case "game.init":
 				this.isItForMe(data);
+				//display waiting page
 				break;
 			case "game_state":
 				this.updateGame(data);
@@ -369,7 +372,7 @@ export function normalMode() {
 
 export function stopGame() {
 	if (gameSocket) {
-		gameSocket.cleanup();
+		gameSocket.cleanup(); // this function is not working properly
 		gameSocket.stopGameLoop();
 		gameSocket.socket.close();
 		gameSocket = null;
