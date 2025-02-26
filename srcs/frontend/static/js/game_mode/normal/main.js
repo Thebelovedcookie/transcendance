@@ -1,6 +1,6 @@
 import { EndNormalGamePage } from '../../pages/EndNormalGamePage.js';
 import { EndGamePage } from '../../tournament/EndGamePage.js';
-import { firstPaddle, secondPaddle, ballStyle, drawDashedLine, displayScoreOne, displayScoreTwo, displayPlayerName, drawWalls } from './style.js';
+import { drawPaddle, ballStyle, drawDashedLine, drawGoalLine, displayScoreOne, displayScoreTwo, displayText, drawWalls } from './style.js';
 let canvas = null;
 let context = null;
 
@@ -158,16 +158,15 @@ class GameWebSocket {
 		this.sendMessage(updates);
 	}
 
+
 	drawPause() {
 		this.pause = true;
 		this.sendPause();
-		const rectWidth = 50;
-		const rectHeight = 200;
-		
+		const rectWidth = this.gameState.ball.size * 1.7;
+		const rectHeight = this.gameState.ball.size * 10;
 		context.fillStyle = "black";
-		context.fillRect(canvas.width / 2 - 70, canvas.height / 2 - 100, rectWidth, rectHeight);
-	
-		context.fillRect(canvas.width / 2 + 20, canvas.height / 2 - 100, rectWidth, rectHeight);
+		context.fillRect(canvas.width / 2 - 3 * this.gameState.ball.size, canvas.height / 2 - 5 * this.gameState.ball.size, rectWidth, rectHeight);
+		context.fillRect(canvas.width / 2 + 1.5 * this.gameState.ball.size, canvas.height / 2 - 5 * this.gameState.ball.size, rectWidth, rectHeight);
 	}
 	
 	stopGameLoop() {
@@ -255,7 +254,6 @@ class GameWebSocket {
 				width: data.playerOne.width,
 				height: data.playerOne.height,
 				color: data.playerOne.color,
-				gravity: data.playerOne.gravity,
 				score: data.playerOne.score
 			},
 			p2: {
@@ -264,17 +262,18 @@ class GameWebSocket {
 				width: data.playerTwo.width,
 				height: data.playerTwo.height,
 				color: data.playerTwo.color,
-				gravity: data.playerTwo.gravity,
 				score: data.playerTwo.score
 			},
 			ball: {
 				x: data.ball.x,
 				y: data.ball.y,
+				size: data.ball.size,
 				width: data.ball.width,
 				height: data.ball.height,
 				color: data.ball.color,
 				speed: data.ball.speed,
-				gravity: data.ball.gravity
+				vx: data.ball.vx,
+				vy: data.ball.vy
 			},
 			score: {
 				scoreMax: data.scoreMax
@@ -284,17 +283,20 @@ class GameWebSocket {
 
 	drawGame() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
-		firstPaddle(context, this.gameState.p1);
-		firstPaddle(context, this.gameState.p2);
-		ballStyle(context, this.gameState.ball);
-		drawDashedLine(context, canvas);
 		drawWalls(context, canvas);
+		drawPaddle(context, this.gameState.p1);
+		drawPaddle(context, this.gameState.p2);
+		ballStyle(context, this.gameState.ball);
+		drawDashedLine(context, canvas, this.gameState.ball.size);
+		drawGoalLine(context, canvas, this.gameState.ball.size, 0);
+		drawGoalLine(context, canvas, this.gameState.ball.size, canvas.width);
 
 		const scoreOne = this.gameState.p1.score ?? 0;
 		const scoreTwo = this.gameState.p2.score ?? 0;
 
-		displayScoreOne(context, scoreOne, canvas);
-		displayScoreTwo(context, scoreTwo, canvas);
+		displayScoreOne(context, scoreOne, canvas, this.gameState.ball.size);
+		displayScoreTwo(context, scoreTwo, canvas, this.gameState.ball.size);
+		displayText(context, canvas, this.gameState.ball.size);
 	}
 
 	cleanup() {

@@ -82,7 +82,7 @@ export class RegisterPage {
 					'Content-Type': 'application/json',
 					'X-CSRFToken': window.csrfToken,
 				},
-				credentials: 'same-origin',
+				credentials: 'include',
 				body: JSON.stringify({
 					'username': document.getElementById('typeUsernameX').value,
 					'email': document.getElementById('typeEmailX').value,
