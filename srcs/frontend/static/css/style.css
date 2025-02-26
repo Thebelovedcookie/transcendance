@@ -1792,6 +1792,12 @@ body.dark-mode {
 	align-items: center;
 	margin-bottom: 20px;
 }
+.account-management-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+}
 
 .search-friends-btn {
 	padding: 8px 16px;
@@ -2263,4 +2269,36 @@ body.dark-mode {
 
 .back-button i {
     font-size: 1.2rem;
+}
+
+/* モーダル関連の必須スタイル */
+.modal-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.5);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+}
+
+.fade-in {
+	animation: fadeIn 0.3s ease;
+}
+
+.fade-out {
+	animation: fadeOut 0.3s ease;
+}
+
+@keyframes fadeIn {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+	from { opacity: 1; }
+	to { opacity: 0; }
 }

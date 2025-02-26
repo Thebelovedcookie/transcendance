@@ -18,6 +18,7 @@ import { Header } from './pages/Header.js';
 import { MultiPage } from './pages/MultiPage.js';
 import { RemoteNormalGamePage } from './pages/RemoteNormalGamePage.js';
 import { VerificationPage } from './pages/VerificationPage.js';
+import { CSRFManager } from './utils/csrf.js';
 
 let currentPage = null;
 
@@ -30,7 +31,7 @@ class Router {
 		this.routes = new Map();
 		this.container = document.getElementById('dynamicPage');
 		this.onlineSocket = null;
-
+		this.csrfManager = new CSRFManager();
 		// Initialize private field
 		this.#authState = {
 			isAuthenticated: false,
@@ -40,11 +41,14 @@ class Router {
 
 		this.initializeAuth()
 			.then(() => {
-				this.initializeCsrfToken();
 				this.initializeRoutes();
 				this.setupEventListeners();
 				this.handleLocation();
 			});
+	}
+
+	async refreshToken() {
+		await this.csrfManager.refreshToken();
 	}
 
 	async initializeAuth() {
@@ -92,19 +96,6 @@ class Router {
 			this.onlineSocket = new WebSocket(wsUrl, protocols);
 		} catch (error) {
 			console.error("WebSocket connection error:", error);
-		}
-	}
-
-	async initializeCsrfToken() {
-		try {
-			const response = await fetch('/api/csrf', {
-				credentials: 'same-origin'
-			});
-			const data = await response.json();
-			// global variable to use the CSRF token in the RegisterPage.js
-			window.csrfToken = data.csrf_token;
-		} catch (error) {
-			console.error('Failed to initialize CSRF token:', error);
 		}
 	}
 

@@ -6,7 +6,7 @@ class PongMatchHistory(models.Model):
 	id = models.AutoField(primary_key=True)
 	user = models.ForeignKey(
 		CustomUser,
-		on_delete=models.SET_NULL,
+		on_delete=models.CASCADE,
 		null=True,
 		related_name="matches"
 	)
@@ -23,6 +23,6 @@ class PongMatchHistory(models.Model):
 	class Meta:
 		ordering = ["-played_at"]
 
-	def __str__(self):
-		return f"{self.user.username} vs {self.opponent.username} on {self.played_at}"
+	# def __str__(self):
+	# 	return f"{self.user.username} vs {self.opponent.username} on {self.played_at}"
 

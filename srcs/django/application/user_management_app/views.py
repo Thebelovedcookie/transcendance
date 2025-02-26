@@ -17,6 +17,9 @@ from django.dispatch import receiver
 from django.core.mail import send_mail
 import random
 from django.utils import timezone
+import logging
+
+logger = logging.getLogger(__name__)
 
 def require_login(view_func):
 	def wrapper(request, *args, **kwargs):
@@ -30,21 +33,44 @@ def require_login(view_func):
 	return wrapper
 
 def login_user(request):
-	data = json.load(request)
-	email = data.get('email')
-	password = data.get('password')
-	user = authenticate(email=email, password=password)
-	if user is not None:
-		login(request, user)
+	# Declare variables at the top
+	data		= json.load(request)
+	email		= data.get('email')
+	password	= data.get('password')
+
+	# Validate required fields
+	if not email or not password:
 		return JsonResponse({
-			'status': 'success',
-			'message': 'user logged in'
-		}, status=200)
-	else:
-		return JsonResponse({
-			'status': 'failure',
-			'message': 'bad user info'
-		}, status=401)
+			'status': 'error',
+			'message': 'Email and password are required'
+		}, status=400)
+
+	user = CustomUser.objects.filter(email=email).first()
+	if user is not None and user.check_password(password):
+		if not user.is_active:
+			return JsonResponse({
+				'status': 'error',
+				'message': 'Account is not activated',
+				'code': 'account_not_activated'
+			}, status=401)
+
+		try:
+			if authenticate(email=email, password=password):
+				login(request, user)
+				return JsonResponse({
+					'status': 'success',
+					'message': 'Successfully logged in'
+				}, status=200)
+		except Exception as e:
+			return JsonResponse({
+				'status': 'error',
+				'message': 'Invalid email or password'
+			}, status=401)
+
+	return JsonResponse({
+		'status': 'error',
+		'message': 'Invalid email or password'
+	}, status=401)
 
 def logout_user(request):
 	if request.method == 'POST':
@@ -58,6 +84,28 @@ def logout_user(request):
 			'status': 'error',
 			'message': 'invalid request method'
 		}, status=405)
+
+def delete_account(request):
+	if request.method != 'POST':
+		return JsonResponse({
+			'status': 'error',
+			'message': 'Invalid request method'
+		}, status=405)
+
+	try:
+		user = request.user
+		user.delete()
+		# user.is_active = False
+		# user.save()
+		return JsonResponse({
+			'status': 'success',
+			'message': 'Account deleted successfully'
+		}, status=200)
+	except Exception as e:
+		return JsonResponse({
+			'status': 'error',
+			'message': str(e)
+		}, status=500)
 
 def get_csrf_token(request):
 	csrf_token = get_token(request)
@@ -246,7 +294,14 @@ def get_profile(request):
 	user = request.user
 
 	match_response = pong_history_app.get_user_matches(request)
-	match_data = json.loads(match_response.content)['data']
+	if (match_response.status_code != 200):
+		logger.error("match_response failed")
+		return JsonResponse({
+			'status': 'error',
+			'message': 'Failed to fetch match history'
+		}, status=500)
+	else:
+		match_data = json.loads(match_response.content)['data']
 
 	friends_data = [
 		{

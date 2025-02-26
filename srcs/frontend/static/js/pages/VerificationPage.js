@@ -1,8 +1,37 @@
 export class VerificationPage {
 	constructor() {
+		this.email = null;
+		this.maxRetries = 5;
+		this.retryInterval = 500;
+	}
+
+	async tryGetEmail() {
+		let retryCount = 0;
+
+		while (retryCount < this.maxRetries) {
+			console.log("retryCount: ", retryCount);
+			this.email = sessionStorage.getItem('pendingVerificationEmail');
+
+			if (this.email) {
+				return true;
+			}
+
+			await new Promise(resolve => setTimeout(resolve, this.retryInterval));
+			retryCount++;
+		}
+
+		return false;
 	}
 
 	async handle() {
+		const emailFound = await this.tryGetEmail();
+
+		if (!emailFound) {
+			console.error('Failed to get verification email after multiple attempts');
+			window.router.navigateTo('/login');
+			return;
+		}
+
 		const content = `
 <section class="gradient-custom">
 	<div class="container py-5 h-100">
@@ -18,12 +47,12 @@ export class VerificationPage {
 								<input type="text" id="verificationCode" class="form-control form-control-lg"
 									maxlength="6" placeholder="Enter 6-digit code" data-translate="code-placeholder"/>
 								<div id="codeError" class="text-danger small mt-1" style="display: none;" data-translate="Invalid-Code">
-								
+
 								</div>
 							</div>
 
 							<button class="btn btn-outline-light btn-lg px-5" type="submit" id="verifyButton" data-translate="Verify-Email">
-								
+
 							</button>
 
 							<div class="mt-3">
@@ -55,8 +84,10 @@ export class VerificationPage {
 			return;
 		}
 
+		let response;
+
 		try {
-			const response = await fetch('/api/verify_email', {
+			response = await fetch('/api/verify_email', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -79,21 +110,34 @@ export class VerificationPage {
 			} else {
 				codeError.textContent = data.message || translationsData["Invalid-Code"];
 				codeError.style.display = 'block';
+				if (response.status == 403) {
+					window.router.refreshToken();
+				}
 			}
 		} catch (error) {
 			console.error('Error:', error);
 			codeError.textContent = translationsData["stdErrorVerif"];;
 			codeError.style.display = 'block';
+			if (response.status == 403) {
+				window.router.refreshToken();
+			}
 		}
 	}
 
 	async resendCode(e) {
 		e.preventDefault();
 		const resendButton = document.getElementById('resendButton');
+
+		if (!this.email) {
+			alert('No email address found for verification');
+			return;
+		}
+
 		resendButton.disabled = true;
+		let response;
 
 		try {
-			const response = await fetch('/api/resend_verification', {
+			response = await fetch('/api/resend_verification', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -111,10 +155,16 @@ export class VerificationPage {
 				alert('New verification code has been sent to your email.');
 			} else {
 				alert(data.message || 'Failed to resend verification code.');
+				if (response.status == 403) {
+					window.router.refreshToken();
+				}
 			}
 		} catch (error) {
 			console.error('Error:', error);
 			alert(translationsData["stdErrorVerif"]);
+			if (response.status == 403) {
+				window.router.refreshToken();
+			}
 		} finally {
 			resendButton.disabled = false;
 		}
