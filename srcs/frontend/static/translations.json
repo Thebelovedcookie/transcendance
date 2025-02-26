@@ -1,6 +1,6 @@
 {
 	"en": {
-		"language": "English",
+		"language": "language",
 		"PLAY" : "PLAY",
 		"2025 PongSite - All Rights Reserved" : "2025 PongSite - All Rights Reserved",
 
@@ -72,6 +72,7 @@
 		"sign":"Sign Up",
 		"sign-in":"Sign In",
 		"createaccount": "Create your account",
+		
 
 		"Verify-Email": "Verify Email",
 		"recode": "Resend verification code",
@@ -129,6 +130,9 @@
 		"Mypage":"Mypage",
 		"Settings":"Settings",
 		"Logout":"Logout",
+		"Account Management":"Account Management",
+		"Delete Account": "Delete Account",
+		"warning3":"Warning: This action cannot be undone.",
 
 
 		"backMenu":"Back to Menu",
@@ -141,7 +145,7 @@
 	},
 
 	"fr": {
-		"language": "Francais",
+		"language": "langue",
 
 		"PLAY" : "JOUER",
 		"2025 PongSite - All Rights Reserved" : "2025 PongSite - Tous droits reserves",
@@ -266,6 +270,9 @@
 		"Mypage":"Ma page",
 		"Settings":"Paramètres",
 		"Logout":"se déconnecter",
+		"Account Management":"Gestionnaire de compte",
+		"Delete Account": "supprimer le compte",
+		"warning3":"Attention: cette action est definitive",
 
 
 		"backMenu":"Retour au Menu",

@@ -19,7 +19,7 @@ export class NextGamePage {
 		this.startAnimations();
 	}
 
-	render() {
+	async render() {
 		const gameContent = document.createElement('div');
 		gameContent.className = 'page-container next-game-container';
 		gameContent.innerHTML = `
@@ -75,6 +75,8 @@ export class NextGamePage {
 
 		this.container.innerHTML = '';
 		this.container.appendChild(gameContent);
+		const savedLang = localStorage.getItem("selectedLang") || "en";
+		await updateTexts(savedLang);
 	}
 
 	setupEventListeners() {

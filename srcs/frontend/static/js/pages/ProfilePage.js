@@ -870,7 +870,7 @@ export class ProfilePage {
 		});
 	}
 
-	showDeleteAccountModal() {
+	async showDeleteAccountModal() {
 		const modal = document.createElement('div');
 		modal.className = 'confirm-modal';
 		modal.innerHTML = `
@@ -885,6 +885,8 @@ export class ProfilePage {
 		`;
 
 		document.body.appendChild(modal);
+		const savedLang = localStorage.getItem("selectedLang") || "en";
+		await updateTexts(savedLang);
 
 		// Setup confirmation modal event listeners
 		const cancelBtn = modal.querySelector('.cancel-btn');
@@ -922,7 +924,7 @@ export class ProfilePage {
 				console.error('Failed to delete account:', error);
 			}
 		});
-
+		
 	}
 
 	clean() {

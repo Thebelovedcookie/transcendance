@@ -9,7 +9,7 @@ export class EndTournementPage {
 		this.setupAnimations();
 	}
 
-	render() {
+	async render() {
 		const gameContent = document.createElement('div');
 		gameContent.className = 'tournament-final-container';
 		gameContent.innerHTML = `
@@ -38,6 +38,8 @@ export class EndTournementPage {
 
 		this.container.innerHTML = '';
 		this.container.appendChild(gameContent);
+		const savedLang = localStorage.getItem("selectedLang") || "en";
+		await updateTexts(savedLang);
 	}
 
 	setupAnimations() {

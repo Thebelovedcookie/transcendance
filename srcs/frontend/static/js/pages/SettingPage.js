@@ -20,10 +20,10 @@ export class SettingPage {
 	render() {
 		const content = `
 			<div class="settings-container">
-				<h1 class="settings-title">Settings</h1>
+				<h1 class="settings-title" data-translate="Settings">Settings</h1>
 
 				<div class="settings-section">
-					<h2>Language</h2>
+					<h2 data-translate="language">Language</h2>
 					<div class="language-options">
 						${this.languages.map(lang => `
 							<div class="language-option ${this.settings.language === lang.code ? 'active' : ''}"
@@ -36,9 +36,9 @@ export class SettingPage {
 				</div>
 
 				<div class="settings-section danger-zone">
-					<h2>Account Management</h2>
+					<h2 data-translate = "Account Management">Account Management</h2>
 					<p class="warning-text">Warning: This action cannot be undone.</p>
-					<button class="delete-account-btn">Delete Account</button>
+					<button class="delete-account-btn" data-translate="Delete Account">Delete Account</button>
 				</div>
 			</div>
 		`;
