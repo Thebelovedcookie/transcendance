@@ -23,18 +23,6 @@ export class SettingPage {
 				<h1 class="settings-title">Settings</h1>
 
 				<div class="settings-section">
-					<h2>Display Mode</h2>
-					<div class="display-mode-toggle">
-						<button class="mode-btn ${this.settings.mode === 'light' ? 'active' : ''}" data-mode="light">
-							<i class="fas fa-sun"></i> Light
-						</button>
-						<button class="mode-btn ${this.settings.mode === 'dark' ? 'active' : ''}" data-mode="dark">
-							<i class="fas fa-moon"></i> Dark
-						</button>
-					</div>
-				</div>
-
-				<div class="settings-section">
 					<h2>Language</h2>
 					<div class="language-options">
 						${this.languages.map(lang => `
@@ -79,18 +67,10 @@ export class SettingPage {
 		deleteBtn.addEventListener('click', () => this.showDeleteConfirmation());
 	}
 
-	updateDisplayMode(mode) {
-		this.settings.mode = mode;
-		localStorage.setItem('displayMode', mode);
-		document.querySelectorAll('.mode-btn').forEach(btn => {
-			btn.classList.toggle('active', btn.dataset.mode === mode);
-		});
-		document.body.classList.toggle('dark-mode', mode === 'dark');
-	}
-
-	updateLanguage(lang) {
+	async updateLanguage(lang) {
 		this.settings.language = lang;
-		localStorage.setItem('language', lang);
+		localStorage.setItem('selectedLang', lang);
+		await updateTexts(lang);
 		document.querySelectorAll('.language-option').forEach(option => {
 			option.classList.toggle('active', option.dataset.lang === lang);
 		});
