@@ -1,4 +1,4 @@
-import { SafeText } from '../utils/safetext';
+import { SafeText } from '../utils/safetext.js';
 
 export class Header {
 	constructor() {

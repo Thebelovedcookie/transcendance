@@ -1,5 +1,3 @@
-import { undefined } from "../../../../../data/frontend_volume/static/js/utils/safetext";
-
 export class SafeText {
 	constructor(text) {
 		this.text = text;
