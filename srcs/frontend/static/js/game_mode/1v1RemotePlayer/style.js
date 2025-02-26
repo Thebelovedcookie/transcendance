@@ -126,8 +126,8 @@ export function displayPlayerName(context, canvas, infoMatch)
 }
 
 export function drawWalls(context, canvas) {
-	context.fillStyle = "rgb(78, 78, 78)";  // Changed to darker gray
-	context.shadowColor = "rgba(128, 128, 128, 0.7)";  // Matching shadow
+	context.fillStyle = "rgb(78, 78, 78)";
+	context.shadowColor = "rgba(128, 128, 128, 0.7)";
 	context.shadowOffsetX = 0;
 	context.shadowOffsetY = 0;
 	context.shadowBlur = 6;
@@ -138,8 +138,8 @@ export function drawWalls(context, canvas) {
 	// Bottom wall
 	context.fillRect(0, canvas.height - 5, canvas.width, 5);
 
-	context.fillStyle = "rgba(78, 78, 78, 0.48)";  // Changed to darker gray
-	context.shadowColor = "rgba(128, 128, 128, 0.7)";  // Matching shadow
+	context.fillStyle = "rgba(78, 78, 78, 0.48)";
+	context.shadowColor = "rgba(128, 128, 128, 0.7)";
 	context.shadowOffsetX = 0;
 	context.shadowOffsetY = 0;
 	context.shadowBlur = 6;

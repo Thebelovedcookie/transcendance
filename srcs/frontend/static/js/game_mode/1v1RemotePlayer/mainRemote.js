@@ -65,7 +65,6 @@ class RemoteGameWebSocket {
 			const host = window.location.host;
 			const wsUrl = `${protocol}//${host}/ws/pong/`;
 
-			//creer un id aleatoire
 			console.log("Attempting to connect:", wsUrl);
 			this.socket = new WebSocket(wsUrl);
 
@@ -176,7 +175,6 @@ class RemoteGameWebSocket {
 				break;
 			case "game.init":
 				this.isItForMe(data);
-				//display waiting page
 				break;
 			case "game_state":
 				this.updateGame(data);
@@ -372,7 +370,7 @@ export function normalMode() {
 
 export function stopGame() {
 	if (gameSocket) {
-		gameSocket.cleanup(); // this function is not working properly
+		gameSocket.cleanup();
 		gameSocket.stopGameLoop();
 		gameSocket.socket.close();
 		gameSocket = null;
