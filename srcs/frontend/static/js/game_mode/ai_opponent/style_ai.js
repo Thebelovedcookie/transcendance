@@ -65,6 +65,28 @@ export function drawDashedLine(context, canvas, size) {
 	// resetStyle(context);
 }
 
+export function drawGoalLine(context, canvas, size, loc) {
+	const dashLength = size / 2;
+	const spaceLength = dashLength;
+	const centerX = loc;
+	const startY = 0;
+	const endY = canvas.height;
+	
+	context.strokeStyle = "#808080";
+	context.lineWidth = 1;
+
+	let currentY = startY;
+
+	context.beginPath();
+	while (currentY < endY) {
+		context.moveTo(centerX, currentY);
+		context.lineTo(centerX, currentY + dashLength);
+		currentY += dashLength + spaceLength;
+	}
+
+	context.stroke();
+}
+
 //----------------------------TEXTE--------------------------------//
 
 //PlayerOne score Text
@@ -139,10 +161,10 @@ export function drawWalls(context, canvas, size) {
 	context.shadowBlur = 6;
 
 	// left wall
-	context.fillRect(0, 0, size / 2, canvas.height);
+	//context.fillRect(0, 0, size / 2, canvas.height);
 
 	// Right wall
-	context.fillRect(canvas.width - size / 2, 0, size / 2, canvas.height);
+	//context.fillRect(canvas.width - size / 2, 0, size / 2, canvas.height);
 
 	resetStyle(context);
 }
