@@ -313,12 +313,12 @@ export class ProfilePage {
 		}
 	}
 
-	showEditModal() {
+	async showEditModal() {
 		const modal = document.createElement('div');
 		modal.className = 'edit-profile-modal';
 		modal.innerHTML = `
 			<div class="modal-content">
-				<h2 data-translate"="EditProfile"></h2>
+				<h2 data-translate="EditProfile"></h2>
 				<form id="editProfileForm">
 					<div class="avatar-upload">
 						<div class="avatar-preview">
@@ -326,23 +326,20 @@ export class ProfilePage {
 						</div>
 						<div class="avatar-edit">
 							<input type="file" id="avatarInput" accept="image/*">
-							<label for="avatarInput" data-translate="ChangePhoto">
-								<i class="fas fa-camera"></i>
-								Change Photo
-							</label>
+							<label for="avatarInput" data-translate="ChangePhoto"></label>
 						</div>
 					</div>
 					<div class="form-group">
-						<label data-translate ="Username">Username</label>
+						<label data-translate="Username"></label>
 						<input type="text" value="${SafeText.escape(this.userData.username)}" class="form-input">
 					</div>
 					<div class="form-group">
-						<label>Email</label>
+						<label data-translate="Email"></label>
 						<input type="email" value="${SafeText.escape(this.userData.email)}" class="form-input">
 					</div>
 					<div class="modal-actions">
-						<button type="button" class="cancel-btn" data-translate ="cancel" >Cancel</button>
-						<button type="submit" class="save-btn" data-translate="SaveChanges" >Save Changes</button>
+						<button type="button" class="cancel-btn" data-translate="cancel"></button>
+						<button type="submit" class="save-btn" data-translate="SaveChanges"></button>
 					</div>
 				</form>
 				<button class="modal-close">&times;</button>
@@ -351,6 +348,8 @@ export class ProfilePage {
 
 		document.body.appendChild(modal);
 		this.setupModalListeners(modal);
+		const savedLang = localStorage.getItem("selectedLang") || "en";
+		await updateTexts(savedLang);
 	}
 
 	setupModalListeners(modal) {
@@ -412,8 +411,10 @@ export class ProfilePage {
 				const result = await response.json();
 				if (result.status === 'success') {
 					await this.loadUserData();
-					this.render();
 					modal.classList.add('fade-out');
+					this.render();
+					const savedLang = localStorage.getItem("selectedLang") || "en";
+					await updateTexts(savedLang);
 					setTimeout(() => modal.remove(), 300);
 				}
 			} catch (error) {
@@ -422,23 +423,19 @@ export class ProfilePage {
 		});
 	}
 
-	showFriendSearchModal() {
+	async showFriendSearchModal() {
 		const modal = document.createElement('div');
 		modal.className = 'friend-search-modal';
 		modal.innerHTML = `
 			<div class="modal-content">
-				<h2>Search Friends</h2>
+				<h2 data-translate="Searchfriends"></h2>
 				<div class="search-container">
-					<input type="text" id="friendSearchInput" placeholder="Search by username..." data-translate= "searchUser_placeholder" class="form-input">
-					<button type="button" id="searchButton" class="search-btn" data-translate="Search">
-						<i class="fas fa-search"></i> Search
-					</button>
+					<input type="text" id="friendSearchInput" placeholder="Search by username..." data-translate="searchUser_placeholder" class="form-input">
+					<button type="button" id="searchButton" class="search-btn" data-translate="Search"></button>
 				</div>
-				<div id="searchResults" class="search-results">
-					<!-- Search results will be displayed here -->
-				</div>
+				<div id="searchResults" class="search-results"></div>
 				<div class="modal-actions">
-					<button type="button" class="cancel-btn" data-translate="close">Close</button>
+					<button type="button" class="cancel-btn" data-translate="close"></button>
 				</div>
 				<button class="modal-close">&times;</button>
 			</div>
@@ -446,6 +443,8 @@ export class ProfilePage {
 
 		document.body.appendChild(modal);
 		this.setupFriendSearchModalListeners(modal);
+		const savedLang = localStorage.getItem("selectedLang") || "en";
+		await updateTexts(savedLang);
 	}
 
 	setupFriendSearchModalListeners(modal) {
@@ -557,12 +556,12 @@ export class ProfilePage {
 		});
 	}
 
-	showFriendInfoModal(friendInfo) {
+	async showFriendInfoModal(friendInfo) {
 		const modal = document.createElement('div');
 		modal.className = 'friend-info-modal';
 		modal.innerHTML = `
 			<div class="modal-content">
-				<h2 data-translate= "friends"></h2>
+				<h2 data-translate="friends"></h2>
 				<div class="friend-profile">
 					<div class="friend-avatar-large">
 						<img src="${SafeText.escape(friendInfo.profile_image)}" alt="${SafeText.escape(friendInfo.username)}">
@@ -570,9 +569,7 @@ export class ProfilePage {
 					</div>
 					<div class="friend-details">
 						<h3>${SafeText.escape(friendInfo.username)}</h3>
-						<p class="status-text">
-							${SafeText.escape(friendInfo.is_online ? 'Online' : `Last seen ${new Date(friendInfo.lastSeen).toLocaleDateString()}`)}
-						</p>
+						<p class="status-text">${SafeText.escape(friendInfo.is_online ? 'Online' : friendInfo.lastSeen)}</p>
 						<div class="stats-container">
 							<div class="stat-box">
 								<span class="stat-title" data-translate="wins"></span>
@@ -599,15 +596,19 @@ export class ProfilePage {
 					</div>
 				</div>
 				<div class="modal-actions">
-					<button type="button" class="close-btn" data-translate="close">Close</button>
+					<button type="button" class="close-btn" data-translate="close"></button>
 				</div>
 				<button class="modal-close">&times;</button>
 			</div>
 		`;
 
 		document.body.appendChild(modal);
+		this.setupFriendInfoModalListeners(modal, friendInfo);
+		const savedLang = localStorage.getItem("selectedLang") || "en";
+		await updateTexts(savedLang);
+	}
 
-		// Setup modal event listeners
+	setupFriendInfoModalListeners(modal, friendInfo) {
 		const closeBtn = modal.querySelector('.modal-close');
 		const cancelBtn = modal.querySelector('.close-btn');
 		const removeFriendBtn = modal.querySelector('.remove-friend-btn');
@@ -624,27 +625,31 @@ export class ProfilePage {
 		});
 	}
 
-	showRemoveFriendConfirmModal(parentModal, userId, username) {
+	async showRemoveFriendConfirmModal(parentModal, userId, username) {
 		const modal = document.createElement('div');
 		modal.className = 'confirm-modal';
 		modal.innerHTML = `
 			<div class="modal-content">
-					<h2 data-translate ="removeFriend"></h2>
-				    <p class="warning-text">
-       					<span data-translate="warning1"></span>
-        				<span class="username">${username}</span>
-        				<span data-translate="warning2"></span>
-    				</p>
+				<h2 data-translate="removeFriend"></h2>
+				<p class="warning-text">
+					<span data-translate="warning1"></span>
+					<span class="username">${SafeText.escape(username)}</span>
+					<span data-translate="warning2"></span>
+				</p>
 				<div class="modal-actions">
-					<button type="button" class="cancel-btn" data-translate="cancel">Cancel</button>
-					<button type="button" class="confirm-btn danger-btn" data-translate="removeFriend">Remove Friend</button>
+					<button type="button" class="cancel-btn" data-translate="cancel"></button>
+					<button type="button" class="confirm-btn danger-btn" data-translate="removeFriend"></button>
 				</div>
 			</div>
 		`;
 
 		document.body.appendChild(modal);
+		this.setupRemoveFriendModalListeners(modal, parentModal, userId);
+		const savedLang = localStorage.getItem("selectedLang") || "en";
+		await updateTexts(savedLang);
+	}
 
-		// Setup confirmation modal event listeners
+	setupRemoveFriendModalListeners(modal, parentModal, userId) {
 		const cancelBtn = modal.querySelector('.cancel-btn');
 		const confirmBtn = modal.querySelector('.confirm-btn');
 
@@ -678,6 +683,8 @@ export class ProfilePage {
 					parentModal.remove();
 					await this.loadUserData();
 					this.render();
+					const savedLang = localStorage.getItem("selectedLang") || "en";
+					await updateTexts(savedLang);
 				}
 			} catch (error) {
 				console.error('Failed to remove friend:', error);
@@ -724,54 +731,62 @@ export class ProfilePage {
 		});
 	}
 
-	showAllFriendsModal() {
+	async showAllFriendsModal() {
 		const modal = document.createElement('div');
-		modal.className = 'friend-info-modal';
+		modal.className = 'all-friends-modal';
 		modal.innerHTML = `
 			<div class="modal-content">
 				<h2 data-translate="AllFriends"></h2>
-				<div class="friends-list-container">
-					${this.userData.friends.map(friend => `
-						<div class="friend-card" data-userid="${SafeText.escape(friend.id)}">
-							<div class="friend-avatar-container">
-								<img src="${SafeText.escape(friend.profile_image || '/static/img/anonymous.webp')}" alt="${SafeText.escape(friend.username)}" class="friend-avatar">
-								<span class="online-status ${SafeText.escape(friend.is_online ? 'online' : '')}"></span>
-							</div>
-							<div class="friend-info">
-								<h3>${SafeText.escape(friend.username)}</h3>
-								<p class="last-seen">${friend.is_online ? 'Online' : `Last seen ${new Date(friend.lastSeen).toLocaleDateString()}`}</p>
-								<div class="game-stats">
-									<div class="stat-item">
-										<span class="stat-label" data-translate="wins"></span>
-										<span class="stat-value wins">${SafeText.escape(friend.wins)}</span>
-									</div>
-									<div class="stat-item">
-										<span class="stat-label" datat-translate ="losses"></span>
-										<span class="stat-value losses">${SafeText.escape(friend.losses)}</span>
-									</div>
-									<div class="stat-item">
-										<span class="stat-label" data-translate="TotalGame">:</span>
-										<span class="stat-value totalGames">${SafeText.escape(friend.totalGames)}</span>
-									</div>
-									<div class="stat-item">
-										<span class="stat-label" data-translate ="WinRate">:</span>
-										<span class="stat-value win-rate">${SafeText.escape(this.calculateWinRate(friend.wins, friend.totalGames))}%</span>
-									</div>
-								</div>
-							</div>
-						</div>
-					`).join('')}
+				<div class="friends-list">
+					${this.renderAllFriends()}
 				</div>
 				<div class="modal-actions">
-					<button type="button" class="close-btn" data-translate="close">Close</button>
+					<button type="button" class="close-btn" data-translate="close"></button>
 				</div>
 				<button class="modal-close">&times;</button>
 			</div>
 		`;
 
 		document.body.appendChild(modal);
+		this.setupAllFriendsModalListeners(modal);
+		const savedLang = localStorage.getItem("selectedLang") || "en";
+		await updateTexts(savedLang);
+	}
 
-		// Setup modal event listeners
+	renderAllFriends() {
+		return this.userData.friends.map(friend => `
+			<div class="friend-card" data-userid="${SafeText.escape(friend.id)}">
+				<div class="friend-avatar-container">
+					<img src="${SafeText.escape(friend.profile_image || '/static/img/anonymous.webp')}" alt="${SafeText.escape(friend.username)}" class="friend-avatar">
+					<span class="online-status ${SafeText.escape(friend.is_online ? 'online' : '')}"></span>
+				</div>
+				<div class="friend-info">
+					<h3>${SafeText.escape(friend.username)}</h3>
+					<p class="last-seen">${SafeText.escape(friend.is_online ? 'Online' : `Last seen ${new Date(friend.lastSeen).toLocaleDateString()}`)}</p>
+					<div class="game-stats">
+						<div class="stat-item">
+							<span class="stat-label" data-translate="wins"></span>
+							<span class="stat-value wins">${SafeText.escape(friend.wins)}</span>
+						</div>
+						<div class="stat-item">
+							<span class="stat-label" data-translate="losses"></span>
+							<span class="stat-value losses">${SafeText.escape(friend.losses)}</span>
+						</div>
+						<div class="stat-item">
+							<span class="stat-label" data-translate="TotalGame">:</span>
+							<span class="stat-value totalGames">${SafeText.escape(friend.totalGames)}</span>
+						</div>
+						<div class="stat-item">
+							<span class="stat-label" data-translate="WinRate">:</span>
+							<span class="stat-value win-rate">${SafeText.escape(this.calculateWinRate(friend.wins, friend.totalGames))}%</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		`).join('');
+	}
+
+	setupAllFriendsModalListeners(modal) {
 		const closeBtn = modal.querySelector('.modal-close');
 		const cancelBtn = modal.querySelector('.close-btn');
 
@@ -806,36 +821,44 @@ export class ProfilePage {
 		});
 	}
 
-	showAllMatchesModal() {
+	async showAllMatchesModal() {
 		const modal = document.createElement('div');
 		modal.className = 'match-history-modal';
 		modal.innerHTML = `
 			<div class="modal-content">
-				<h2 data-translate = "MatchHistory"></h2>
-				<div class="matches-list-container">
-					${this.userData.match_history.map(match => `
-						<div class="match-card ${match.result.toLowerCase()}">
-							<div class="match-info">
-								<span class="match-opponent">vs ${SafeText.escape(match.opponent ? match.opponent.username : 'Deleted User')}</span>
-								<span class="match-score">${SafeText.escape(match.user_score)} - ${SafeText.escape(match.opponent_score)}</span>
-							</div>
-							<div class="match-details">
-								<span class="match-result">${SafeText.escape(match.result)}</span>
-								<span class="match-date">${SafeText.escape(new Date(match.played_at).toLocaleDateString())}</span>
-							</div>
-						</div>
-					`).join('')}
+				<h2 data-translate="MatchHistory"></h2>
+				<div class="matches-list">
+					${this.renderAllMatches()}
 				</div>
 				<div class="modal-actions">
-					<button type="button" class="close-btn" data-translate="close">Close</button>
+					<button type="button" class="close-btn" data-translate="close"></button>
 				</div>
 				<button class="modal-close">&times;</button>
 			</div>
 		`;
 
 		document.body.appendChild(modal);
+		this.setupAllMatchesModalListeners(modal);
+		const savedLang = localStorage.getItem("selectedLang") || "en";
+		await updateTexts(savedLang);
+	}
 
-		// Setup modal event listeners
+	renderAllMatches() {
+		return this.userData.match_history.map(match => `
+			<div class="match-card ${match.result.toLowerCase()}">
+				<div class="match-info">
+					<span class="match-opponent">vs ${SafeText.escape(match.opponent ? match.opponent.username : 'Deleted User')}</span>
+					<span class="match-score">${SafeText.escape(match.user_score)} - ${SafeText.escape(match.opponent_score)}</span>
+				</div>
+				<div class="match-details">
+					<span class="match-result">${SafeText.escape(match.result)}</span>
+					<span class="match-date">${SafeText.escape(new Date(match.played_at).toLocaleDateString())}</span>
+				</div>
+			</div>
+		`).join('');
+	}
+
+	setupAllMatchesModalListeners(modal) {
 		const closeBtn = modal.querySelector('.modal-close');
 		const cancelBtn = modal.querySelector('.close-btn');
 
@@ -906,5 +929,7 @@ export class ProfilePage {
 		return ;
 	}
 }
+
+
 
 

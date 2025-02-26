@@ -170,7 +170,7 @@ class Router {
 		await page.handle();
 		//appliquer la trad apres chargement de la page
 		const savedLang = localStorage.getItem("selectedLang") || "en";
-    	await updateTexts(savedLang);
+		await updateTexts(savedLang);
 	}
 
 	//add the history
