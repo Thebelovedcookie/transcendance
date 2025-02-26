@@ -39,7 +39,7 @@ function init_canvasSolo(){
 	})
 
 	controllerSolo = {
-		"o": {pressedSolo: false, func: movePaddleUpP2Solo},
+		"ArrowUp": {pressedSolo: false, func: movePaddleUpP2Solo},
 		"l": {pressedSolo: false, func: movePaddleDownP2Solo},
 		}
 }

@@ -366,17 +366,17 @@ class GameAISocket {
 
 	drawGame() {
 		context.clearRect(0, 0, canvas.width, canvas.height);
-		drawWalls(context, canvas);
+		drawWalls(context, canvas, this.gameState.ball.size);
 		drawPaddle(context, this.gameState.p1);
 		drawPaddle(context, this.gameState.p2);
 		ballStyle(context, this.gameState.ball);
-		drawDashedLine(context, canvas);
+		drawDashedLine(context, canvas, this.gameState.ball.size);
 		const scoreOne = this.gameState.p1.score ?? 0;
 		const scoreTwo = this.gameState.p2.score ?? 0;
 
-		displayScoreOne(context, scoreOne, canvas);
-		displayScoreTwo(context, scoreTwo, canvas);
-		displayText(context, canvas);
+		displayScoreOne(context, scoreOne, canvas, this.gameState.ball.size);
+		displayScoreTwo(context, scoreTwo, canvas, this.gameState.ball.size);
+		displayText(context, canvas, this.gameState.ball.size);
 	}
 
 	cleanup() {

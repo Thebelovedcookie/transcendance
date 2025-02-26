@@ -45,7 +45,7 @@ export function drawDashedLine(context, canvas) {
 	const centerY = canvas.centerY;
 	const radius = canvas.radius + canvas.size;  // Rayon du cercle
 	const dashLength = canvas.size;  // Longueur des segments
-	const spaceLength = canvas.size * 2 / 3; // Longueur des espaces
+	const spaceLength = canvas.size * 0.8; // Longueur des espaces
 
 	context.strokeStyle = "black";//'blue";
 	context.lineWidth = 1;
@@ -75,7 +75,7 @@ export function drawDashedLine(context, canvas) {
 
 //PlayerOne score Text
 export function displayScoreOne(context, scoreOne, canvas) {
-	const size = Math.round(canvas.dim / 15);
+	const size = canvas.size * 2;
 	context.font = size + "px 'Press Start 2P'";
 	context.fillStyle = "red";
 	context.textAlign = "right"
@@ -84,13 +84,13 @@ export function displayScoreOne(context, scoreOne, canvas) {
 	context.shadowOffsetX = 1;
 	context.shadowOffsetY = 0;
 	context.shadowBlur = 3;
-	context.fillText(scoreOne, (canvas.dim * 0.95), canvas.dim - size);
+	context.fillText(scoreOne, (canvas.dim * 0.95), canvas.dim - size * 1.5);
 	resetStyle(context);
 }
 
 //PlayerTwo score Text
 export function displayScoreTwo(context, scoreTwo, canvas){
-	const size = Math.round(canvas.dim / 15);
+	const size = canvas.size * 2;
 	context.font = size + "px 'Press Start 2P'";
 	context.fillStyle = "blue";
 	context.textBaseline = "bottom";
@@ -99,13 +99,13 @@ export function displayScoreTwo(context, scoreTwo, canvas){
 	context.shadowOffsetX = -1;
 	context.shadowOffsetY = 0;
 	context.shadowBlur = 3;
-	context.fillText(scoreTwo, (canvas.dim * 0.05) , canvas.dim - size);
+	context.fillText(scoreTwo, (canvas.dim * 0.05) , canvas.dim - size * 1.5);
 	resetStyle(context);
 }
 
 //PlayerThree score Text
 export function displayScoreThree(context, scoreThree, canvas){
-	const size = Math.round(canvas.dim / 15);
+	const size = canvas.size * 2;
 	context.font = size + "px 'Press Start 2P'";
 	context.fillStyle = "green";
 	context.textBaseline = "top";
@@ -114,13 +114,13 @@ export function displayScoreThree(context, scoreThree, canvas){
 	context.shadowOffsetX = -1;
 	context.shadowOffsetY = 0;
 	context.shadowBlur = 3;
-	context.fillText(scoreThree, (canvas.dim * 0.95) , size);
+	context.fillText(scoreThree, (canvas.dim * 0.95) , size * 1.5 );
 	resetStyle(context);
 }
 
 export function displayPlayerName(context, canvas)
 {
-	const size = Math.round(canvas.dim / 40);
+	const size = canvas.size * 1.2;
 	context.font = size + "px 'Press Start 2P'";
 	context.shadowColor = "rgba(0, 0, 0, 0.7)";
 	context.shadowOffsetX = -1;
