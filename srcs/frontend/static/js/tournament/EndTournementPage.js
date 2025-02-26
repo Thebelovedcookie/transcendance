@@ -19,7 +19,7 @@ export class EndTournementPage {
 				</div>
 
 				<div class="champion-content">
-					<h1 class="champion-title animate-slide-down">TOURNAMENT CHAMPION</h1>
+					<h1 class="champion-title animate-slide-down" data-translate="tourchampion">TOURNAMENT CHAMPION</h1>
 					<div class="champion-name glow-text animate-fade-in-delay">
 						${this.winner}
 					</div>
@@ -27,7 +27,7 @@ export class EndTournementPage {
 				</div>
 
 				<a href="/pong" data-path="/pong" class="return-btn animate-fade-in-up">
-					<span class="btn-text">RETURN TO MENU</span>
+					<span class="btn-text" data-translate="returnMenu">RETURN TO MENU</span>
 					<div class="btn-animation-container">
 						<span class="btn-ping"></span>
 						<span class="btn-ping"></span>

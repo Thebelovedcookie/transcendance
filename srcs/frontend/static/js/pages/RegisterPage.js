@@ -135,30 +135,25 @@ export class RegisterPage {
 		}
 
 		// Validate email
-		if (!email.value.trim()) {
-			// emailError.textContent = 'Please enter your email';
+		if (!email.value.trim()) {		
 			emailError.style.display = 'block';
 			isValid = false;
-		} else if (!this.isValidEmail(email.value)) {
-			// emailError.textContent = 'Please enter a valid email address';
+		} else if (!this.isValidEmail(email.value)) {			
 			emailError.style.display = 'block';
 			isValid = false;
 		}
 
 		// Validate password
-		if (!password.value.trim()) {
-			// passwordError.textContent = 'Please enter your password';
+		if (!password.value.trim()) {		
 			passwordError.style.display = 'block';
 			isValid = false;
 		} else if (password.value.length < 8) {
-			// passwordError.textContent = 'Password must be at least 8 characters';
 			passwordError.style.display = 'block';
 			isValid = false;
 		}
 
 		// Validate confirm password
 		if (!confirmPassword.value.trim()) {
-			// confirmPasswordError.textContent = 'Please confirm your password';
 			confirmPasswordError.style.display = 'block';
 			isValid = false;
 		} else if (password.value !== confirmPassword.value) {

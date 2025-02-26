@@ -37,6 +37,9 @@
 		"Controls":"Controls:",
 		"ready":"GET READY!",
 		"start":"PRESS TO START",
+		"tourchampion":"TOURNAMENT CHAMPION",
+		"returnMenu":"RETURN TO MENU",
+		"nextmatch":"NEXT MATCH",
 
 		"solomode":"Solo Mode Type",
 		"practice":"Practice Mode",
@@ -130,7 +133,8 @@
 		"backMenu":"Back to Menu",
 		"searching":"Searching for opponent...",
 		"searchUser_placeholder":"Search by username...",
-		"Search":"Search"
+		"Search":"Search",
+		"Restart":"Restart"
 
 
     },
@@ -174,6 +178,9 @@
 		"Controls":"Commandes:",
 		"ready":"PRET!",
 		"start":"COMMENCER",
+		"tourchampion":"CHAMPION DU TOURNOI",
+		"returnMenu":"RETOUR AU MENU",
+		"nextmatch":"Prochain match",
 
 		"solomode":"Mode Solo",
 		"practice":"Mode Entrainement",
@@ -262,7 +269,8 @@
 		"backMenu":"Retour au Menu",
 		"searching":"Recherche d'adversaire...",
 		"searchUser_placeholder":"Recherche par nom d'utilisateur...",
-		"Search":"Rechercher"
+		"Search":"Rechercher",
+		"Restart":"Recommencer"
 
         
     },
