@@ -50,7 +50,6 @@ class GameWebSocket {
 	}
 
 	updatePlayerPositions() {
-		//console.log("update position")
 		// Player 1 (Flèches)
 		if (this.keys.ArrowRight) {
 			this.sendMove("neg", "p1")

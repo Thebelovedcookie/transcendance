@@ -24,9 +24,9 @@ export function ballStyle(context, element)
 
 	context.beginPath();
     context.arc(
-        element.x + element.width / 2, // Centre X
-        element.y + element.width / 2, // Centre Y
-        element.width / 1.50, // Rayon
+        element.x + element.size / 2, // Centre X
+        element.y + element.size / 2, // Centre Y
+        element.size / 1.50, // Rayon
         0, // Début de l'angle
         Math.PI * 2 // Fin de l'angle (cercle complet)
     );

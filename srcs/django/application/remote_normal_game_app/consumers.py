@@ -213,60 +213,53 @@ class PongConsumer(AsyncWebsocketConsumer):
 		m = next((m for m in self.infoMatch["match"] if m["matchId"] == matchId), None)
 
 		if m:
-			if (m["ball"]["y"] + m["ball"]["gravity"] <= 0
-				or m["ball"]["y"] + m["ball"]["width"] + m["ball"]["gravity"]
+			if (m["ball"]["y"] + m["ball"]["vy"] <= 0
+				or m["ball"]["y"] + m["ball"]["size"] + m["ball"]["vy"]
 				>=  m["canvas"]["canvas_height"]):
-				m["ball"]["gravity"] *= -1
-				m["ball"]["x"] += m["ball"]["speed"]
-				m["ball"]["y"] += m["ball"]["gravity"]
-			else:
-				m["ball"]["x"] += m["ball"]["speed"]
-				m["ball"]["y"] += m["ball"]["gravity"]
+				m["ball"]["vy"] *= -1
+			m["ball"]["x"] += m["ball"]["vx"]
+			m["ball"]["y"] += m["ball"]["vy"]
 			await self.ballWallCollision(m)
 
 	async def ballWallCollision(self, m):
-		if (m["ball"]["y"] + m["ball"]["gravity"] <= m["playerTwo"]["y"] + m["playerTwo"]["height"]
-			and m["ball"]["x"] + m["ball"]["width"] + m["ball"]["speed"] >= m["playerTwo"]["x"]
-			and m["ball"]["y"] + m["ball"]["gravity"] > m["playerTwo"]["y"]):
+		if (m["ball"]["y"] + m["ball"]["vy"] <= m["playerTwo"]["y"] + m["playerTwo"]["height"]
+			and m["ball"]["x"] + m["ball"]["size"] + m["ball"]["vx"] >= m["playerTwo"]["x"]
+			and m["ball"]["y"] + m["ball"]["vy"] > m["playerTwo"]["y"]):
 
 			paddleCenter = m["playerTwo"]["y"] + m["playerTwo"]["height"] / 2
-			ballCenter = m["ball"]["y"] + m["ball"]["height"] / 2
+			ballCenter = m["ball"]["y"] + m["ball"]["size"] / 2
 			relativeIntersectY = (paddleCenter - ballCenter) / (m["playerTwo"]["height"] / 2)
 
 			bounceAngle = relativeIntersectY * 0.75
 
-			speed = math.sqrt(m["ball"]["speed"] * m["ball"]["speed"] + m["ball"]["gravity"] * m["ball"]["gravity"])
-			m["ball"]["speed"] = -speed * math.cos(bounceAngle)
-			m["ball"]["gravity"] = speed * math.sin(bounceAngle)
-			m["ball"]["x"] = m["playerTwo"]["x"] - m["ball"]["width"]
+			speed = math.sqrt(m["ball"]["vx"] * m["ball"]["vx"] + m["ball"]["vy"] * m["ball"]["vy"])
+			m["ball"]["vx"] = -speed * math.cos(bounceAngle)
+			m["ball"]["vy"] = speed * math.sin(bounceAngle)
+			m["ball"]["x"] = m["playerTwo"]["x"] - m["ball"]["size"]
 
-		elif (m["ball"]["y"] + m["ball"]["gravity"] >= m["playerOne"]["y"]
-			and m["ball"]["y"] + m["ball"]["gravity"] <= m["playerOne"]["y"] + m["playerOne"]["height"]
-			and m["ball"]["x"] + m["ball"]["speed"] <= m["playerOne"]["x"] + m["playerOne"]["width"]):
+		elif (m["ball"]["y"] + m["ball"]["vy"] >= m["playerOne"]["y"]
+			and m["ball"]["y"] + m["ball"]["vy"] <= m["playerOne"]["y"] + m["playerOne"]["height"]
+			and m["ball"]["x"] + m["ball"]["vx"] <= m["playerOne"]["x"] + m["playerOne"]["width"]):
 
 			paddleCenter = m["playerOne"]["y"] + m["playerOne"]["height"] / 2
-			ballCenter = m["ball"]["y"] + m["ball"]["height"] / 2
+			ballCenter = m["ball"]["y"] + m["ball"]["size"] / 2
 			relativeIntersectY = (paddleCenter - ballCenter) / (m["playerOne"]["height"] / 2)
 
 			bounceAngle = relativeIntersectY * 0.75
 
-			speed = math.sqrt(m["ball"]["speed"] * m["ball"]["speed"] + m["ball"]["gravity"] * m["ball"]["gravity"])
-			m["ball"]["speed"] = speed * math.cos(bounceAngle)
-			m["ball"]["gravity"] = speed * math.sin(bounceAngle)
-			m["ball"]["x"] = m["playerOne"]["x"] + m["ball"]["width"]
+			speed = math.sqrt(m["ball"]["vx"] * m["ball"]["vx"] + m["ball"]["vy"] * m["ball"]["vy"])
+			m["ball"]["vx"] = speed * math.cos(bounceAngle)
+			m["ball"]["vy"] = speed * math.sin(bounceAngle)
+			m["ball"]["x"] = m["playerOne"]["x"] + m["ball"]["size"]
 
-		elif (m["ball"]["x"] + m["ball"]["speed"] < m["playerOne"]["x"]):
+		elif (m["ball"]["x"] + m["ball"]["vx"] < m["playerOne"]["x"]):
 			m["playerTwo"]["score"] += 1
 			self.resetBall(m)
-			#m["ball"]["x"] = m["canvas"]["canvas_width"] / 2
-			#m["ball"]["y"] = m["canvas"]["canvas_height"]  / 2
 			await self.checkScore(m)
 
-		elif (m["ball"]["x"] + m["ball"]["speed"] > m["playerTwo"]["x"] + m["playerTwo"]["width"]):
+		elif (m["ball"]["x"] + m["ball"]["vx"] > m["playerTwo"]["x"] + m["playerTwo"]["width"]):
 			m["playerOne"]["score"] += 1
 			self.resetBall(m)
-			#m["ball"]["x"] = m["canvas"]["canvas_width"] / 2
-			#m["ball"]["y"] = m["canvas"]["canvas_height"]  / 2
 			await self.checkScore(m)
 
 	async def checkScore(self, m):
@@ -413,15 +406,12 @@ class PongConsumer(AsyncWebsocketConsumer):
 			matchPlaying["ball"] = {
 				"x": canvas_width / 2,
 				"y": canvas_height / 2,
-				"width": size,
-				"height": size,
+				"size": size,
 				"color": "black",
 				"speed": 5,
-				"gravity": 2,
-				"vx": 0,
-				"vy": 0
+				"vx": 5,
+				"vy": 2
 				}
-			#self.resetBall(m)
 
 			return matchId
 	
@@ -440,8 +430,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 		if ran > 0.5:
 			phase = 0
 		angle = direction * angle + phase
-		m["ball"]["speed"] = 6 * math.cos(angle)
-		m["ball"]["gravity"] = 6 * math.sin(angle)
-		#m["ball"]["vx"] = m["ball"]["speed"] * math.cos(angle)
-		#m["ball"]["vy"] = m["ball"]["speed"] * math.sin(angle)
+		m["ball"]["vx"] = m["ball"]["speed"] * math.cos(angle)
+		m["ball"]["vy"] = m["ball"]["speed"] * math.sin(angle)
 
