@@ -214,7 +214,6 @@ class RemoteGameWebSocket {
 				width: data.me.width,
 				height: data.me.height,
 				color: data.me.color,
-				gravity: data.me.gravity,
 				score: data.me.score
 			},
 			opponent: {
@@ -223,17 +222,14 @@ class RemoteGameWebSocket {
 				width: data.opponent.width,
 				height: data.opponent.height,
 				color: data.opponent.color,
-				gravity: data.opponent.gravity,
 				score: data.opponent.score
 			},
 			ball: {
 				x: data.ball.x,
 				y: data.ball.y,
-				width: data.ball.width,
-				height: data.ball.height,
+				size: data.ball.size,
 				color: data.ball.color,
-				speed: data.ball.speed,
-				gravity: data.ball.gravity
+				speed: data.ball.speed
 			},
 			score: {
 				scoreMax: data.message.scores.scoreMax
@@ -276,7 +272,6 @@ class RemoteGameWebSocket {
 				width: data.message.playerOne.width,
 				height: data.message.playerOne.height,
 				color: data.message.playerOne.color,
-				gravity: data.message.playerOne.gravity,
 				score: data.message.playerOne.score
 			},
 			opponent: {
@@ -285,17 +280,14 @@ class RemoteGameWebSocket {
 				width: data.message.playerTwo.width,
 				height: data.message.playerTwo.height,
 				color: data.message.playerTwo.color,
-				gravity: data.message.playerTwo.gravity,
 				score: data.message.playerTwo.score
 			},
 			ball: {
 				x: data.message.ball.x,
 				y: data.message.ball.y,
-				width: data.message.ball.width,
-				height: data.message.ball.height,
+				size: data.message.ball.size,
 				color: data.message.ball.color,
-				speed: data.message.ball.speed,
-				gravity: data.message.ball.gravity
+				speed: data.message.ball.speed
 			},
 			score: {
 				scoreMax: data.message.scores.scoreMax
@@ -341,16 +333,16 @@ class RemoteGameWebSocket {
 		drawPaddle(context, this.gameState.me);
 		drawPaddle(context, this.gameState.opponent);
 		ballStyle(context, this.gameState.ball);
-		drawDashedLine(context, canvas, this.gameState.ball.width);
-		drawGoalLine(context, canvas, this.gameState.ball.width, 0);
-		drawGoalLine(context, canvas, this.gameState.ball.width, canvas.width);
+		drawDashedLine(context, canvas, this.gameState.ball.size);
+		drawGoalLine(context, canvas, this.gameState.ball.size, 0);
+		drawGoalLine(context, canvas, this.gameState.ball.size, canvas.width);
 
 		const scoreOne = this.gameState.me.score ?? 0;
 		const scoreTwo = this.gameState.opponent.score ?? 0;
 
-		displayScoreOne(context, scoreOne, canvas, this.gameState.ball.width);
-		displayScoreTwo(context, scoreTwo, canvas, this.gameState.ball.width);
-		displayText(context, canvas, this.gameState.ball.width);
+		displayScoreOne(context, scoreOne, canvas, this.gameState.ball.size);
+		displayScoreTwo(context, scoreTwo, canvas, this.gameState.ball.size);
+		displayText(context, canvas, this.gameState.ball.size);
 	}
 
 	cleanup() {
