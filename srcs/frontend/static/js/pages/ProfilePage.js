@@ -122,10 +122,10 @@ export class ProfilePage {
 					</div>
 					<div class="profile-section account-management-section">
 						<div class="card account-management-header">
-							<h2>Account Management</h2>
-							<p class="text-danger">Warning: This action cannot be undone.</p>
+							<h2 data-translate="AccountManagement"></h2>
+							<p class="text-danger" data-translate="AccountManagementError"></p>
 							<button class="btn btn-danger" id="deleteAccountBtn">
-								<i class="fas fa-trash-alt me-2"></i>Delete Account
+								<i class="fas fa-trash-alt me-2"></i><span data-translate="DeleteAccount"></span>
 							</button>
 						</div>
 					</div>
@@ -189,11 +189,11 @@ export class ProfilePage {
 			<div class="friend-card" data-userid="${SafeText.escape(friend.id)}">
 				<div class="friend-avatar-container">
 					<img src="${SafeText.escape(friend.profile_image || '/static/img/anonymous.webp')}" alt="${SafeText.escape(friend.username)}" class="friend-avatar">
-					<span class="online-status ${SafeText.escape(friend.is_online ? 'online' : '')}"></span>
+					<span class="online-status ${friend.is_online ? 'online' : ''}"></span>
 				</div>
 				<div class="friend-info">
 					<h3>${SafeText.escape(friend.username)}</h3>
-					<p class="last-seen">${SafeText.escape(friend.is_online ? 'Online' : `Last seen ${new Date(friend.lastSeen).toLocaleDateString()}`)}</p>
+					<p class="last-seen"><span data-translate="Lastseen"></span>${friend.is_online ? ' <span data-translate="online"></span>' : ` ${new Date(friend.lastSeen).toLocaleDateString()}`}</p>
 					<div class="game-stats">
 						<div class="stat-item">
 							<span class="stat-label" data-translate="wins"></span>
@@ -209,7 +209,7 @@ export class ProfilePage {
 						</div>
 						<div class="stat-item">
 							<span class="stat-label" data-translate ="WinRate">:</span>
-							<span class="stat-value win-rate">${SafeText.escape(this.calculateWinRate(friend.wins, friend.totalGames))}%</span>
+							<span class="stat-value win-rate">${this.calculateWinRate(friend.wins, friend.totalGames)}%</span>
 						</div>
 					</div>
 				</div>
@@ -477,7 +477,7 @@ export class ProfilePage {
 						'Content-Type': 'application/json',
 						'X-CSRFToken': window.csrfToken,
 					},
-					body: JSON.stringify({ 'search_term': searchTerm })  // キーを'search_term'に修正
+					body: JSON.stringify({ 'search_term': searchTerm })
 				});
 
 				if (response.status == 403) {
@@ -494,17 +494,19 @@ export class ProfilePage {
 								<img src="${user.profile_image || '/static/img/anonymous.webp'}" alt="${SafeText.escape(user.username)}" class="user-avatar">
 								<div class="user-details">
 									<h3>${SafeText.escape(user.username)}</h3>
-									<span class="status ${user.is_online ? 'online' : ''}">${user.is_online ? 'Online' : 'Offline'}</span>
+									<div class="status ${user.is_online ? 'online' : ''}">${user.is_online ? '<span data-translate="online">online</span>' : '<span data-translate="offline">offline</span>'}</div>
 								</div>
 							</div>
 							<button class="add-friend-btn" data-userid="${user.id}" ${user.is_friend ? 'disabled' : ''}>
-								${user.is_friend ? '<i class="fas fa-check"></i> Friends' : '<i class="fas fa-user-plus"></i> Add Friend'}
+								${user.is_friend ? '<i class="fas fa-check"></i> <span data-translate="friends"></span>' : '<i class="fas fa-user-plus"></i> <span data-translate="AddFriend"></span>'}
 							</button>
 						</div>
 					`).join('');
 				} else {
 					resultsContainer.innerHTML = '<p>No users found</p>';
 				}
+				const savedLang = localStorage.getItem("selectedLang") || "en";
+				await updateTexts(savedLang);
 				const addFriendButtons = document.querySelectorAll('.add-friend-btn');
 				addFriendButtons.forEach(async (btn) => {
 					btn.addEventListener('click', async () => {
@@ -537,6 +539,8 @@ export class ProfilePage {
 									friendsList.innerHTML = this.renderFriendsList();
 									// setup event listeners for new friend
 									this.setupEventListeners();
+									const savedLang = localStorage.getItem("selectedLang") || "en";
+									await updateTexts(savedLang);
 								}
 							}
 						} catch (error) {
@@ -565,11 +569,11 @@ export class ProfilePage {
 				<div class="friend-profile">
 					<div class="friend-avatar-large">
 						<img src="${SafeText.escape(friendInfo.profile_image)}" alt="${SafeText.escape(friendInfo.username)}">
-						<span class="online-status ${SafeText.escape(friendInfo.is_online ? 'online' : '')}"></span>
+						<span class="online-status ${friendInfo.is_online ? 'online' : ''}"></span>
 					</div>
 					<div class="friend-details">
 						<h3>${SafeText.escape(friendInfo.username)}</h3>
-						<p class="status-text">${SafeText.escape(friendInfo.is_online ? 'Online' : friendInfo.lastSeen)}</p>
+						<p class="status-text">${friendInfo.is_online ? '<span data-translate="online"></span>' : friendInfo.lastSeen}</p>
 						<div class="stats-container">
 							<div class="stat-box">
 								<span class="stat-title" data-translate="wins"></span>
@@ -586,7 +590,7 @@ export class ProfilePage {
 							<div class="stat-box">
 								<span class="stat-title" data-translate="WinRate"></span
 								<span class="stat-number win-rate">
-									${this.calculateWinRate(friendInfo.wins, friendInfo.totalGames)}%
+									${friendInfo.totalGames > 0 ? this.calculateWinRate(friendInfo.wins, friendInfo.totalGames) : 0}%
 								</span>
 							</div>
 						</div>
@@ -758,11 +762,11 @@ export class ProfilePage {
 			<div class="friend-card" data-userid="${SafeText.escape(friend.id)}">
 				<div class="friend-avatar-container">
 					<img src="${SafeText.escape(friend.profile_image || '/static/img/anonymous.webp')}" alt="${SafeText.escape(friend.username)}" class="friend-avatar">
-					<span class="online-status ${SafeText.escape(friend.is_online ? 'online' : '')}"></span>
+					<span class="online-status ${friend.is_online ? 'online' : ''}"></span>
 				</div>
 				<div class="friend-info">
 					<h3>${SafeText.escape(friend.username)}</h3>
-					<p class="last-seen">${SafeText.escape(friend.is_online ? 'Online' : `Last seen ${new Date(friend.lastSeen).toLocaleDateString()}`)}</p>
+					<p class="last-seen"><span data-translate="Lastseen"></span>${friend.is_online ? ' <span data-translate="online"></span>' : ` ${new Date(friend.lastSeen).toLocaleDateString()}`}</p>
 					<div class="game-stats">
 						<div class="stat-item">
 							<span class="stat-label" data-translate="wins"></span>
@@ -778,7 +782,7 @@ export class ProfilePage {
 						</div>
 						<div class="stat-item">
 							<span class="stat-label" data-translate="WinRate">:</span>
-							<span class="stat-value win-rate">${SafeText.escape(this.calculateWinRate(friend.wins, friend.totalGames))}%</span>
+							<span class="stat-value win-rate">${this.calculateWinRate(friend.wins, friend.totalGames)}%</span>
 						</div>
 					</div>
 				</div>
@@ -870,21 +874,23 @@ export class ProfilePage {
 		});
 	}
 
-	showDeleteAccountModal() {
+	async showDeleteAccountModal() {
 		const modal = document.createElement('div');
 		modal.className = 'confirm-modal';
 		modal.innerHTML = `
 			<div class="modal-content">
-				<h2>Delete Account</h2>
-				<p class="warning-text">Are you sure you want to delete your account? This action cannot be undone.</p>
+				<h2 data-translate="DeleteAccount"></h2>
+				<p class="warning-text" data-translate="DeleteAccountMessage"></p>
 				<div class="modal-actions">
-					<button type="button" class="cancel-btn">Cancel</button>
-					<button type="button" class="confirm-btn danger-btn">Delete Account</button>
+					<button type="button" class="cancel-btn" data-translate="cancel"></button>
+					<button type="button" class="confirm-btn danger-btn" data-translate="DeleteAccount"></button>
 				</div>
 			</div>
 		`;
 
 		document.body.appendChild(modal);
+		const savedLang = localStorage.getItem("selectedLang") || "en";
+		await updateTexts(savedLang);
 
 		// Setup confirmation modal event listeners
 		const cancelBtn = modal.querySelector('.cancel-btn');

@@ -140,6 +140,7 @@ export class LoginPage {
 				return false;
 			}
 
+			window.router.refreshToken();
 			window.router.navigateTo('/profile');
 
 		} catch (error) {
