@@ -106,7 +106,7 @@ export class VerificationPage {
 				// Clear the pending verification email
 				sessionStorage.removeItem('pendingVerificationEmail');
 				// Redirect to login page
-				window.router.navigateTo('/login');
+				window.router.navigateTo('/profile');
 			} else {
 				codeError.textContent = data.message || translationsData["Invalid-Code"];
 				codeError.style.display = 'block';

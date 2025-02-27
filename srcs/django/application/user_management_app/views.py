@@ -135,6 +135,10 @@ def register_user(request):
 		is_active=is_active
 	)
 
+	# store user id in session
+	request.session['temp_user_id'] = user.id
+	request.session['verification_pending'] = True
+
 	return JsonResponse({
 		'status': 'success',
 		'message': 'Verification email sent'
@@ -209,42 +213,66 @@ def verify_email(request):
 	if request.method != 'POST':
 		return JsonResponse({
 			'status': 'error',
-			'message': 'Invalid request method'
+			'message': _('Invalid request method')
 		}, status=405)
 
-	data = json.load(request)
-	email = data.get('email')
-	verification_code = data.get('code')
-
 	try:
+		data = json.load(request)
+		email = data.get('email')
+		verification_code = data.get('code')
+
 		user = CustomUser.objects.get(email=email, is_active=False)
 		verification = EmailVerification.objects.get(
 			user=user,
 			verification_code=verification_code
 		)
 
+		# Check if code is expired
 		if verification.expires_at < timezone.now():
 			return JsonResponse({
 				'status': 'error',
-				'message': 'Verification code expired'
+				'message': _('Verification code expired')
 			}, status=400)
 
+		temp_user_id = request.session.get('temp_user_id')
+		if not temp_user_id or temp_user_id != user.id:
+			return JsonResponse({
+				'status': 'error',
+				'message': _('Invalid session')
+			}, status=400)
+
+		# Activate user
 		user.is_active = True
 		user.save()
 
-		# Delete verification after successful activation
+		# Delete verification
 		verification.delete()
 
+		# clean up session
+		if 'temp_user_id' in request.session:
+			del request.session['temp_user_id']
+		if 'verification_pending' in request.session:
+			del request.session['verification_pending']
+
+		login(request, user)
 		return JsonResponse({
 			'status': 'success',
-			'message': 'Email verified successfully'
+			'message': _('Email verified and logged in successfully'),
+			'isAuthenticated': True,
+			'username': user.username
 		})
 
 	except (CustomUser.DoesNotExist, EmailVerification.DoesNotExist):
 		return JsonResponse({
 			'status': 'error',
-			'message': 'Invalid verification code'
+			'message': _('Invalid verification code')
 		}, status=400)
+	except Exception as e:
+		logger.error(f"Error during email verification: {str(e)}")
+		return JsonResponse({
+			'status': 'error',
+			'message': _('An error occurred during verification')
+		}, status=500)
 
 @login_required
 def update_profile(request):
