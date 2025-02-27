@@ -178,7 +178,6 @@ class GameWebSocket {
 
 	sendInfoStarting()
 	{
-		console.log(this.typeOfMatch);
 		const data = {
 			type: "game.starting",
 			timestamp: Date.now(),
