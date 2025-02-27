@@ -320,13 +320,13 @@ class GameAISocket {
 		if (data.winner == 'p1')
 		{
 			stopGameAi();
-			const victory = new EndNormalGamePage("PlayerOne", "Ai");
+			const victory = new EndNormalGamePage(translationsData["Player1"],translationsData["AI player"]);
 			victory.handle();
 		}
 		else if (data.winner == 'p2')
 		{
 			stopGameAi();
-			const defeat = new EndNormalGamePage("Ai", "PlayerOne");
+			const defeat = new EndNormalGamePage(translationsData["AI player"], translationsData["Player1"]);
 			defeat.handle();
 		}
 	}

@@ -126,17 +126,17 @@ export function displayText(context, canvas, size)
 	context.textAlign = "left";
 	context.textBaseline = "bottom";
 	context.fillStyle = "rgb(78, 78, 78)";
-	context.fillText('Pause game: Esc', size, canvas.height - size * 1.5);
+	context.fillText(translationsData["PauseEsc"], size, canvas.height - size * 1.5);
 
 	context.textAlign = "left";
 	context.textBaseline = "top";
 	context.fillStyle = "black";
-	context.fillText('P1: w (up) s (down)', size * 1.5, size * 1.5);
+	context.fillText(translationsData["P1: w (up) s (down)"], size * 1.5, size * 1.5);
 
 	context.textAlign = "right";
 	context.textBaseline = "top";
 	context.fillStyle = "black";
-	context.fillText("AI player", canvas.width - size * 1.5, size * 1.5);
+	context.fillText(translationsData["AI player"], canvas.width - size * 1.5, size * 1.5);
 
 	resetStyle(context);
 }

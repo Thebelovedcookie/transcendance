@@ -120,7 +120,7 @@ export function displayText(contextSolo, canvasSolo)
 	contextSolo.textAlign = "left";
 	contextSolo.textBaseline = "top";
 	contextSolo.fillStyle = "rgb(78, 78, 78)";
-	contextSolo.fillText('Pause game: Esc', canvasSolo.size * 2, canvasSolo.size);
+	contextSolo.fillText(translationsData["PauseEsc"], canvasSolo.size * 2, canvasSolo.size);
 
 	resetStyleSolo(contextSolo);
 }

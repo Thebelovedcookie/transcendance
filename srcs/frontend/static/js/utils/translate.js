@@ -17,7 +17,7 @@ async function loadTranslations(lang) {
 }
 //MAJ texte et selector
 async function updateTexts(lang) {
-    console.log("Mise à jour du texte en:", lang);
+    // console.log("Mise à jour du texte en:", lang);
     const translations = await loadTranslations(lang);
     // console.log("Traductions chargées :", translations);
 
@@ -26,7 +26,7 @@ async function updateTexts(lang) {
 
     document.querySelectorAll("[data-translate]").forEach(el => {
         const key = el.getAttribute("data-translate");
-        console.log(`Élément détecté:`, el, `Clé:`, key);
+        // console.log(`Élément détecté:`, el, `Clé:`, key);
 		if (!translations[key]) {
 			console.error(`La clé "${key}" n'a pas de traduction disponible !`);
 		}
@@ -53,14 +53,14 @@ async function updateTexts(lang) {
 					}
 			
 					if (textNode) {
-						console.log(`Ancien texte: "${textNode.textContent.trim()}" -> Nouveau texte: "${translations[key] || key}"`);
-						textNode.textContent = " " + (translations[key] || key); // Ajoute un espace pour garder l'affichage propre
+						// console.log(`Ancien texte: "${textNode.textContent.trim()}" -> Nouveau texte: "${translations[key] || key}"`);
+						textNode.textContent = " " + (translations[key] || key); 
 					} else {
 						// Si aucun texte n'est trouvé, on l'ajoute après l'icône
 						el.appendChild(document.createTextNode(" " + (translations[key] || key)));
 					}	
 				}else {
-                	console.log(`Ancien texte: "${el.textContent}" -> Nouveau texte: "${translations[key] || key}"`);
+                	// console.log(`Ancien texte: "${el.textContent}" -> Nouveau texte: "${translations[key] || key}"`);
                 	el.textContent = translations[key] || key;
             	}
         	}
@@ -81,24 +81,6 @@ async function updateTexts(lang) {
 document.addEventListener("DOMContentLoaded", async () => {
     const savedLang = localStorage.getItem("selectedLang") || "en";
     await updateTexts(savedLang);
-});
-
-// gestion des modal a tester mais pas fonctionnel
-
-
-document.querySelectorAll(".modal-content").forEach(modal => {
-    modal.addEventListener("mouseenter", function () {
-        console.log("Mise à jour du texte du modal :", modal);
-        
-        modal.querySelectorAll("[data-translate]").forEach(el => {
-            const key = el.getAttribute("data-translate");
-            if (translationsData[key]) {
-                el.textContent = translationsData[key];
-            } else {
-                console.warn(`Clé de traduction manquante pour: ${key}`);
-            }
-        });
-    });
 });
 
 

@@ -228,6 +228,27 @@ class GameWebSocket {
 		end.handle();
 	}
 
+		// getResult(data) {
+		// 	if (data.winner == 'player1')
+		// 	{
+		// 		stopGame();
+		// 		const end = new EndNormalGamePage(translationsData["Player1"],translationsData["Player2 and Player 3"]);
+		// 		end.handle();
+		// 	}
+		// 	else if (data.winner == 'player2')
+		// 	{
+		// 		stopGame();
+		// 		const end = new EndNormalGamePage(translationsData["Player2"],translationsData["Player1 and Player 3"]);
+		// 		end.handle();
+		// 	}
+		// 	else if (data.winner == 'player3')
+		// 	{
+		// 		stopGame();
+		// 		const end = new EndNormalGamePage(translationsData["Player3"],translationsData["Player1 and Player 2"]);
+		// 		end.handle();
+		// 	}
+		// }
+
 	getInfoFromBackend(data)
 	{
 		this.gameState = {

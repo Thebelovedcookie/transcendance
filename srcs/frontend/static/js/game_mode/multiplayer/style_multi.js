@@ -130,22 +130,22 @@ export function displayPlayerName(context, canvas)
 	context.textAlign = "left";
 	context.textBaseline = "top";
 	context.fillStyle = "black";
-	context.fillText('Pause game: Esc', size, size);
+	context.fillText(translationsData["PauseEsc"], size, size);
 
 	context.textAlign = "right";
 	context.textBaseline = "bottom";
 	context.fillStyle = "red";
-	context.fillText('P1: ← (left) → (right)', canvas.dim - size, canvas.dim - size);
+	context.fillText(translationsData["P1: ← (left) → (right)"], canvas.dim - size, canvas.dim - size);
 
 	context.textAlign = "left";
 	context.textBaseline = "bottom";
 	context.fillStyle = "blue";
-	context.fillText("P2: w (up) s (down)", size, canvas.dim - size);
+	context.fillText(translationsData["P2: w (up) s (down)"], size, canvas.dim - size);
 
 	context.textAlign = "right";
 	context.textBaseline = "top";
 	context.fillStyle = "green";
-	context.fillText("P3: b (left) n (right)", canvas.dim - size, size);
+	context.fillText(translationsData["P3: b (left) n (right)"], canvas.dim - size, size);
 
 	resetStyle(context);
 }

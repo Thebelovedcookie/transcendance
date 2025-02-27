@@ -3,7 +3,7 @@ export class PongMenuPage {
 		this.container = document.getElementById('dynamicPage');
 	}
 
-	showSoloModeModal() {
+	async showSoloModeModal() {
 		const modal = document.createElement('div');
 		modal.className = 'game-mode-modal';
 		modal.innerHTML = `
@@ -26,18 +26,9 @@ export class PongMenuPage {
 		`;
 
 		document.body.appendChild(modal);
-		console.log("Modal Solo Mode affiché ! Mise à jour des traductions...");
-
-		// Met à jour les traductions juste après l'ajout du modal
-		modal.querySelectorAll("[data-translate]").forEach(el => {
-			const key = el.getAttribute("data-translate");
-			if (translationsData[key]) {
-				el.textContent = translationsData[key];
-			} else {
-				console.warn(`Clé de traduction manquante pour: ${key}`);
-			}
-		});
-
+		const savedLang = localStorage.getItem("selectedLang") || "en";
+		await updateTexts(savedLang);
+	
 		// Close modal when clicking outside or on close button
 		modal.addEventListener('click', (e) => {
 			if (e.target === modal || e.target.className === 'modal-close') {
