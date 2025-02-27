@@ -103,9 +103,11 @@ export class VerificationPage {
 			const data = await response.json();
 
 			if (response.ok) {
-				// Clear the pending verification email
+				if (data.csrf_token) {
+					window.csrfToken = data.csrf_token;
+				}
+
 				sessionStorage.removeItem('pendingVerificationEmail');
-				// Redirect to login page
 				window.router.navigateTo('/profile');
 			} else {
 				codeError.textContent = data.message || translationsData["Invalid-Code"];

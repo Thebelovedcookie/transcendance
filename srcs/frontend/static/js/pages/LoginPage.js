@@ -107,9 +107,6 @@ export class LoginPage {
 		let response;
 
 		try {
-			// sending a post request to the backend -> (email, username, password)
-			//Who will allow us to login
-			/*---------------------------REQUEST-----------------------------*/
 			response = await fetch('/api/login', {
 				method: 'POST',
 				headers: {
@@ -117,24 +114,25 @@ export class LoginPage {
 					'X-CSRFToken': window.csrfToken,
 				},
 				credentials: 'same-origin',
-				body: JSON.stringify({ 'email': document.getElementById('typeEmailX').value,
+				body: JSON.stringify({
+					'email': document.getElementById('typeEmailX').value,
 					'password': document.getElementById('typePasswordX').value
 				})
 			});
-			/*--------------------------ENDREQUEST----------------------------*/
 
 			const data = await response.json();
-			//if we get a bad response
+
 			if (!response.ok) {
 				const message = data.message;
 				const code = data.code;
-				if (code == 'account_not_activated') {
-					// Store email for verification page
-					sessionStorage.setItem('pendingVerificationEmail', document.getElementById('typeEmailX').value);
-					// Navigate to verification page
+
+				if (code === 'needs_verification') {
+					// if we need to verify the email
+					sessionStorage.setItem('pendingVerificationEmail', data.email);
 					window.router.navigateTo('/verify');
 					return false;
 				}
+
 				passwordError.textContent = message;
 				passwordError.style.display = 'block';
 				return false;

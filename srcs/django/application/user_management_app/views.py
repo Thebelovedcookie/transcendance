@@ -46,26 +46,36 @@ def login_user(request):
 		}, status=400)
 
 	user = CustomUser.objects.filter(email=email).first()
-	if user is not None and user.check_password(password):
-		if not user.is_active:
-			return JsonResponse({
-				'status': 'error',
-				'message': 'Account is not activated',
-				'code': 'account_not_activated'
-			}, status=401)
 
-		try:
-			if authenticate(email=email, password=password):
-				login(request, user)
-				return JsonResponse({
-					'status': 'success',
-					'message': 'Successfully logged in'
-				}, status=200)
-		except Exception as e:
-			return JsonResponse({
-				'status': 'error',
-				'message': 'Invalid email or password'
-			}, status=401)
+	# First check password
+	if user is not None and user.check_password(password):
+		# Generate verification code for 2FA
+		verification_code = ''.join([str(random.randint(0, 9)) for _ in range(6)])
+
+		# Save verification code
+		EmailVerification.objects.create(
+			user=user,
+			verification_code=verification_code
+		)
+
+		# Send 2FA email
+		subject = '2FA Verification Required'
+		message = f'Your 2FA verification code is: {verification_code}'
+		from_email = settings.DEFAULT_FROM_EMAIL
+		recipient_list = [email]
+
+		send_mail(subject, message, from_email, recipient_list)
+
+		# Store user credentials in session for verification
+		request.session['pending_login_id'] = user.id
+		request.session['2fa_required'] = True
+
+		return JsonResponse({
+			'status': 'error',
+			'message': '2FA verification required',
+			'code': 'needs_verification',
+			'email': email
+		}, status=401)
 
 	return JsonResponse({
 		'status': 'error',
@@ -137,7 +147,6 @@ def register_user(request):
 
 	# store user id in session
 	request.session['temp_user_id'] = user.id
-	request.session['verification_pending'] = True
 
 	return JsonResponse({
 		'status': 'success',
@@ -221,7 +230,7 @@ def verify_email(request):
 		email = data.get('email')
 		verification_code = data.get('code')
 
-		user = CustomUser.objects.get(email=email, is_active=False)
+		user = CustomUser.objects.get(email=email)
 		verification = EmailVerification.objects.get(
 			user=user,
 			verification_code=verification_code
@@ -234,33 +243,40 @@ def verify_email(request):
 				'message': _('Verification code expired')
 			}, status=400)
 
-		temp_user_id = request.session.get('temp_user_id')
-		if not temp_user_id or temp_user_id != user.id:
+		# For 2FA login verification
+		pending_login_id = request.session.get('pending_login_id')
+		if pending_login_id and pending_login_id == user.id:
+			verification.delete()
+			del request.session['pending_login_id']
+			del request.session['2fa_required']
+			login(request, user)
+
+			new_csrf_token = get_token(request)
 			return JsonResponse({
-				'status': 'error',
-				'message': _('Invalid session')
-			}, status=400)
+				'status': 'success',
+				'message': _('2FA verification successful'),
+				'isAuthenticated': True,
+				'username': user.username,
+				'csrf_token': new_csrf_token
+			})
 
-		# Activate user
-		user.is_active = True
-		user.save()
-
-		# Delete verification
-		verification.delete()
-
-		# clean up session
-		if 'temp_user_id' in request.session:
+		# For new user registration verification
+		temp_user_id = request.session.get('temp_user_id')
+		if temp_user_id and temp_user_id == user.id:
+			user.is_active = True
+			user.save()
+			verification.delete()
 			del request.session['temp_user_id']
-		if 'verification_pending' in request.session:
-			del request.session['verification_pending']
+			login(request, user)
 
-		login(request, user)
-		return JsonResponse({
-			'status': 'success',
-			'message': _('Email verified and logged in successfully'),
-			'isAuthenticated': True,
-			'username': user.username
-		})
+			new_csrf_token = get_token(request)
+			return JsonResponse({
+				'status': 'success',
+				'message': _('Email verified and logged in successfully'),
+				'isAuthenticated': True,
+				'username': user.username,
+				'csrf_token': new_csrf_token
+			})
 
 	except (CustomUser.DoesNotExist, EmailVerification.DoesNotExist):
 		return JsonResponse({
@@ -268,7 +284,7 @@ def verify_email(request):
 			'message': _('Invalid verification code')
 		}, status=400)
 	except Exception as e:
-		logger.error(f"Error during email verification: {str(e)}")
+		logger.error(f"Error during verification: {str(e)}")
 		return JsonResponse({
 			'status': 'error',
 			'message': _('An error occurred during verification')
