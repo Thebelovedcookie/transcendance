@@ -221,33 +221,27 @@ class GameWebSocket {
 				console.log("Unhandled message type:", data.type);
 		}
 	}
-
+	
 	getResult(data) {
-		stopGame();
-		const end = new EndNormalGamePage(data.winner, data.loser);
-		end.handle();
+		if (data.winner == "Player 1")
+		{
+			stopGame();
+			const end = new EndNormalGamePage(translationsData["Player1"], translationsData["Player2 and Player3"]);
+			end.handle();
+		}
+		else if (data.winner == "Player 2")
+		{
+			stopGame();
+			const end = new EndNormalGamePage(translationsData["Player2"], translationsData["Player1 and Player3"]);
+			end.handle();
+		}
+		else if (data.winner == "Player 3")
+		{
+			stopGame();
+			const end = new EndNormalGamePage(translationsData["Player3"], translationsData["Player1 and Player2"]);
+			end.handle();
+		}
 	}
-
-		// getResult(data) {
-		// 	if (data.winner == 'player1')
-		// 	{
-		// 		stopGame();
-		// 		const end = new EndNormalGamePage(translationsData["Player1"],translationsData["Player2 and Player 3"]);
-		// 		end.handle();
-		// 	}
-		// 	else if (data.winner == 'player2')
-		// 	{
-		// 		stopGame();
-		// 		const end = new EndNormalGamePage(translationsData["Player2"],translationsData["Player1 and Player 3"]);
-		// 		end.handle();
-		// 	}
-		// 	else if (data.winner == 'player3')
-		// 	{
-		// 		stopGame();
-		// 		const end = new EndNormalGamePage(translationsData["Player3"],translationsData["Player1 and Player 2"]);
-		// 		end.handle();
-		// 	}
-		// }
 
 	getInfoFromBackend(data)
 	{

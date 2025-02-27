@@ -124,7 +124,7 @@ export class TournamentPage {
 		return errors;
 	}
 
-	showValidationModal(errors) {
+	async showValidationModal(errors) {
 		const modal = document.createElement('div');
 		modal.className = 'validation-modal';
 		modal.innerHTML = `
@@ -139,6 +139,8 @@ export class TournamentPage {
 			</div>
 		`;
 		document.body.appendChild(modal);
+		const savedLang = localStorage.getItem("selectedLang") || "en";
+		await updateTexts(savedLang);
 	}
 
 	managePage() {
@@ -171,7 +173,9 @@ export class TournamentPage {
 				addButton.disabled = this.numberOfPlayers >= this.maxPlayers;
 				this.updateRemoveButtons();
 				this.updatePlayerNumbers();
+				
 			}
+			
 		});
 
 		// Handle individual player removal
