@@ -140,7 +140,22 @@
 		"searching":"Searching for opponent...",
 		"searchUser_placeholder":"Search by username...",
 		"Search":"Search",
-		"Restart":"Restart"
+		"Restart":"Restart",
+
+		"w (up) s (down)": "w (up) s (down)",
+		"↑ (up) ↓ (down)": "↑ (up) ↓ (down)",
+		"PauseEsc": "Pause game: Esc",
+		"P1: ← (left) → (right)":"P1: ← (left) → (right)",
+		"P2: w (up) s (down)": "P2: w (up) s (down)",
+		"P3: b (left) n (right)": "P3: b (left) n (right)",
+		"P1: w (up) s (down)": "P1: w (up) s (down)",
+		"AI player": "AI player",
+		"Player1":"Player1",
+		"Player2":"Player2",
+		"Player3":"Player3",
+		"Player1 and Player2":"Player1 and Player2",
+		"Player1 and Player3":"Player1 and Player3",
+		"Player2 and Player3":"Player2 and Player3"
 
 
 	},
@@ -282,7 +297,25 @@
 		"searching":"Recherche d'adversaire...",
 		"searchUser_placeholder":"Recherche par nom d'utilisateur...",
 		"Search":"Rechercher",
-		"Restart":"Recommencer"
+		"Restart":"Recommencer",
+
+		"PauseEsc": "Pause du jeu: Esc",
+		"w (up) s (down)": "w (haut) s (bas)",
+		"↑ (up) ↓ (down)": "↑ (haut) ↓ (bas)",
+		"P1: ← (left) → (right)":"J1: ← (gauche) → (droite)",
+		"P2: w (up) s (down)": "J2: w (haut) s (bas)",
+		"P3: b (left) n (right)": "J3: b (gauche) n (droite)",
+		"P1: w (up) s (down)": "J1: w (haut) s (bas)",
+		"AI player": "Joueur IA",
+		"Player1":"Joueur1",
+		"Player2":"Joueur2",
+		"Player3":"Joueur3",
+		"Player1 and Player2":"Joueur1 et Joueur2",
+		"Player1 and Player3":"Joueur1 et Joueur3",
+		"Player2 and Player3":"Joueur2 et Joueur3"
+		
+
+
 
 
 	},
