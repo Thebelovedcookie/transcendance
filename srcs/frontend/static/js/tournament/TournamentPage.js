@@ -100,6 +100,27 @@ export class TournamentPage {
 			}
 		}
 
+		// Check name length
+		names.forEach((name, index) => {
+			if (name && (name.length < 1 || name.length > 20)) {
+				inputs[index].classList.add('invalid');
+				if (!errors.includes(translationsData["nameLengthError"])) {
+					errors.push(translationsData["nameLengthError"]);
+				}
+			}
+		});
+
+		// Check for special characters
+		const specialCharsRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]+/;
+		names.forEach((name, index) => {
+			if (name && specialCharsRegex.test(name)) {
+				inputs[index].classList.add('invalid');
+				if (!errors.includes(translationsData["specialCharsError"])) {
+					errors.push(translationsData["specialCharsError"]);
+				}
+			}
+		});
+
 		// Check for duplicate names
 		const duplicateIndexes = new Set();
 		names.forEach((name, index) => {
@@ -175,9 +196,9 @@ export class TournamentPage {
 				this.updatePlayerNumbers();
 				const savedLang = localStorage.getItem("selectedLang") || "en";
 				await updateTexts(savedLang);
-				
+
 			}
-			
+
 		});
 
 		// Handle individual player removal
@@ -217,7 +238,7 @@ export class TournamentPage {
 			this.tournament = new TournamentStart(players, this.numberOfPlayers);
 			this.tournament.connect();
 		});
-		
+
 	}
 
 	// Helper method to update player numbers

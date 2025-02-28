@@ -63,7 +63,7 @@
 		"error-pwd4":"Password is required",
 		"errorpwd" :"Please enter your password",
 		"user-placeholder":"Username",
-		
+
 
 		"emailerror": "Email is required",
 		"emailerror1": "Please enter your email",
@@ -73,7 +73,7 @@
 		"usererror1": "username is too long",
 		"usererror2": "username is not valid",
 		"usererror3": "username is empty",
-		
+
 		"pwd-rules":"Password must be at least 8 characters",
 		"forgotpwd":"Forgot your password?",
 		"notyet": "Don't have an account? {link}",
@@ -168,9 +168,18 @@
 		"Player3":"Player3",
 		"Player1 and Player2":"Player1 and Player2",
 		"Player1 and Player3":"Player1 and Player3",
-		"Player2 and Player3":"Player2 and Player3"
-
-
+		"Player2 and Player3":"Player2 and Player3",
+		"nameLengthError": "Player name must be between 1 and 20 characters",
+		"specialCharsError": "Player name cannot contain special characters",
+		"searchLengthError": "Search term must be less than 20 characters",
+		"searchSpecialCharsError": "Search term cannot contain special characters",
+		"noSearchResults": "No users found",
+		"imageSizeError": "Image size must be less than 5MB",
+		"updateProfileError": "Failed to update profile. Please try again.",
+		"searchError": "Failed to search users. Please try again.",
+		"addFriendError": "Failed to add friend. Please try again.",
+		"removeFriendError": "Failed to remove friend. Please try again.",
+		"deleteAccountError": "Failed to delete account. Please try again."
 	},
 
 	"fr": {
@@ -226,10 +235,10 @@
 		"settinglog":"Entrer votre login et mot de passe!",
 		"pwd":"mot de passe",
 		"ErrorLogin":"Nom d'utilisateur ou mot de passe incorrect",
-		"Enter-user":"Entrer votre nom d'utilisateur",		
+		"Enter-user":"Entrer votre nom d'utilisateur",
 		"email_placeholder":"Email",
-		"pwd_placeholder":"Mot de passe",		
-		"pwd2_placeholder":"Confirmer le mot de passe",				
+		"pwd_placeholder":"Mot de passe",
+		"pwd2_placeholder":"Confirmer le mot de passe",
 		"error-pwd2":"Veuillez confirmer votre mot de passe",
 		"error-pwd3":"Les mots de passe ne correspondent pas",
 		"error-pwd4":"Mot de passe requis",
@@ -247,8 +256,8 @@
 		"usererror2": "Nom d'utilisateur n'est pas valide",
 		"usererror3": "Nom d'utilisateur est vide",
 		"error-email":"adresse email invalide",
-		
-		
+
+
 		"pwd-rules":"Le mot de passe doit contenir au moins 8 caractères",
 		"forgotpwd":"Mot de passe oublié?",
 		"already":"Déjà inscrit? {link}",
@@ -337,12 +346,18 @@
 		"Player3":"Joueur3",
 		"Player1 and Player2":"Joueur1 et Joueur2",
 		"Player1 and Player3":"Joueur1 et Joueur3",
-		"Player2 and Player3":"Joueur2 et Joueur3"
-		
-
-
-
-
+		"Player2 and Player3":"Joueur2 et Joueur3",
+		"nameLengthError": "Le nom du joueur doit contenir entre 1 et 20 caractères",
+		"specialCharsError": "Le nom du joueur ne peut pas contenir de caractères spéciaux",
+		"searchLengthError": "Le terme de recherche doit contenir moins de 20 caractères",
+		"searchSpecialCharsError": "Le terme de recherche ne peut pas contenir de caractères spéciaux",
+		"noSearchResults": "Aucun utilisateur trouvé",
+		"imageSizeError": "La taille de l'image doit être inférieure à 5MB",
+		"updateProfileError": "Échec de la mise à jour du profil. Veuillez réessayer.",
+		"searchError": "Échec de la recherche d'utilisateurs. Veuillez réessayer.",
+		"addFriendError": "Échec de l'ajout d'ami. Veuillez réessayer.",
+		"removeFriendError": "Échec de la suppression d'ami. Veuillez réessayer.",
+		"deleteAccountError": "Échec de la suppression du compte. Veuillez réessayer."
 	},
 
 	"ja": {
@@ -385,6 +400,7 @@
 		"tourchampion": "トーナメント優勝者",
 		"returnMenu": "メニューに戻る",
 		"nextmatch": "次の試合",
+		"emptynames": "全プレイヤーの名前を入力してください",
 
 		"solomode": "ソロモードの種類",
 		"practice": "練習モード",
@@ -402,9 +418,17 @@
 		"pwd2_placeholder": "パスワード（確認）",
 		"error-pwd2": "パスワードを確認してください",
 		"error-pwd3": "パスワードが一致しません",
+		"error-pwd4": "パスワードを入力してください",
 		"user-placeholder": "ユーザー名",
 
 		"emailerror": "メールアドレスを入力してください",
+		"emailerror1": "メールアドレスを入力してください",
+		"emailerror2": "メールアドレスが長すぎます",
+		"emailerror3": "有効なメールアドレスを入力してください",
+		"emailerror4": "メールアドレスが無効です",
+		"usererror1": "ユーザー名が長すぎます",
+		"usererror2": "ユーザー名が無効です",
+		"usererror3": "ユーザー名を入力してください",
 		"errorpwd": "パスワードを入力してください",
 		"pwd-rules": "パスワードは8文字以上必要です",
 		"forgotpwd": "パスワードをお忘れですか？",
@@ -413,6 +437,9 @@
 		"sign": "新規登録",
 		"sign-in": "ログイン",
 		"createaccount": "アカウント作成",
+		"error-register1": "登録に失敗しました。もう一度お試しください。",
+		"error-register2": "このメールアドレスは既に登録されています。",
+		"error-register3": "登録に失敗しました",
 
 		"Verify-Email": "メール認証",
 		"recode": "認証コードを再送信",
@@ -469,16 +496,42 @@
 		"Mypage": "マイページ",
 		"Settings": "設定",
 		"Logout": "ログアウト",
-		"AccountManagement":"アカウント管理",
-		"AccountManagementError":"警告: この操作は元に戻すことができません。",
-		"DeleteAccount":"アカウントを削除",
-		"DeleteAccountMessage":"本当にアカウントを削除しますか？この操作は元に戻すことができません。",
+		"AccountManagement": "アカウント管理",
+		"AccountManagementError": "警告: この操作は元に戻すことができません。",
+		"DeleteAccount": "アカウントを削除",
+		"DeleteAccountMessage": "本当にアカウントを削除しますか？この操作は元に戻すことができません。",
 
 		"backMenu": "メニューに戻る",
 		"searching": "対戦相手を探しています...",
 		"searchUser_placeholder": "ユーザー名で検索...",
 		"Search": "検索",
-		"Restart": "リスタート"
+		"Restart": "リスタート",
+
+		"w (up) s (down)": "w (上) s (下)",
+		"↑ (up) ↓ (down)": "↑ (上) ↓ (下)",
+		"PauseEsc": "ゲームを一時停止: Esc",
+		"P1: ← (left) → (right)": "P1: ← (左) → (右)",
+		"P2: w (up) s (down)": "P2: w (上) s (下)",
+		"P3: b (left) n (right)": "P3: b (左) n (右)",
+		"P1: w (up) s (down)": "P1: w (上) s (下)",
+		"AI player": "AIプレイヤー",
+		"Player1": "プレイヤー1",
+		"Player2": "プレイヤー2",
+		"Player3": "プレイヤー3",
+		"Player1 and Player2": "プレイヤー1とプレイヤー2",
+		"Player1 and Player3": "プレイヤー1とプレイヤー3",
+		"Player2 and Player3": "プレイヤー2とプレイヤー3",
+		"nameLengthError": "プレイヤー名は1文字以上20文字以下にしてください",
+		"specialCharsError": "プレイヤー名に特殊文字は使用できません",
+		"searchLengthError": "検索語は20文字以内にしてください",
+		"searchSpecialCharsError": "検索語に特殊文字は使用できません",
+		"noSearchResults": "ユーザーが見つかりませんでした",
+		"imageSizeError": "画像サイズは5MB以下にしてください",
+		"updateProfileError": "プロフィールの更新に失敗しました。もう一度お試しください。",
+		"searchError": "ユーザー検索に失敗しました。もう一度お試しください。",
+		"addFriendError": "フレンド追加に失敗しました。もう一度お試しください。",
+		"removeFriendError": "フレンド削除に失敗しました。もう一度お試しください。",
+		"deleteAccountError": "アカウントの削除に失敗しました。もう一度お試しください。"
 	},
 
 	"es": {
@@ -637,7 +690,13 @@
 		"Player3":"Jugador3",
 		"Player1 and Player2":"Jugador1 y Jugador2",
 		"Player1 and Player3":"Jugador1 y Jugador3",
-		"Player2 and Player3":"Jugador2 y Jugador3"
-
+		"Player2 and Player3":"Jugador2 y Jugador3",
+		"nameLengthError": "El nombre del jugador debe tener entre 1 y 20 caracteres",
+		"specialCharsError": "El nombre del jugador no puede contener caracteres especiales",
+		"searchLengthError": "La búsqueda debe tener menos de 20 caracteres",
+		"updateProfileError": "Error al actualizar el perfil",
+		"addFriendError": "Error al agregar amigo",
+		"removeFriendError": "Error al eliminar amigo",
+		"deleteAccountError": "Error al eliminar cuenta"
 	}
 }

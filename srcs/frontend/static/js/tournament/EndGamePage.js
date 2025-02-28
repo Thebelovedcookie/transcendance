@@ -1,3 +1,5 @@
+import { SafeText } from '../utils/safetext.js';
+
 export class EndGamePage {
 	constructor(winner, loser, socket, infoMatch) {
 		console.log(winner, loser, socket, infoMatch);
@@ -23,12 +25,12 @@ export class EndGamePage {
 					<div class="players-result">
 						<div class="winner-section">
 							<span class="result-label" data-translate="Winner">Winner</span>
-							<div class="player-name winner-name glow-text">${this.winner}</div>
+							<div class="player-name winner-name glow-text">${SafeText.escape(this.winner)}</div>
 						</div>
 						<div class="vs-symbol">VS</div>
 						<div class="loser-section">
 							<span class="result-label" data-translate="Loser">Loser</span>
-							<div class="player-name loser-name">${this.loser}</div>
+							<div class="player-name loser-name">${SafeText.escape(this.loser)}</div>
 						</div>
 					</div>
 				</div>

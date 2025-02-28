@@ -18,6 +18,9 @@ from django.core.mail import send_mail
 import random
 from django.utils import timezone
 import logging
+import re
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 
 logger = logging.getLogger(__name__)
 
@@ -71,11 +74,11 @@ def login_user(request):
 		request.session['2fa_required'] = True
 
 		return JsonResponse({
-			'status': 'error',
+			'status': 'success',
 			'message': '2FA verification required',
 			'code': 'needs_verification',
 			'email': email
-		}, status=401)
+		}, status=200)
 
 	return JsonResponse({
 		'status': 'error',
@@ -124,11 +127,55 @@ def get_csrf_token(request):
 		'csrf_token': csrf_token
 	}, status=200)
 
+def validate_username(username):
+	"""Validate username requirements"""
+	if not username:
+		raise ValidationError('Username is required')
+	if len(username) > 20:
+		raise ValidationError('Username must be less than 20 characters')
+	if len(username) < 1:
+		raise ValidationError('Username must be at least 1 character')
+	if re.search(r'[!@#$%^&*()_+\-=\[\]{};:"\|,.<>/?]', username):
+		raise ValidationError('Username cannot contain special characters')
+
+def validate_user_input(username=None, email=None, password=None):
+	"""Validate user input fields"""
+	errors = []
+
+	# Username validation
+	if username is not None:
+		try:
+			validate_username(username)
+		except ValidationError as e:
+			errors.extend(e.messages)
+
+	# Email validation
+	if email is not None:
+		try:
+			validate_email(email)
+		except ValidationError:
+			errors.append('Invalid email format')
+
+	# Password validation
+	if password is not None:
+		if len(password) < 8:
+			errors.append('Password must be at least 8 characters')
+
+	return errors
+
 def register_user(request):
 	data = json.load(request)
 	username = data.get('username')
 	email = data.get('email')
 	password = data.get('password')
+
+	# Validate input
+	validation_errors = validate_user_input(username, email, password)
+	if validation_errors:
+		return JsonResponse({
+			'status': 'error',
+			'message': validation_errors
+		}, status=400)
 
 	# Check if user already exists
 	if CustomUser.objects.filter(email=email).exists():
@@ -292,21 +339,39 @@ def verify_email(request):
 
 @login_required
 def update_profile(request):
-	print("Request method:", request.method)
-	print("Request FILES:", request.FILES)
-	print("Request POST:", request.POST)
-	if (request.method != 'POST'):
-		print(request.method)
+	if request.method != 'POST':
 		return JsonResponse({
 			'status': 'error',
-			'message' : 'Invalid request method'
+			'message': 'Invalid request method'
 		}, status=405)
 
 	try:
-		# retreive data from POST
 		username = request.POST.get('username')
 		email = request.POST.get('email')
 		uploaded_image = request.FILES.get('image')
+
+		# Validate input
+		validation_errors = validate_user_input(username, email)
+		if validation_errors:
+			return JsonResponse({
+				'status': 'error',
+				'message': validation_errors
+			}, status=400)
+
+		# Validate image if provided
+		if uploaded_image:
+			if uploaded_image.size > 5 * 1024 * 1024:  # 5MB limit
+				return JsonResponse({
+					'status': 'error',
+					'message': 'Image size must be less than 5MB'
+				}, status=400)
+
+			allowed_types = ['image/jpeg', 'image/png', 'image/gif']
+			if uploaded_image.content_type not in allowed_types:
+				return JsonResponse({
+					'status': 'error',
+					'message': 'Invalid image format'
+				}, status=400)
 
 		# fetch the user info based on surrent request.user.email
 		u = CustomUser.objects.get(email=request.user.email)
@@ -399,6 +464,15 @@ def search_user(request):
 	try:
 		data = json.loads(request.body)
 		search_term = data.get('search_term', '')
+
+		# Validate search term
+		try:
+			validate_username(search_term)
+		except ValidationError as e:
+			return JsonResponse({
+				'status': 'error',
+				'message': e.messages
+			}, status=400)
 
 		if not search_term:
 			return JsonResponse({
