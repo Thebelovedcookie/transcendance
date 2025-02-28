@@ -28,8 +28,8 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 		logger.info(f"WebSocket disconnected with code: {close_code}")
 		if len(self.infoMatch["match"]) != 0:
 			m = self.infoMatch["match"][0]
-			m["status"] = "False"
-
+			# m["status"] = "False"
+			self.infoMatch["match"].remove(m)
 	#Manage the info receive
 	async def receive(self, text_data):
 		try:
@@ -159,14 +159,18 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 		m = self.infoMatch["match"][0]
 		while (m["status"] == "True"):
 			await asyncio.sleep(1 / 60)
-			await self.calculBallMovement()
-			await self.send_gamestate()
+			if (await self.calculBallMovement()) == 1:
+				break
+			if (await self.send_gamestate()) == 1:
+				break
 
-		if m["status"] == "False":
+		if m and m["status"] == "False":
 			self.infoMatch["match"].remove(m)
 
 	# send game state to js at frontend
 	async def send_gamestate(self):
+		if len(self.infoMatch["match"]) == 0:
+			return 1
 		m = self.infoMatch["match"][0]
 		response = {
 			"type" : "game.state",
@@ -183,13 +187,18 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 			except Exception as e:
 				print(f"Erreur lors de l'envoi des données : {e}")
 				m["status"] = "False"
+			return 0
 
 	# continue ball at current velocity
 	async def calculBallMovement(self):
+		if len(self.infoMatch["match"]) == 0:
+			return 1
 		m = self.infoMatch["match"][0]
 		m["ball"]["x"] += m["ball"]["vx"]
 		m["ball"]["y"] += m["ball"]["vy"]
-		await self.ballBounce(m)
+		if (await self.ballBounce(m)) == 1:
+			return 1
+		return 0
 
 	# angle of ball with respect to canvas center
 	def getAngleOfBall(self, canvas, ball):
@@ -213,6 +222,8 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 
 	# update ball velocities and last touch following strike
 	def executeBallStrike(self, m, player):
+		if len(self.infoMatch["match"]) == 0:
+			return 1
 		ballCenter = m["ball"]["y"] + m["ball"]["size"] / 2
 		paddleCenter = player["endAngle"] - player["deltaAngle"] / 2
 		relativeIntersectY = m["canvas"]["radius"] * (paddleCenter - ballCenter) / player["deltaAngle"] / 2
@@ -221,6 +232,7 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 		m["ball"]["vx"] = -speed * math.cos(bounceAngle)
 		m["ball"]["vy"] = speed * math.sin(bounceAngle)
 		m["lastTouch"] = player["name"]
+		return 0
 
 	# check if location of ball overlaps location of paddle
 	def inPaddle(self, player):
@@ -233,6 +245,8 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 
 	# bounce the ball off the paddles as necessary
 	async def ballBounce(self, m):
+		if len(self.infoMatch["match"]) == 0:
+			return 1
 		angleBall = self.getAngleOfBall(m["canvas"], m["ball"])
 		width = m["playerOne"]["width"] # change this if paddles take custom sizes
 		distanceBall = self.getBallDistanceFromCenter(m["canvas"], m["ball"])
@@ -244,18 +258,24 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 			if distanceBall >= m["canvas"]["radius"] - width and distanceBall <= m["canvas"]["radius"]:
 				# in range of PlayerOne's paddle
 				if self.inPaddle(m["playerOne"]):
-					self.executeBallStrike(m, m["playerOne"])
+					if (self.executeBallStrike(m, m["playerOne"])) == 1:
+						return 0
 				# in range of PlayerTwo's paddle
 				elif self.inPaddle(m["playerTwo"]):
-					self.executeBallStrike(m, m["playerTwo"])
+					if (self.executeBallStrike(m, m["playerTwo"])) == 1:
+						return 1
 				# in range of PlayerThree's paddle
 				elif self.inPaddle(m["playerThree"]):
-					self.executeBallStrike(m, m["playerThree"])
+					if (self.executeBallStrike(m, m["playerThree"])) == 1:
+						return 1
 			# if ball has exited canvas, then change score
 		if distanceBall > m["canvas"]["radius"] + 5 * m["canvas"]["size"]:
-			self.manageScore(m)
+			if (self.manageScore(m)) == 1:
+				return 1
 			# check for a winner
-			await self.checkScore(m)
+			if (await self.checkScore(m)) == 1:
+				return 1
+		return 0
 
 	# check if ball angle is in the zone of a given player
 	def inZone(self, player):
@@ -266,6 +286,8 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 		return False
 
 	def manageScore(self, m):
+		if len(self.infoMatch["match"]) == 0:
+			return 1
 		# based on who last touched the ball, award points
 		if m["lastTouch"] == "player1" and not self.inZone(m["playerOne"]):
 			m["playerOne"]["score"] += 1
@@ -283,11 +305,15 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 			m["playerOne"]["score"] += 1
 			m["playerTwo"]["score"] += 1
 		# place ball back in center of canvas
-		self.resetBall(m)
+		if (self.resetBall(m)) == 1:
+			return 1
+		return 0
 
 	# check if any of the players have reached the max score
 	# if so, change game status and send list of winners and losers
 	async def checkScore(self, m):
+		if len(self.infoMatch["match"]) == 0:
+			return 1
 		winner = []
 		loser = ["Player 1", "Player 2", "Player 3"]
 		if m["playerOne"]["score"] == m["maxScore"] or m["playerTwo"]["score"] == m["maxScore"] or m["playerThree"]["score"] == m["maxScore"]:
@@ -301,16 +327,21 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 			if m["playerThree"]["score"] == m["maxScore"]:
 				winner.append("Player 3")
 				loser.remove("Player 3")
-			await self.sendMatchResult(winner, loser)
+			if (await self.sendMatchResult(winner, loser)) == 1:
+				return 1
+		return 0
 
 	# place ball in center of canvas and give it a random initial velocity
 	def resetBall(self, m):
+		if len(self.infoMatch["match"]) == 0:
+			return 1
 		m["ball"]["x"] = m["canvas"]["centerX"]
 		m["ball"]["y"] = m["canvas"]["centerY"]
 		m["ball"]["speed"] = 4
 		angle = random.random() * 2 * math.pi
 		m["ball"]["vx"] = m["ball"]["speed"] * math.cos(angle)
 		m["ball"]["vy"] = m["ball"]["speed"] * math.sin(angle)
+		return 0
 
 	# guard against angles below startZone and above endZone - deltaAngle
 	# to keep paddle within player's zone of movement
@@ -332,12 +363,12 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 	# move paddles based on keyboard input sent from js frontend in data
 	async def moveChange(self, data):
 		if len(self.infoMatch["match"]) == 0:
-			return
+			return 1
 		m = self.infoMatch["match"][0]
 		player = data.get("player", None)
 		direction = data.get("direction", None)
 		if not player or not direction:
-			return
+			return 0
 
 		if player == "p1":
 			m["playerOne"]["startAngle"] = self.movePaddle(m["playerOne"], direction)
@@ -348,9 +379,12 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 		elif player == "p3":
 			m["playerThree"]["startAngle"] = self.movePaddle(m["playerThree"], direction)
 			m["playerThree"]["endAngle"] = m["playerThree"]["startAngle"] + m["playerThree"]["deltaAngle"]
+		return 0
 
 	# send match results to main js file as strings given list of strings input
 	async def sendMatchResult(self, winner, loser):
+		if len(self.infoMatch["match"]) == 0:
+			return 1
 		winner = " and ".join(winner)
 		loser = " and ".join(loser)
 		response = {
@@ -362,3 +396,4 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 			await self.send(text_data=json.dumps(response))
 		except:
 			logger.info("ERROR socket probably closed.")
+		return 0
