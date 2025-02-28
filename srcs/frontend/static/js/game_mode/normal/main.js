@@ -302,7 +302,7 @@ class GameWebSocket {
 
 		displayScoreOne(context, scoreOne, canvas, this.gameState.ball.size);
 		displayScoreTwo(context, scoreTwo, canvas, this.gameState.ball.size);
-		displayText(context, canvas, this.gameState.ball.size);
+		displayText(context, canvas, this.gameState.ball.size, this.infoMatch);
 	}
 
 	cleanup() {
