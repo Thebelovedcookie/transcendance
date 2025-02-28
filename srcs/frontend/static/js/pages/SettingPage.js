@@ -8,7 +8,8 @@ export class SettingPage {
 		this.languages = [
 			{ code: 'en', name: 'English', icon: '🇬🇧' },
 			{ code: 'fr', name: 'Français', icon: '🇫🇷' },
-			{ code: 'ja', name: '日本語', icon: '🇯🇵' }
+			{ code: 'ja', name: '日本語', icon: '🇯🇵' },
+			{ code: 'es', name: 'Spanish', icon: '🇫🇷' }
 		];
 	}
 
@@ -36,9 +37,9 @@ export class SettingPage {
 				</div>
 
 				<div class="settings-section danger-zone">
-					<h2 data-translate = "Account Management">Account Management</h2>
-					<p class="warning-text">Warning: This action cannot be undone.</p>
-					<button class="delete-account-btn" data-translate="Delete Account">Delete Account</button>
+					<h2 data-translate = "AccountManagement">Account Management</h2>
+					<p class="warning-text" data-translate="AccountManagementError">Warning: This action cannot be undone.</p>
+					<button class="delete-account-btn" data-translate="DeleteAccount">Delete Account</button>
 				</div>
 			</div>
 		`;
@@ -81,11 +82,11 @@ export class SettingPage {
 		modal.className = 'confirmation-modal';
 		modal.innerHTML = `
 			<div class="modal-content">
-				<h2>Delete Account</h2>
-				<p>Are you sure you want to delete your account? This action cannot be undone.</p>
+				<h2 data-translate="DeleteAccount">Delete Account</h2>
+				<p data-translate = "DeleteAccountMessage" >Are you sure you want to delete your account? This action cannot be undone.</p>
 				<div class="modal-actions">
-					<button class="cancel-btn">Cancel</button>
-					<button class="delete-btn">Delete Account</button>
+					<button class="cancel-btn" data-translate="cancel">Cancel</button>
+					<button class="delete-btn" data-translate="DeleteAccount">Delete Account</button>
 				</div>
 			</div>
 		`;
