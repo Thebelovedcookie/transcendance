@@ -160,9 +160,13 @@
 		"specialCharsError": "Player name cannot contain special characters",
 		"searchLengthError": "Search term must be less than 20 characters",
 		"searchSpecialCharsError": "Search term cannot contain special characters",
-		"noSearchResults": "No users found"
-
-
+		"noSearchResults": "No users found",
+		"imageSizeError": "Image size must be less than 5MB",
+		"updateProfileError": "Failed to update profile. Please try again.",
+		"searchError": "Failed to search users. Please try again.",
+		"addFriendError": "Failed to add friend. Please try again.",
+		"removeFriendError": "Failed to remove friend. Please try again.",
+		"deleteAccountError": "Failed to delete account. Please try again."
 	},
 
 	"fr": {
@@ -322,12 +326,13 @@
 		"specialCharsError": "Le nom du joueur ne peut pas contenir de caractères spéciaux",
 		"searchLengthError": "Le terme de recherche doit contenir moins de 20 caractères",
 		"searchSpecialCharsError": "Le terme de recherche ne peut pas contenir de caractères spéciaux",
-		"noSearchResults": "Aucun utilisateur trouvé"
-
-
-
-
-
+		"noSearchResults": "Aucun utilisateur trouvé",
+		"imageSizeError": "La taille de l'image doit être inférieure à 5MB",
+		"updateProfileError": "Échec de la mise à jour du profil. Veuillez réessayer.",
+		"searchError": "Échec de la recherche d'utilisateurs. Veuillez réessayer.",
+		"addFriendError": "Échec de l'ajout d'ami. Veuillez réessayer.",
+		"removeFriendError": "Échec de la suppression d'ami. Veuillez réessayer.",
+		"deleteAccountError": "Échec de la suppression du compte. Veuillez réessayer."
 	},
 
 	"ja": {
@@ -455,10 +460,10 @@
 		"Mypage": "マイページ",
 		"Settings": "設定",
 		"Logout": "ログアウト",
-		"AccountManagement":"アカウント管理",
-		"AccountManagementError":"警告: この操作は元に戻すことができません。",
-		"DeleteAccount":"アカウントを削除",
-		"DeleteAccountMessage":"本当にアカウントを削除しますか？この操作は元に戻すことができません。",
+		"AccountManagement": "アカウント管理",
+		"AccountManagementError": "警告: この操作は元に戻すことができません。",
+		"DeleteAccount": "アカウントを削除",
+		"DeleteAccountMessage": "本当にアカウントを削除しますか？この操作は元に戻すことができません。",
 
 		"backMenu": "メニューに戻る",
 		"searching": "対戦相手を探しています...",
@@ -469,7 +474,13 @@
 		"specialCharsError": "プレイヤー名に特殊文字は使用できません",
 		"searchLengthError": "検索語は20文字以内にしてください",
 		"searchSpecialCharsError": "検索語に特殊文字は使用できません",
-		"noSearchResults": "ユーザーが見つかりませんでした"
+		"noSearchResults": "ユーザーが見つかりませんでした",
+		"imageSizeError": "画像サイズは5MB以下にしてください",
+		"updateProfileError": "プロフィールの更新に失敗しました。もう一度お試しください。",
+		"searchError": "ユーザー検索に失敗しました。もう一度お試しください。",
+		"addFriendError": "フレンド追加に失敗しました。もう一度お試しください。",
+		"removeFriendError": "フレンド削除に失敗しました。もう一度お試しください。",
+		"deleteAccountError": "アカウントの削除に失敗しました。もう一度お試しください。"
 	},
 
 	"es": {

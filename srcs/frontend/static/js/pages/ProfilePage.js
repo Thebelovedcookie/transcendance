@@ -313,7 +313,7 @@ export class ProfilePage {
 		}
 	}
 
-	validateProfileData(username, email) {
+	validateProfileData(username, email, image) {
 		const errors = [];
 
 		// Username validation: length check
@@ -333,6 +333,13 @@ export class ProfilePage {
 			errors.push(translationsData["error-email"]);
 		}
 
+		// Image validation
+		if (image) {
+			const maxSize = 1024 * 1024 * 5; // 5MB
+			if (image.size > maxSize) {
+				errors.push(translationsData["imageSizeError"]);
+			}
+		}
 		return errors;
 	}
 
@@ -408,7 +415,8 @@ export class ProfilePage {
 
 			const username = modal.querySelector('input[type="text"]').value.trim();
 			const email = modal.querySelector('input[type="email"]').value.trim();
-			const errors = this.validateProfileData(username, email);
+			const image = modal.querySelector('#avatarInput').files[0];
+			const errors = this.validateProfileData(username, email, image);
 
 			if (errors.length > 0) {
 				// Show validation errors
@@ -455,6 +463,7 @@ export class ProfilePage {
 					if (response.status == 403) {
 						window.router.refreshToken();
 					}
+					alert(translationsData["updateProfileError"]);
 					throw new Error(`HTTP error! status: ${response.status}`);
 				}
 
@@ -543,8 +552,11 @@ export class ProfilePage {
 					body: JSON.stringify({ 'search_term': searchTerm })
 				});
 
-				if (response.status == 403) {
-					window.router.refreshToken();
+				if (!response.ok) {
+					if (response.status == 403) {
+						window.router.refreshToken();
+					}
+					alert(translationsData["searchError"]);
 					throw new Error(response.status);
 				}
 
@@ -587,8 +599,11 @@ export class ProfilePage {
 									body: JSON.stringify({ 'friend_id': btn.dataset.userid })
 								});
 
-								if (response.status == 403) {
-									window.router.refreshToken();
+								if (!response.ok) {
+									if (response.status == 403) {
+										window.router.refreshToken();
+									}
+									alert(translationsData["addFriendError"]);
 									throw new Error(response.status);
 								}
 
@@ -747,8 +762,11 @@ export class ProfilePage {
 					body: JSON.stringify({ 'userid': userId })
 				});
 
-				if (response.status == 403) {
-					window.router.refreshToken();
+				if (!response.ok) {
+					if (response.status == 403) {
+						window.router.refreshToken();
+					}
+					alert(translationsData["removeFriendError"]);
 					throw new Error(response.status);
 				}
 
@@ -985,8 +1003,11 @@ export class ProfilePage {
 					}
 				});
 
-				if (response.status == 403) {
-					window.router.refreshToken();
+				if (!response.ok) {
+					if (response.status == 403) {
+						window.router.refreshToken();
+					}
+					alert(translationsData["deleteAccountError"]);
 					throw new Error(response.status);
 				}
 

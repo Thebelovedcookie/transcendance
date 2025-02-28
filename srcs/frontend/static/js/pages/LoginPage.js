@@ -123,23 +123,21 @@ export class LoginPage {
 			const data = await response.json();
 
 			if (!response.ok) {
-				const message = data.message;
-				const code = data.code;
+				return false;
+			}
+			const message = data.message;
+			const code = data.code;
 
-				if (code === 'needs_verification') {
-					// if we need to verify the email
-					sessionStorage.setItem('pendingVerificationEmail', data.email);
-					window.router.navigateTo('/verify');
-					return false;
-				}
-
-				passwordError.textContent = message;
-				passwordError.style.display = 'block';
+			if (code === 'needs_verification') {
+				// if we need to verify the email
+				sessionStorage.setItem('pendingVerificationEmail', data.email);
+				window.router.navigateTo('/verify');
 				return false;
 			}
 
-			window.router.refreshToken();
-			window.router.navigateTo('/profile');
+			passwordError.textContent = message;
+			passwordError.style.display = 'block';
+			return false;
 
 		} catch (error) {
 			console.error('Error details:', error);
