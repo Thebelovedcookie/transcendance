@@ -131,7 +131,7 @@ export function displayText(context, canvas, size, infoMatch)
 	context.textBaseline = "top";
 	context.fillStyle = "black";
 	if (infoMatch == null) {
-		context.fillText("P1 " + translationsData["w (up) s (down)"], size * 1.5, size * 1.5);
+		context.fillText("P1: " + translationsData["w (up) s (down)"], size * 1.5, size * 1.5);
 	}
 	else {
 		context.fillText(infoMatch.playerOne + ": " + translationsData["w (up) s (down)"], size * 1.5, size * 1.5);
@@ -141,7 +141,7 @@ export function displayText(context, canvas, size, infoMatch)
 	context.textBaseline = "top";
 	context.fillStyle = "black";
 	if (infoMatch == null) {
-		context.fillText(translationsData["↑ (up) ↓ (down)"], canvas.width - size * 1.5, size * 1.5);
+		context.fillText("P2: " + translationsData["↑ (up) ↓ (down)"], canvas.width - size * 1.5, size * 1.5);
 	}
 	else {
 		context.fillText(infoMatch.playerTwo + ": " + translationsData["↑ (up) ↓ (down)"], canvas.width - size * 1.5, size * 1.5);
