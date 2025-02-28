@@ -239,7 +239,8 @@ export class TournamentPage {
 	}
 
 	clean() {
-		this.tournament.clean();
+		if (this.tournament)
+			this.tournament.clean();
 		return ;
 	}
 }
