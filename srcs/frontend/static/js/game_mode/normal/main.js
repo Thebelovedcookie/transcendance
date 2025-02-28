@@ -223,7 +223,7 @@ class GameWebSocket {
 				console.log("Unhandled message type:", data.type);
 		}
 	}
-
+//get result a modifier
 	getResult(data) {
 		if (this.typeOfMatch == "tournament") {
 			if (data.winner == "Player 1")
@@ -239,9 +239,18 @@ class GameWebSocket {
 				end.handle();
 			}
 		} else {
-			stopGame();
-			const end = new EndNormalGamePage(data.winner, data.loser);
-			end.handle();
+				if (data.winner == "Player 1")
+				{
+					stopGame();
+					const end = new EndNormalGamePage(translationsData["Player1"],translationsData["Player2"]);
+					end.handle();
+				}
+				else if (data.winner == "Player 2")
+				{
+					stopGame();
+					const end = new EndNormalGamePage(translationsData["Player2"], translationsData["Player1"]);
+					end.handle();
+				}
 		}
 	}
 

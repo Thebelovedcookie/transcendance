@@ -193,7 +193,7 @@
 		"name_placeholder":"Entrer le nom du joueur",
 		"nameError":"Tous les joueurs doivent avoir des noms",
 		"DuplicateError":"Les noms de joueurs en double ne sont pas autorisés",
-		"FixError:":"Veuillez corriger les erreurs suivantes:",
+		"FixError:":"Veuillez corriger les erreurs:",
 		"leftplayer":"JOUEUR GAUCHE",
 		"rightplayer":"JOUEUR DROITE",
 		"Controls":"Commandes:",

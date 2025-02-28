@@ -129,7 +129,7 @@ export class TournamentPage {
 		modal.className = 'validation-modal';
 		modal.innerHTML = `
 			<div class="modal-content">
-				<h3 data-translate="FixError">Please Fix the Following:</h3>
+				<h3 data-translate="FixError:">Please Fix the Following:</h3>
 				<ul>
 					${errors.map(error => `<li>${error}</li>`).join('')}
 				</ul>
@@ -150,7 +150,7 @@ export class TournamentPage {
 		const counterValue = document.querySelector('.counter-value');
 
 		// Handle add player functionality
-		addButton.addEventListener('click', () => {
+		addButton.addEventListener('click', async() => {
 			if (this.numberOfPlayers < this.maxPlayers) {
 				this.numberOfPlayers++;
 
@@ -173,6 +173,8 @@ export class TournamentPage {
 				addButton.disabled = this.numberOfPlayers >= this.maxPlayers;
 				this.updateRemoveButtons();
 				this.updatePlayerNumbers();
+				const savedLang = localStorage.getItem("selectedLang") || "en";
+				await updateTexts(savedLang);
 				
 			}
 			
@@ -215,6 +217,7 @@ export class TournamentPage {
 			this.tournament = new TournamentStart(players, this.numberOfPlayers);
 			this.tournament.connect();
 		});
+		
 	}
 
 	// Helper method to update player numbers
