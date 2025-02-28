@@ -65,14 +65,21 @@ class GameConsumer(AsyncWebsocketConsumer):
 				}
 
 			# Envoyer la réponse au client
-			self.send(text_data=json.dumps(response))
+			try:
+				self.send(text_data=json.dumps(response))
+			except:
+				logger.info("ERROR socket probably closed.")
 
 		except json.JSONDecodeError:
 			logger.error("Error: Invalid JSON received")
-			self.send(text_data=json.dumps({
-				"type": "error",
-				"message": "Invalid JSON format"
-			}))
+			try:
+				self.send(text_data=json.dumps({
+					"type": "error",
+					"message": "Invalid JSON format"
+				}))
+			except:
+				logger.info("ERROR socket probably closed.")
+
 
 	async def createGame(self):
 		obj = {
@@ -276,4 +283,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 			"winner": winner,
 			"loser": loser, 
 		}
-		await self.send(text_data=json.dumps(response))
+		try:
+			await self.send(text_data=json.dumps(response))
+		except:
+			logger.info("ERROR socket probably closed.")

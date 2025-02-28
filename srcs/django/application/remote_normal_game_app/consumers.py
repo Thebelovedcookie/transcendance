@@ -36,19 +36,25 @@ class PongConsumer(AsyncWebsocketConsumer):
 		self.infoPlayer['players'].append(obj)
 		await self.channel_layer.group_add(self.game_group_name, self.channel_name)
 		if len(self.infoPlayer["players"]) % 2 == 0:
-			await self.send(
-				text_data=json.dumps({
-					"type": "playerId", "playerId": self.player_id,
-				})
-			)
-			await self.createGame()
+			try:
+				await self.send(
+					text_data=json.dumps({
+						"type": "playerId", "playerId": self.player_id,
+					})
+				)
+				await self.createGame()
+			except:
+				logger.info("ERROR socket probably closed.")
 		else:
-			await self.send(
-				text_data=json.dumps({
-					"type": "playerId", "playerId": self.player_id,
-					'message': 'Waiting for Opponent',
-				})
-			)
+			try:
+				await self.send(
+					text_data=json.dumps({
+						"type": "playerId", "playerId": self.player_id,
+						'message': 'Waiting for Opponent',
+					})
+				)
+			except:
+				logger.info("ERROR socket probably closed.")
 
 	async def reconnect(self):
 		for match in self.infoMatch["match"]:
@@ -63,11 +69,14 @@ class PongConsumer(AsyncWebsocketConsumer):
 					"opponent" : match["playerTwo"],
 					"id" : match["playerOne"]["id"],
 					"ball": match["ball"],
-					"side": "right",
-					"ctrlUp": "ArrowUp",
-					"ctrlDown": "ArrowDown"
+					"side": "left",
+					"ctrlUp": "w",
+					"ctrlDown": "s"
 				}
-				await self.send(text_data=json.dumps(response))
+				try:
+					await self.send(text_data=json.dumps(response))
+				except:
+					logger.info("ERROR socket probably closed.")
 				return 0
 			elif match["playerTwo"]["id"] == self.player_id:
 				await self.accept()
@@ -84,7 +93,10 @@ class PongConsumer(AsyncWebsocketConsumer):
 					"ctrlUp": "ArrowUp",
 					"ctrlDown": "ArrowDown"
 				}
-				await self.send(text_data=json.dumps(response))
+				try:
+					await self.send(text_data=json.dumps(response))
+				except:
+					logger.info("ERROR socket probably closed.")
 				return 0
 		return 1
 
@@ -103,10 +115,14 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 		#changing the color of the player who's disconnect
 		if findMatch and findMatch["playerOne"]["id"] == toRemove["player_id"]:
+			findMatch["playerOne"]["connected"] = False
 			findMatch["playerOne"]["color"] = "red"
 
-		if findMatch and findMatch["playerTwo"]["id"] == toRemove["player_id"]:
+		elif findMatch and findMatch["playerTwo"]["id"] == toRemove["player_id"]:
+			findMatch["playerOne"]["connected"] = False
 			findMatch["playerTwo"]["color"] = "red"
+		if findMatch and findMatch["playerOne"]["connected"] == False and findMatch["playerTwo"]["connected"] == False:
+			findMatch["status"] = False
 
 	async def receive(self, text_data):
 		try:
@@ -127,13 +143,19 @@ class PongConsumer(AsyncWebsocketConsumer):
 				}
 
 			# Envoyer la réponse au client
-			await self.send(text_data=json.dumps(response))
+			try:
+				await self.send(text_data=json.dumps(response))
+			except:
+				logger.info("ERROR socket probably closed.")
 
 		except json.JSONDecodeError:
-			await self.send(text_data=json.dumps({
-				"type": "error",
-				"message": "Invalid JSON format"
-			}))
+			try:
+				await self.send(text_data=json.dumps({
+					"type": "error",
+					"message": "Invalid JSON format"
+				}))
+			except:
+				logger.info("ERROR socket probably closed.")
 
 	####################### INIT MATCH ############################
 
@@ -144,12 +166,14 @@ class PongConsumer(AsyncWebsocketConsumer):
 			'status': True,
 			'matchId' : str(uuid.uuid4()),
 			'playerOne': {
+				"connected" : True,
 				"id": newPlayers[0]['player_id'],
 				"side": "left",
 				"ctrlUp": "w",
 				"ctrlDown": "s"
 			},
 			'playerTwo': {
+				"connected" : True,
 				"id": newPlayers[1]['player_id'],
 				"side": "right",
 				"ctrlUp": "ArrowUp",
@@ -166,20 +190,27 @@ class PongConsumer(AsyncWebsocketConsumer):
 		)
 
 	async def game_init(self, event):
-		await self.send(text_data=json.dumps({
-			"type": "game.init",
-			"message": event["message"]
-		}))
+		try:
+			await self.send(text_data=json.dumps({
+				"type": "game.init",
+				"message": event["message"]
+			}))
+		except:
+			logger.info("ERROR socket probably closed.")
 
 	######################## GAME LOOP #############################
 
 	async def loop(self, matchId):
 		m = next((m for m in self.infoMatch["match"] if m["matchId"] == matchId), None)
 
-		while (m["status"]):
-			await asyncio.sleep(1 / 60)
-			await self.calculBallMovement(matchId)
-			await self.send_gamestate(matchId)
+		if m:
+			while (m["status"]):
+				await asyncio.sleep(1 / 60)
+				await self.calculBallMovement(matchId)
+				await self.send_gamestate(matchId)
+
+		if m["status"] == False:
+			self.infoMatch["match"].remove(m)
 
 	################### GAME SEND GAMESTATE ########################
 
@@ -194,18 +225,25 @@ class PongConsumer(AsyncWebsocketConsumer):
 				"ball": matchPlayed["ball"],
 				"scores": {"scoreMax": 10}
 			}
-			await self.channel_layer.group_send(
-			self.game_group_name,
-			{
-				"type": "game_state",
-				"message": response
-			})
+			if matchPlayed["status"]:
+				try:
+					await self.channel_layer.group_send(
+					self.game_group_name,
+					{
+						"type": "game_state",
+						"message": response
+					})
+				except Exception as e:
+					print(f"Erreur lors de l'envoi des données : {e}")
 
 	async def game_state(self, event):
-		await self.send(text_data=json.dumps({
-			"type": "game_state",
-			"message": event["message"]
-		}))
+		try:
+			await self.send(text_data=json.dumps({
+				"type": "game_state",
+				"message": event["message"]
+			}))
+		except:
+			logger.info("ERROR socket probably closed.")
 
 	####################### GAME LOGIC #############################
 	#m = match
@@ -321,7 +359,8 @@ class PongConsumer(AsyncWebsocketConsumer):
 		p2 = next((p for p in self.infoPlayer["players"] if p["player_id"] == m["playerTwo"]["id"]), None)
 		if p2:
 			self.infoPlayer["players"].remove(p2)
-		self.infoMatch["match"].remove(m)
+		if m:
+			self.infoMatch["match"].remove(m)
 
 	#################### SEND VICTORY ##########################
 
@@ -339,10 +378,13 @@ class PongConsumer(AsyncWebsocketConsumer):
 		})
 
 	async def game_result(self, event):
-		await self.send(text_data=json.dumps({
-			"type": "game_result",
-			"message": event["message"]
-		}))
+		try:
+			await self.send(text_data=json.dumps({
+				"type": "game_result",
+				"message": event["message"]
+			}))
+		except:
+			logger.info("ERROR socket probably closed.")
 
 	#################### PLAYER MOVE ##########################
 

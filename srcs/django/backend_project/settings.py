@@ -208,6 +208,7 @@ MEDIA_ROOT = '/var/www/html/media'
 
 CSRF_TRUSTED_ORIGINS = [
 	'https://localhost',
+	'https://localhost:8001',
 	'https://127.0.0.1',
 ]
 

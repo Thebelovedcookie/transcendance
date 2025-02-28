@@ -51,14 +51,20 @@ class TournamentConsumer(WebsocketConsumer):
 					"message": f"Unknown message type: {message_type}"
 				}
 
-			self.send(text_data=json.dumps(response))
+			try:
+				self.send(text_data=json.dumps(response))
+			except:
+				logger.info("ERROR socket probably closed.")
 
 		except json.JSONDecodeError:
 			logger.error("Error: Invalid JSON received")
-			self.send(text_data=json.dumps({
-				"type": "error",
-				"message": "Invalid JSON format"
-			}))
+			try:
+				self.send(text_data=json.dumps({
+					"type": "error",
+					"message": "Invalid JSON format"
+				}))
+			except:
+				logger.info("ERROR socket probably closed.")
 
 	def initialisation(self, data):
 		start_data = data.get("start", {})

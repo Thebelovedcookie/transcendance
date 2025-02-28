@@ -175,7 +175,6 @@ class RemoteGameWebSocket {
 				break;
 			case "game.init":
 				this.isItForMe(data);
-				//display waiting page
 				break;
 			case "game_state":
 				this.updateGame(data);
