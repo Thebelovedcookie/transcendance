@@ -14,12 +14,12 @@ export class RegisterPage {
 
 							<div class="form-outline form-white mb-4">
 								<input type="text" id="typeUsernameX" class="form-control form-control-lg" placeholder="Username" data-translate="user-placeholder" />
-								<div id="usernameError" class="text-danger small mt-1" style="display: none;" data-translate="Enter-user"></div>
+								<div id="usernameError" class="text-danger small mt-1" style="display: none;" ></div>
 							</div>
 
 							<div class="form-outline form-white mb-4">
 								<input type="email" id="typeEmailX" class="form-control form-control-lg" placeholder="Email" data-translate="email_placeholder"/>
-								<div id="emailError" class="text-danger small mt-1" style="display: none;" data-translate= "error-email"></div>
+								<div id="emailError" class="text-danger small mt-1" style="display: none;" ></div>
 							</div>
 
 							<div class="form-outline form-white mb-4">
@@ -30,7 +30,7 @@ export class RegisterPage {
 									</div>
 									<small class="text-white-50" data-translate="pwd-rules"></small>
 								</div>
-								<div id="passwordError" class="text-danger small mt-1" style="display: none;" data-translate="pwd-rules"></div>
+								<div id="passwordError" class="text-danger small mt-1" style="display: none;" ></div>
 							</div>
 
 							<div class="form-outline form-white mb-4">
@@ -41,7 +41,7 @@ export class RegisterPage {
 									</div>
 									<small class="text-white-50" data-translate="pwd-rules"></small>
 								</div>
-								<div id="confirmPasswordError" class="text-danger small mt-1" style="display: none;" data-translate="pwd-rules"></div>
+								<div id="confirmPasswordError" class="text-danger small mt-1" style="display: none;" ></div>
 							</div>
 
 							<button class="btn btn-outline-light btn-lg px-5" type="submit" id="registerButton" data-translate = "Register"></button>
@@ -93,10 +93,10 @@ export class RegisterPage {
 			if (!response.ok) {
 				if (response.status == 403) {
 					window.router.refreshToken();
-					confirmPasswordError.textContent = 'Failed to register. Please try again.';
+					confirmPasswordError.textContent = translationsData["error-register1"];
 					confirmPasswordError.style.display = 'block';
 				} else if (response.status == 400) {
-					emailError.textContent = 'Email already registered.';
+					emailError.textContent = translationsData["error-register2"];
 					emailError.style.display = 'block';
 				}
 				return false;
@@ -110,7 +110,7 @@ export class RegisterPage {
 			window.router.navigateTo('/verify');
 		} catch (error) {
 			if (response.status == 403) {
-				confirmPasswordError.textContent = 'failed to register';
+				confirmPasswordError.textContent = translationsData["error-register3"];
 				confirmPasswordError.style.display = 'block';
 				window.router.refreshToken();
 			}
@@ -142,10 +142,11 @@ export class RegisterPage {
 
 		// Validate username
 		if (!username.value.trim()) {
+			usernameError.textContent = translationsData["usererror3"];	
 			usernameError.style.display = 'block';
 			isValid = false;
 		} else if (username.value.length >= 150) {
-			usernameError.textContent = 'username is too long';
+			usernameError.textContent = translationsData["usererror1"];	
 			usernameError.style.display = 'block';
 			username.classList.add('is-invalid');
 			isValid = false;
@@ -153,22 +154,22 @@ export class RegisterPage {
 
 		// Validate email
 		if (!email.value.trim()) {
-			emailError.textContent = 'Please enter your email';
+			emailError.textContent = translationsData["emailerror1"];
 			emailError.style.display = 'block';
 			isValid = false;
 		} else if (email.value.length >= 255) {
-			emailError.textContent = 'email is too long';
+			emailError.textContent = translationsData["emailerror2"];
 			emailError.style.display = 'block';
 			isValid = false;
 		} else if (!this.isValidEmail(email.value)) {
-			emailError.textContent = 'Please enter a valid email address';
+			emailError.textContent = translationsData["emailerror3"];
 			emailError.style.display = 'block';
 			isValid = false;
 		}
 
 		// Validate password
 		if (!password.value.trim()) {
-			passwordError.textContent = 'Please enter your password';
+			passwordError.textContent = translationsData["errorpwd"];
 			passwordError.style.display = 'block';
 			isValid = false;
 		} else if (password.value.length < 8) {
@@ -192,13 +193,13 @@ export class RegisterPage {
 	validateUsername(e) {
 		const username = e.target;
 		const usernameError = document.getElementById('usernameError');
-		usernameError.textContent = 'username is not valid';
+		usernameError.textContent = translationsData["usererror2"];
 
 		if (!username.value.trim()) {
-			usernameError.textContent = 'username is empty';
+			usernameError.textContent = translationsData["usererror3"];
 			usernameError.style.display = 'block';
 		} else if (username.value.length >= 150) {
-			usernameError.textContent = 'username is too long';
+			usernameError.textContent = translationsData["usererror1"];
 			usernameError.style.display = 'block';
 			username.classList.add('is-invalid');
 		} else {
@@ -215,13 +216,13 @@ export class RegisterPage {
 	validateEmail(e) {
 		const email = e.target;
 		const emailError = document.getElementById('emailError');
-		emailError.textContent = 'email is not valid';
+		emailError.textContent = translationsData["emailerror4"];
 
 		if (!this.isValidEmail(email.value)) {
 			emailError.style.display = 'block';
 			email.classList.add('is-invalid');
 		} else if (email.value.length >= 255) {
-			emailError.textContent = 'email is too long';
+			emailError.textContent = translationsData["emailerror2"];
 			emailError.style.display = 'block';
 			email.classList.add('is-invalid');
 		} else {
