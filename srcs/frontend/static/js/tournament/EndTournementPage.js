@@ -1,3 +1,5 @@
+import { SafeText } from '../utils/safetext.js';
+
 export class EndTournementPage {
 	constructor(winner) {
 		this.container = document.getElementById('dynamicPage');
@@ -21,7 +23,7 @@ export class EndTournementPage {
 				<div class="champion-content">
 					<h1 class="champion-title animate-slide-down" data-translate="tourchampion">TOURNAMENT CHAMPION</h1>
 					<div class="champion-name glow-text animate-fade-in-delay">
-						${this.winner}
+						${SafeText.escape(this.winner)}
 					</div>
 					<div class="confetti-container"></div>
 				</div>
@@ -61,7 +63,7 @@ export class EndTournementPage {
 			container.appendChild(confetti);
 		}
 	}
-	
+
 	clean() {
 		return ;
 	}

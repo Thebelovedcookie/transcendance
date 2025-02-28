@@ -1,5 +1,5 @@
 import { NormalGamePage } from "../pages/NormalGamePage.js";
-
+import { SafeText } from '../utils/safetext.js';
 export class NextGamePage {
 	constructor(themeReceived, type, socketTournament, infoMatch) {
 		this.theme          = themeReceived;
@@ -28,7 +28,7 @@ export class NextGamePage {
 					<div class="player-card left animate-slide-right">
 						<div class="player-name-container">
 							<span class="player-label" data-translate="leftplayer">LEFT PLAYER</span>
-							<h2 class="glow-text">${this.infoMatch.playerOne}</h2>
+							<h2 class="glow-text">${SafeText.escape(this.infoMatch.playerOne)}</h2>
 							<div class="key-info">
 								<span class="key-label" data-translate="Controls">Controls:</span>
 								<div class="key-buttons">
@@ -44,7 +44,7 @@ export class NextGamePage {
 					<div class="player-card right animate-slide-left">
 						<div class="player-name-container">
 							<span class="player-label" data-translate="rightplayer">RIGHT PLAYER</span>
-							<h2 class="glow-text">${this.infoMatch.playerTwo}</h2>
+							<h2 class="glow-text">${SafeText.escape(this.infoMatch.playerTwo)}</h2>
 							<div class="key-info">
 								<span class="key-label" data-translate="Controls">Controls:</span>
 								<div class="key-buttons">

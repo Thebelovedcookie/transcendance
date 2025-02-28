@@ -155,7 +155,9 @@
 		"Player3":"Player3",
 		"Player1 and Player2":"Player1 and Player2",
 		"Player1 and Player3":"Player1 and Player3",
-		"Player2 and Player3":"Player2 and Player3"
+		"Player2 and Player3":"Player2 and Player3",
+		"nameLengthError": "Player name must be between 1 and 20 characters",
+		"specialCharsError": "Player name cannot contain special characters"
 
 
 	},
@@ -312,8 +314,10 @@
 		"Player3":"Joueur3",
 		"Player1 and Player2":"Joueur1 et Joueur2",
 		"Player1 and Player3":"Joueur1 et Joueur3",
-		"Player2 and Player3":"Joueur2 et Joueur3"
-		
+		"Player2 and Player3":"Joueur2 et Joueur3",
+		"nameLengthError": "Le nom du joueur doit contenir entre 1 et 20 caractères",
+		"specialCharsError": "Le nom du joueur ne peut pas contenir de caractères spéciaux"
+
 
 
 
@@ -454,7 +458,9 @@
 		"searching": "対戦相手を探しています...",
 		"searchUser_placeholder": "ユーザー名で検索...",
 		"Search": "検索",
-		"Restart": "リスタート"
+		"Restart": "リスタート",
+		"nameLengthError": "プレイヤー名は1文字以上20文字以下にしてください",
+		"specialCharsError": "プレイヤー名に特殊文字は使用できません"
 	},
 
 	"es": {
