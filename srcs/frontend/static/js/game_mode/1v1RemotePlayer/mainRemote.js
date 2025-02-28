@@ -233,7 +233,7 @@ class RemoteGameWebSocket {
 				speed: data.ball.speed
 			},
 			score: {
-				scoreMax: data.message.scores.scoreMax
+				scoreMax: data.scores.scoreMax
 			}
 		}
 	}

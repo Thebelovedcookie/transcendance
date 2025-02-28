@@ -210,7 +210,8 @@ class PongConsumer(AsyncWebsocketConsumer):
 				await self.send_gamestate(matchId)
 
 		if m["status"] == False:
-			self.infoMatch["match"].remove(m)
+			if m in self.infoMatch["match"]:
+				self.infoMatch["match"].remove(m)
 
 	################### GAME SEND GAMESTATE ########################
 
@@ -223,7 +224,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 				"playerOne": matchPlayed["playerOne"],
 				"playerTwo": matchPlayed["playerTwo"],
 				"ball": matchPlayed["ball"],
-				"scores": {"scoreMax": 10}
+				"scores": matchPlayed["scores"]
 			}
 			if matchPlayed["status"]:
 				try:
@@ -353,13 +354,13 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 	async def cleanArray(self, m):
 		p1 = next((p for p in self.infoPlayer["players"] if p["player_id"] == m["playerOne"]["id"]), None)
-		if p1:
+		if p1 in self.infoPlayer["players"]:
 			self.infoPlayer["players"].remove(p1)
 
 		p2 = next((p for p in self.infoPlayer["players"] if p["player_id"] == m["playerTwo"]["id"]), None)
-		if p2:
+		if p2 in self.infoPlayer["players"]:
 			self.infoPlayer["players"].remove(p2)
-		if m:
+		if m in self.infoMatch["match"]:
 			self.infoMatch["match"].remove(m)
 
 	#################### SEND VICTORY ##########################
@@ -457,6 +458,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 				"vx": 1,
 				"vy": 2 / 5
 				}
+			matchPlaying["scores"] = {"scoreMax": 10}
 
 			return matchId
 	

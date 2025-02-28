@@ -136,7 +136,7 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 			await self.calculBallMovement()
 			await self.send_gamestate()
 		
-		if m["status"] == "False":
+		if m["status"] == "False" and m in self.infoMatch["match"]:
 			self.infoMatch["match"].remove(m)
 
 	async def send_gamestate(self):
