@@ -56,7 +56,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 			except:
 				logger.info("ERROR socket probably closed.")
 
-	async def reconnect(self):
+	async def reconnect(self): #this may need something
 		for match in self.infoMatch["match"]:
 			if match["playerOne"]["id"] == self.player_id:
 				await self.accept()
@@ -397,15 +397,15 @@ class PongConsumer(AsyncWebsocketConsumer):
 			if (ma["playerOne"]["id"] == playerId):
 				direction = data.get("direction")
 				if (direction == "up" and ma["playerOne"]["y"] > 0):
-					ma["playerOne"]["y"] -= 10
+					ma["playerOne"]["y"] -= ma["playerOne"]["step"]
 				elif (direction == "down" and ma["playerOne"]["y"] < ma["canvas"]["canvas_height"] - ma["playerOne"]["height"]):
-					ma["playerOne"]["y"] += 10
+					ma["playerOne"]["y"] += ma["playerOne"]["step"]
 			elif (ma["playerTwo"]["id"] == playerId):
 				direction = data.get("direction")
 				if (direction == "up" and ma["playerTwo"]["y"] > 0):
-					ma["playerTwo"]["y"] -= 10
+					ma["playerTwo"]["y"] -= ma["playerTwo"]["step"]
 				elif (direction == "down" and ma["playerTwo"]["y"] < ma["canvas"]["canvas_height"] - ma["playerOne"]["height"]):
-					ma["playerTwo"]["y"] += 10
+					ma["playerTwo"]["y"] += ma["playerTwo"]["step"]
 
 	##################### INITIALISATION ##########################
 
@@ -416,33 +416,36 @@ class PongConsumer(AsyncWebsocketConsumer):
 		if matchPlaying:
 			canvas = data.get("canvas", {})
 			playerId = data.get("playerId")
-			canvas_height = canvas.get("canvasHeight", 0)
-			canvas_width = canvas.get("canvasWidth", 0)
 
-			canvas_dim = min(canvas_height, canvas_width)
-			size = int(canvas_dim  / 45)
+			aspect = 16/9
+			canvas_height = 100
+			canvas_width = canvas_height * aspect
+			size = canvas_height  / 45 #size of ball
+			step = 100/60 #size of paddle step
 
 			matchPlaying["canvas"] = {"canvas_height": canvas_height, "canvas_width": canvas_width}
 			if (matchPlaying["playerOne"]["id"] == playerId):
 				matchPlaying["playerOne"].update({
 					"id": playerId,
 					"side": "left",
-					"x": 5,
+					"x": size,
 					"y": canvas_height * 0.4,
 					"width": size,
 					"height": size * 9,
 					"color": "black",
+					"step": step,
 					"score": 0
 					})
 			elif (matchPlaying["playerTwo"]["id"] == playerId):
 				matchPlaying["playerTwo"].update({
 					"id": playerId,
 					"side": "right",
-					"x": canvas_width - 20,
+					"x": canvas_width - 2*size,
 					"y": canvas_height * 0.4,
 					"width": size,
 					"height": size * 9,
 					"color": "black",
+					"step": step,
 					"score": 0
 					})
 			matchPlaying["ball"] = {
@@ -450,9 +453,9 @@ class PongConsumer(AsyncWebsocketConsumer):
 				"y": canvas_height / 2,
 				"size": size,
 				"color": "black",
-				"speed": 5,
-				"vx": 5,
-				"vy": 2
+				"speed": 1,
+				"vx": 1,
+				"vy": 2 / 5
 				}
 
 			return matchId

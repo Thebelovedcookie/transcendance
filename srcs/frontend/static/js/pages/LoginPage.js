@@ -15,12 +15,12 @@ export class LoginPage {
 
 			  <div data-mdb-input-init class="form-outline form-white mb-4">
 				<input type="email" id="typeEmailX" class="form-control form-control-lg" placeholder="Email" data-translate="email_placeholder"/>
-				<div id="emailError" class="text-danger small mt-1" style="display: none;" data-translate= "emailerror"></div>
+				<div id="emailError" class="text-danger small mt-1" style="display: none;" ></div>
 			  </div>
 
 			  <div data-mdb-input-init class="form-outline form-white mb-4">
 				<input type="password" id="typePasswordX" class="form-control form-control-lg" placeholder="Password" data-translate="pwd_placeholder"/>
-				<div id="passwordError" class="text-danger small mt-1" style="display: none;" data-translate= "errorpwd"></div>
+				<div id="passwordError" class="text-danger small mt-1" style="display: none;"></div>
 			  </div>
 
 			  <p class="small mb-5 pb-lg-2"><a class="text-white-50" href="#!" data-translate ="forgotpwd"></a></p>
@@ -73,22 +73,22 @@ export class LoginPage {
 
 		// Validate email(if empty)
 		if (!email.value.trim()) {
-			emailError.textContent = 'Email is required';
+			emailError.textContent = translationsData["emailerror"];
 			emailError.style.display = 'block';
 			isValid = false;
 		} else if (!this.isValidEmail(email.value.trim())) {
-			emailError.textContent = 'Invalid email address';
+			emailError.textContent = translationsData["error-email"];
 			emailError.style.display = 'block';
 			isValid = false;
 		}
 
 		// Validate password
 		if (!password.value.trim()) {
-			passwordError.textContent = 'Password is required';
+			passwordError.textContent = translationsData["error-pwd4"];
 			passwordError.style.display = 'block';
 			isValid = false;
 		} else if (password.value.trim().length < 8) {
-			passwordError.textContent = 'Password must be at least 8 characters long';
+			passwordError.textContent = translationsData["pwd-rules"];
 			passwordError.style.display = 'block';
 			isValid = false;
 		}
