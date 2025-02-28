@@ -204,6 +204,7 @@ class GameWebSocket {
 	}
 
 	handleMessage(data) {
+		console.log(data);
 		switch (data.type) {
 			case "game.state":
 				if (this.pause == false)

@@ -29,7 +29,8 @@ class GameConsumer(AsyncWebsocketConsumer):
 		logger.info(f"WebSocket disconnected with code: {close_code}")
 		if len(self.infoMatch["match"]) != 0:
 			m = self.infoMatch["match"][0]
-			m["status"] = "False"
+			# m["status"] = "False"
+			self.infoMatch["match"].remove(m)
 
 	#Manage the info receive
 	async def receive(self, text_data):
@@ -142,13 +143,17 @@ class GameConsumer(AsyncWebsocketConsumer):
 
 		while (m["status"] == "True"):
 			await asyncio.sleep(1 / 60)
-			await self.calculBallMovement()
-			await self.send_gamestate()
+			if (await self.calculBallMovement()) == 1:
+				break
+			if (await self.send_gamestate()) == 1:
+				break
 
-		if m["status"] == "False":
+		if m and m["status"] == "False":
 			self.infoMatch["match"].remove(m)
 
 	async def send_gamestate(self):
+		if len(self.infoMatch["match"]) == 0:
+			return 1
 		m = self.infoMatch["match"][0]
 
 		response = {
@@ -164,10 +169,12 @@ class GameConsumer(AsyncWebsocketConsumer):
 			except Exception as e:
 				print(f"Erreur lors de l'envoi des données : {e}")
 				m["status"] = "False"
-
+		return 0
 
 	# place ball in center of canvas and give it a random initial velocity
 	def resetBall(self, m):
+		if len(self.infoMatch["match"]) == 0:
+			return 1
 		m["ball"]["x"] = m["canvas"]["canvas_width"] / 2
 		m["ball"]["y"] = m["canvas"]["canvas_height"]  / 2
 		angle = random.random() * math.pi / 3
@@ -182,31 +189,44 @@ class GameConsumer(AsyncWebsocketConsumer):
 		angle = direction * angle + phase
 		m["ball"]["vx"] = m["ball"]["speed"] * math.cos(angle)
 		m["ball"]["vy"] = m["ball"]["speed"] * math.sin(angle)
+		return 0
 
 	#check if movement in y-dir result in wall impact
 	def at_wall(self):
+		if len(self.infoMatch["match"]) == 0:
+			return 1
 		m = self.infoMatch["match"][0]
 		# top wall
 		if m["ball"]["y"] + m["ball"]["vy"] <= 0:
-			return True
+			return 0
 		# bottom wall
 		elif m["ball"]["y"] + m["ball"]["size"] + m["ball"]["vy"] >=  m["canvas"]["canvas_height"]:
-			return True
+			return 0
 		else:
-			return False
+			return 2
 
 	async def calculBallMovement(self):
+		if len(self.infoMatch["match"]) == 0:
+			return 1
 		m = self.infoMatch["match"][0]
 
 		# if impacting wall, reverse y velocity
-		if self.at_wall():
+		status = self.at_wall()
+		if  status == 0:
 			m["ball"]["vy"] *= -1
-		m["ball"]["x"] += m["ball"]["vx"]
-		m["ball"]["y"] += m["ball"]["vy"]
-		await self.ballPaddleCollision(m)
+		elif status == 1:
+			return 1
+		else:
+			m["ball"]["x"] += m["ball"]["vx"]
+			m["ball"]["y"] += m["ball"]["vy"]
+			if (await self.ballPaddleCollision(m)) == 1:
+				return 1
+		return 0
 
 	# update ball velocities and last touch following strike
 	def executeBallStrike(self, m, player):
+		if len(self.infoMatch["match"]) == 0:
+			return 1
 		factor = -1
 		if player["x"] < m["canvas"]["canvas_width"] / 2:
 			factor = 1
@@ -218,6 +238,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 		m["ball"]["vx"] = factor * speed * math.cos(bounceAngle)
 		m["ball"]["vy"] = speed * math.sin(bounceAngle)
 		m["ball"]["x"] = player["x"] + factor * m["ball"]["size"]
+		return 0
 
 	# check if location of ball overlaps location of paddle
 	def inPaddle(self, player):
@@ -234,34 +255,47 @@ class GameConsumer(AsyncWebsocketConsumer):
 				and m["ball"]["y"] + m["ball"]["vy"] <= player["y"] + player["height"]
 				and m["ball"]["x"] + m["ball"]["vx"] <= player["x"] + player["width"]):
 				return True
-
 		return False
 
 	async def ballPaddleCollision(self, m):
+		if len(self.infoMatch["match"]) == 0:
+			return 1
 		if self.inPaddle(m["playerTwo"]):
-			self.executeBallStrike(m, m["playerTwo"])
+			if (self.executeBallStrike(m, m["playerTwo"])) == 1:
+				return 1
 		elif self.inPaddle(m["playerOne"]):
-			self.executeBallStrike(m, m["playerOne"])
+			if (self.executeBallStrike(m, m["playerOne"])) == 1:
+				return 1
 		elif (m["ball"]["x"] + m["ball"]["vx"] < m["playerOne"]["x"]):
 			m["playerTwo"]["score"] += 1
 			self.resetBall(m)
-			await self.checkScore(m)
+			if (await self.checkScore(m)) == 1:
+				return 1
 		elif (m["ball"]["x"] + m["ball"]["vx"] > m["playerTwo"]["x"] + m["playerTwo"]["width"]):
 			m["playerOne"]["score"] += 1
 			self.resetBall(m)
-			await self.checkScore(m)
+			if (await self.checkScore(m)) == 1:
+				return 1
+		return 0
 	
 	async def checkScore(self, m):
+		if len(self.infoMatch["match"]) == 0:
+			return 1
 		if (m["playerOne"]["score"] == m["maxScore"]):
 			m["status"] = "False"
-			await self.sendMatchResult(m, "Player 1", "Player 2")
+			if (await self.sendMatchResult(m, "Player 1", "Player 2")) == 1:
+				return 1
 		elif (m["playerTwo"]["score"] == m["maxScore"]):
 			m["status"] = "False"
-			await self.sendMatchResult(m, "Player 2", "Player 1")
+			if (await self.sendMatchResult(m, "Player 2", "Player 1")) == 1:
+				return 1
+		return 0
 
 	#################### PLAYER MOVE ##########################
 
 	async def moveChange(self, data):
+		if len(self.infoMatch["match"]) == 0:
+			return 1
 		m = self.infoMatch["match"][0]
 		player = data.get("player", None)
 		direction = data.get("direction")
@@ -276,8 +310,11 @@ class GameConsumer(AsyncWebsocketConsumer):
 				m["playerTwo"]["y"] -= 10
 			elif (direction == "down" and m["playerTwo"]["y"] < m["canvas"]["canvas_height"] - m["playerOne"]["height"]):
 				m["playerTwo"]["y"] += 10
+		return 0
 
 	async def sendMatchResult(self, m, winner, loser):
+		if len(self.infoMatch["match"]) == 0:
+			return 1
 		response = {
 			"type": "game.result",
 			"winner": winner,
@@ -287,3 +324,4 @@ class GameConsumer(AsyncWebsocketConsumer):
 			await self.send(text_data=json.dumps(response))
 		except:
 			logger.info("ERROR socket probably closed.")
+		return 0
