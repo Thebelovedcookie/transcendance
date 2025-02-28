@@ -146,13 +146,13 @@ export function displayText(context, canvas, size, side)
 		context.textAlign = "left";
 		context.textBaseline = "top";
 		context.fillStyle = "black";
-		context.fillText(translationsData["w (up) s (down)"], size * 1.5, size * 1.5);
+		context.fillText(translationsData["w (up) s (down)"], size * 2, size * 1.5);
 	}
 	else {
 		context.textAlign = "right";
 		context.textBaseline = "top";
 		context.fillStyle = "black";
-		context.fillText(translationsData["↑ (up) ↓ (down)"], canvas.width - size * 1.5, size * 1.5);
+		context.fillText(translationsData["↑ (up) ↓ (down)"], canvas.width - size * 2, size * 1.5);
 	}
 	resetStyle(context);
 }
