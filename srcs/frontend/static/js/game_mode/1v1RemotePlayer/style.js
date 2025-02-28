@@ -134,7 +134,7 @@ export function displayPlayerName(context, canvas, infoMatch)
 	resetStyle(context);
 }
 
-export function displayText(context, canvas, size)
+export function displayText(context, canvas, size, side)
 {
 	context.font = size * 1.5 + "px 'Press Start 2P'";
 	context.shadowColor = "rgba(0, 0, 0, 0.7)";
@@ -142,16 +142,18 @@ export function displayText(context, canvas, size)
 	context.shadowOffsetY = 0;
 	context.shadowBlur = 3;
 
-	context.textAlign = "left";
-	context.textBaseline = "top";
-	context.fillStyle = "black";
-	context.fillText(translationsData["w (up) s (down)"], size * 1.5, size * 1.5);
-
-	context.textAlign = "right";
-	context.textBaseline = "top";
-	context.fillStyle = "black";
-	context.fillText(translationsData["↑ (up) ↓ (down)"], canvas.width - size * 1.5, size * 1.5);
-
+	if (side == "left") {
+		context.textAlign = "left";
+		context.textBaseline = "top";
+		context.fillStyle = "black";
+		context.fillText(translationsData["w (up) s (down)"], size * 1.5, size * 1.5);
+	}
+	else {
+		context.textAlign = "right";
+		context.textBaseline = "top";
+		context.fillStyle = "black";
+		context.fillText(translationsData["↑ (up) ↓ (down)"], canvas.width - size * 1.5, size * 1.5);
+	}
 	resetStyle(context);
 }
 
