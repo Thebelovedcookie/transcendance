@@ -313,6 +313,29 @@ export class ProfilePage {
 		}
 	}
 
+	validateProfileData(username, email) {
+		const errors = [];
+
+		// Username validation: length check
+		if (username.length < 1 || username.length > 20) {
+			errors.push(translationsData["nameLengthError"]);
+		}
+
+		// Username validation: special characters
+		const specialCharsRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]+/;
+		if (specialCharsRegex.test(username)) {
+			errors.push(translationsData["specialCharsError"]);
+		}
+
+		// Email validation
+		const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+		if (!emailRegex.test(email)) {
+			errors.push(translationsData["error-email"]);
+		}
+
+		return errors;
+	}
+
 	async showEditModal() {
 		const modal = document.createElement('div');
 		modal.className = 'edit-profile-modal';
@@ -379,20 +402,47 @@ export class ProfilePage {
 			}
 		});
 
-		// Form submission handler
+		// Add form submission handler with validation
 		form.addEventListener('submit', async (e) => {
 			e.preventDefault();
 
-			const avatarInput = modal.querySelector('#avatarInput');
+			const username = modal.querySelector('input[type="text"]').value.trim();
+			const email = modal.querySelector('input[type="email"]').value.trim();
+			const errors = this.validateProfileData(username, email);
 
+			if (errors.length > 0) {
+				// Show validation errors
+				const errorModal = document.createElement('div');
+				errorModal.className = 'validation-modal';
+				errorModal.innerHTML = `
+					<div class="modal-content">
+						<h3 data-translate="FixError:"></h3>
+						<ul>
+							${errors.map(error => `<li>${error}</li>`).join('')}
+						</ul>
+						<button class="modal-btn" onclick="this.closest('.validation-modal').remove()">
+							OK
+						</button>
+					</div>
+				`;
+				document.body.appendChild(errorModal);
+				const savedLang = localStorage.getItem("selectedLang") || "en";
+				await updateTexts(savedLang);
+				return;
+			}
+
+			// If validation passes, proceed with form submission
 			const formData = new FormData();
-			formData.append("username", modal.querySelector('input[type="text"]').value);
-			formData.append("email", modal.querySelector('input[type="email"]').value);
-			formData.append("image", avatarInput.files[0]);
-			let response;
+			formData.append("username", username);
+			formData.append("email", email);
+
+			const avatarInput = modal.querySelector('#avatarInput');
+			if (avatarInput.files[0]) {
+				formData.append("image", avatarInput.files[0]);
+			}
 
 			try {
-				response = await fetch('/api/profile/update', {
+				const response = await fetch('/api/profile/update', {
 					method: 'POST',
 					credentials: 'same-origin',
 					headers: {
@@ -467,6 +517,19 @@ export class ProfilePage {
 			const searchTerm = searchInput.value.trim();
 			if (!searchTerm) return;
 
+			// Validate search term length
+			if (searchTerm.length > 20) {
+				alert(translationsData["searchLengthError"]);
+				return;
+			}
+
+			// Validate special characters
+			const specialCharsRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]+/;
+			if (specialCharsRegex.test(searchTerm)) {
+				alert(translationsData["searchSpecialCharsError"]);
+				return;
+			}
+
 			let response;
 
 			try {
@@ -488,69 +551,77 @@ export class ProfilePage {
 				const result = await response.json();
 
 				if (result.status === 'success' && Array.isArray(result.data)) {
-					resultsContainer.innerHTML = result.data.map(user => `
-						<div class="search-result-item">
-							<div class="user-info">
-								<img src="${user.profile_image || '/static/img/anonymous.webp'}" alt="${SafeText.escape(user.username)}" class="user-avatar">
-								<div class="user-details">
-									<h3>${SafeText.escape(user.username)}</h3>
-									<div class="status ${user.is_online ? 'online' : ''}">${user.is_online ? '<span data-translate="online">online</span>' : '<span data-translate="offline">offline</span>'}</div>
+					if (result.data.length === 0) {
+						resultsContainer.innerHTML = `<p class="no-results" data-translate="noSearchResults"></p>`;
+					} else {
+						resultsContainer.innerHTML = result.data.map(user => `
+							<div class="search-result-item">
+								<div class="user-info">
+									<img src="${user.profile_image || '/static/img/anonymous.webp'}" alt="${SafeText.escape(user.username)}" class="user-avatar">
+									<div class="user-details">
+										<h3>${SafeText.escape(user.username)}</h3>
+										<div class="status ${user.is_online ? 'online' : ''}">${user.is_online ? '<span data-translate="online">online</span>' : '<span data-translate="offline">offline</span>'}</div>
+									</div>
 								</div>
+								<button class="add-friend-btn" data-userid="${user.id}" ${user.is_friend ? 'disabled' : ''}>
+									${user.is_friend ? '<i class="fas fa-check"></i> <span data-translate="friends"></span>' : '<i class="fas fa-user-plus"></i> <span data-translate="AddFriend"></span>'}
+								</button>
 							</div>
-							<button class="add-friend-btn" data-userid="${user.id}" ${user.is_friend ? 'disabled' : ''}>
-								${user.is_friend ? '<i class="fas fa-check"></i> <span data-translate="friends"></span>' : '<i class="fas fa-user-plus"></i> <span data-translate="AddFriend"></span>'}
-							</button>
-						</div>
-					`).join('');
-				} else {
-					resultsContainer.innerHTML = '<p>No users found</p>';
-				}
-				const savedLang = localStorage.getItem("selectedLang") || "en";
-				await updateTexts(savedLang);
-				const addFriendButtons = document.querySelectorAll('.add-friend-btn');
-				addFriendButtons.forEach(async (btn) => {
-					btn.addEventListener('click', async () => {
-						let response;
+						`).join('');
+					}
+					const savedLang = localStorage.getItem("selectedLang") || "en";
+					await updateTexts(savedLang);
+					const addFriendButtons = document.querySelectorAll('.add-friend-btn');
+					addFriendButtons.forEach(async (btn) => {
+						btn.addEventListener('click', async () => {
+							let response;
 
-						try {
-							response = await fetch('/api/add_friend', {
-								method: 'POST',
-								credentials: 'same-origin',
-								headers: {
-									'Content-Type': 'application/json',
-									'X-CSRFToken': window.csrfToken,
-								},
-								body: JSON.stringify({ 'friend_id': btn.dataset.userid })
-							});
+							try {
+								response = await fetch('/api/add_friend', {
+									method: 'POST',
+									credentials: 'same-origin',
+									headers: {
+										'Content-Type': 'application/json',
+										'X-CSRFToken': window.csrfToken,
+									},
+									body: JSON.stringify({ 'friend_id': btn.dataset.userid })
+								});
 
-							if (response.status == 403) {
-								window.router.refreshToken();
-								throw new Error(response.status);
-							}
-
-							const result = await response.json();
-
-							if (result.status === 'success') {
-								btn.disabled = true;
-								btn.textContent = 'Friends';
-								await this.loadUserData();
-								const friendsList = document.getElementById('friends-list');
-								if (friendsList) {
-									friendsList.innerHTML = this.renderFriendsList();
-									// setup event listeners for new friend
-									this.setupEventListeners();
-									const savedLang = localStorage.getItem("selectedLang") || "en";
-									await updateTexts(savedLang);
+								if (response.status == 403) {
+									window.router.refreshToken();
+									throw new Error(response.status);
 								}
+
+								const result = await response.json();
+
+								if (result.status === 'success') {
+									btn.disabled = true;
+									btn.textContent = 'Friends';
+									await this.loadUserData();
+									const friendsList = document.getElementById('friends-list');
+									if (friendsList) {
+										friendsList.innerHTML = this.renderFriendsList();
+										// setup event listeners for new friend
+										this.setupEventListeners();
+										const savedLang = localStorage.getItem("selectedLang") || "en";
+										await updateTexts(savedLang);
+									}
+								}
+							} catch (error) {
+								console.error('Failed to add friend:', error);
 							}
-						} catch (error) {
-							console.error('Failed to add friend:', error);
-						}
+						});
 					});
-				});
+				} else {
+					resultsContainer.innerHTML = `<p class="no-results" data-translate="noSearchResults"></p>`;
+					const savedLang = localStorage.getItem("selectedLang") || "en";
+					await updateTexts(savedLang);
+				}
 			} catch (error) {
 				console.error('Search failed:', error);
-				resultsContainer.innerHTML = '<p>Error searching for users</p>';
+				resultsContainer.innerHTML = `<p class="no-results" data-translate="noSearchResults"></p>`;
+				const savedLang = localStorage.getItem("selectedLang") || "en";
+				await updateTexts(savedLang);
 			}
 		};
 
@@ -928,7 +999,7 @@ export class ProfilePage {
 				console.error('Failed to delete account:', error);
 			}
 		});
-		
+
 	}
 
 	clean() {
