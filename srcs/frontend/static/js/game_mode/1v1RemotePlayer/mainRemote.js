@@ -233,7 +233,7 @@ class RemoteGameWebSocket {
 				speed: data.ball.speed
 			},
 			score: {
-				scoreMax: data.message.scores.scoreMax
+				scoreMax: data.scores.scoreMax
 			}
 		}
 	}
@@ -399,7 +399,7 @@ export function normalMode() {
 
 export function stopGame() {
 	if (gameSocket) {
-		gameSocket.cleanup(); // this function is not working properly
+		gameSocket.cleanup();
 		gameSocket.stopGameLoop();
 		gameSocket.socket.close();
 		gameSocket = null;

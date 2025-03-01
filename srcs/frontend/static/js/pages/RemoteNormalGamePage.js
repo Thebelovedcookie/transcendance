@@ -1,4 +1,4 @@
-import { normalMode } from '../game_mode/1v1RemotePlayer/mainRemote.js';
+import { normalMode, stopGame } from '../game_mode/1v1RemotePlayer/mainRemote.js';
 
 export class RemoteNormalGamePage {
 	constructor() {
@@ -39,6 +39,7 @@ export class RemoteNormalGamePage {
 	}
 
 	clean() {
+		stopGame();
 		return ;
 	}
 }

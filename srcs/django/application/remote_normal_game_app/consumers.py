@@ -1,18 +1,18 @@
-import json
-import uuid
-import logging
-import random
-import time 
-import asyncio
-import math
-
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from pong_history_app.models import PongMatchHistory
 from user_management_app.models import CustomUser
 
+import json
+import uuid
+import logging
+import random
+import asyncio
+import math
+
 logger = logging.getLogger(__name__)
 
+#remote
 class PongConsumer(AsyncWebsocketConsumer):
 	infoPlayer = {
 		"players": []
@@ -62,6 +62,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 				await self.accept()
 				await self.channel_layer.group_add(self.game_group_name, self.channel_name)
 				match["playerOne"]["color"] = "black"
+				match["playerOne"]["connected"] = True
 				response = {
 					"type": "reconnection",
 					"matchId" : match["matchId"],
@@ -82,6 +83,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 				await self.accept()
 				await self.channel_layer.group_add(self.game_group_name, self.channel_name)
 				match["playerTwo"]["color"] = "black"
+				match["playerTwo"]["connected"] = True
 				response = {
 					"type": "reconnection",
 					"matchId" : match["matchId"],
@@ -210,7 +212,8 @@ class PongConsumer(AsyncWebsocketConsumer):
 				await self.send_gamestate(matchId)
 
 		if m["status"] == False:
-			self.infoMatch["match"].remove(m)
+			if m in self.infoMatch["match"]:
+				self.infoMatch["match"].remove(m)
 
 	################### GAME SEND GAMESTATE ########################
 
@@ -223,7 +226,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 				"playerOne": matchPlayed["playerOne"],
 				"playerTwo": matchPlayed["playerTwo"],
 				"ball": matchPlayed["ball"],
-				"scores": {"scoreMax": 10}
+				"scores": matchPlayed["scores"]
 			}
 			if matchPlayed["status"]:
 				try:
@@ -353,13 +356,13 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 	async def cleanArray(self, m):
 		p1 = next((p for p in self.infoPlayer["players"] if p["player_id"] == m["playerOne"]["id"]), None)
-		if p1:
+		if p1 in self.infoPlayer["players"]:
 			self.infoPlayer["players"].remove(p1)
 
 		p2 = next((p for p in self.infoPlayer["players"] if p["player_id"] == m["playerTwo"]["id"]), None)
-		if p2:
+		if p2 in self.infoPlayer["players"]:
 			self.infoPlayer["players"].remove(p2)
-		if m:
+		if m in self.infoMatch["match"]:
 			self.infoMatch["match"].remove(m)
 
 	#################### SEND VICTORY ##########################
@@ -457,6 +460,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 				"vx": 1,
 				"vy": 2 / 5
 				}
+			matchPlaying["scores"] = {"scoreMax": 10}
 
 			return matchId
 	
