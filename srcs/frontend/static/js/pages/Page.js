@@ -42,6 +42,8 @@ export class Page {
 	}
 
 	clean() {
+		this.game = null;
+		this.pause = false;
 		window.removeEventListener('keydown', this.keydownHandler);
 	}
 	
