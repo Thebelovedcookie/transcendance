@@ -20,9 +20,6 @@ import { RemoteNormalGamePage } from './pages/RemoteNormalGamePage.js';
 import { VerificationPage } from './pages/VerificationPage.js';
 import { CSRFManager } from './utils/csrf.js';
 
-let currentPage = null;
-
-//first step : Creation of a class Router which will allows to naviguates between pages and add an history
 class Router {
 	#authState;  // private field
 
@@ -32,6 +29,7 @@ class Router {
 		this.container = document.getElementById('dynamicPage');
 		this.onlineSocket = null;
 		this.csrfManager = new CSRFManager();
+		this.currentPage = null;
 		// Initialize private field
 		this.#authState = {
 			isAuthenticated: false,
@@ -159,16 +157,16 @@ class Router {
 	async handleLocation() {
 		await this.updateAuthState();
 		await this.header.render();
-		//test
-		if (currentPage != null)
-		{
-			currentPage.clean();
+
+		if (this.currentPage != null) {
+			this.currentPage.clean();
 		}
+
 		const path = window.location.pathname;
 		const page = this.routes.get(path) || new NotFoundPage();
-		currentPage = page;
+		this.currentPage = page;
 		await page.handle();
-		//appliquer la trad apres chargement de la page
+
 		const savedLang = localStorage.getItem("selectedLang") || "en";
 		await updateTexts(savedLang);
 	}
