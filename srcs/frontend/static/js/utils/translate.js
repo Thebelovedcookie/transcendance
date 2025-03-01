@@ -22,7 +22,7 @@ async function updateTexts(lang) {
     // console.log("Traductions chargées :", translations);
 
 	// Sauvegarde les traductions pour les erreurs
-	translationsData = translations; 
+	translationsData = translations;
 
     document.querySelectorAll("[data-translate]").forEach(el => {
         const key = el.getAttribute("data-translate");
@@ -30,9 +30,9 @@ async function updateTexts(lang) {
 		if (!translations[key]) {
 			console.error(`La clé "${key}" n'a pas de traduction disponible !`);
 		}
-        
+
         if (el.placeholder !== undefined) {
-            el.placeholder = translations[key] || key;  
+            el.placeholder = translations[key] || key;
         } else {
             const link = el.querySelector("a[data-translate]");
             if (link) {
@@ -51,29 +51,33 @@ async function updateTexts(lang) {
 							textNode = node;
 						}
 					}
-			
+
 					if (textNode) {
 						// console.log(`Ancien texte: "${textNode.textContent.trim()}" -> Nouveau texte: "${translations[key] || key}"`);
-						textNode.textContent = " " + (translations[key] || key); 
+						textNode.textContent = " " + (translations[key] || key);
 					} else {
 						// Si aucun texte n'est trouvé, on l'ajoute après l'icône
 						el.appendChild(document.createTextNode(" " + (translations[key] || key)));
-					}	
+					}
 				}else {
                 	// console.log(`Ancien texte: "${el.textContent}" -> Nouveau texte: "${translations[key] || key}"`);
                 	el.textContent = translations[key] || key;
             	}
         	}
 		}
-	
+
     });
 
-    // Met à jour le sélecteur 
+    // Met à jour le sélecteur
     const languageSelector = document.getElementById("languageSelector");
     if (languageSelector) {
         languageSelector.value = lang;
     }
-	
+
+	const performanceChart = document.getElementById('performanceChart');
+    if (performanceChart && window.router && window.router.currentPage && window.router.currentPage.initializeCharts) {
+        window.router.currentPage.initializeCharts();
+    }
 }
 
 
