@@ -237,6 +237,24 @@ class GameWebSocket {
 			const end = new EndNormalGamePage(translationsData["Player1"], translationsData["Player2 and Player3"]);
 			end.handle();
 		}
+		else if (data.winner == "Player 1 and Player 2")
+		{
+			stopGame();
+			const end = new EndNormalGamePage(translationsData["Player1 and Player2"], translationsData["Player3"]);
+			end.handle();
+		}
+		else if (data.winner == "Player 1 and Player 3")
+		{
+			stopGame();
+			const end = new EndNormalGamePage(translationsData["Player1 and Player3"], translationsData["Player2"]);
+			end.handle();
+		}
+		else if (data.winner == "Player 2 and Player 3")
+		{
+			stopGame();
+			const end = new EndNormalGamePage(translationsData["Player2 and Player3"], translationsData["Player1"]);
+			end.handle();
+		}
 		else if (data.winner == "Player 2")
 		{
 			stopGame();

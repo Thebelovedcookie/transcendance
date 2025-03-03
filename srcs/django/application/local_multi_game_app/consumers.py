@@ -172,7 +172,7 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 				"y": centerY,
 				"size": size,
 				"color": "black",
-				"speed": 8,
+				"speed": 10,
 				"vx": 0,
 				"vy": 0
 			}
@@ -247,13 +247,14 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 	def executeBallStrike(self, matchId, player):
 		m = next((m for m in self.infoMatch["match"] if m["matchId"] == matchId), None)
 		if m:
-			ballCenter = m["ball"]["y"] + m["ball"]["size"] / 2
+			ballangle = self.getAngleOfBall(m["canvas"], m["ball"])
 			paddleCenter = player["endAngle"] - player["deltaAngle"] / 2
-			relativeIntersectY = m["canvas"]["radius"] * (paddleCenter - ballCenter) / player["deltaAngle"] / 2
-			bounceAngle = relativeIntersectY * math.pi / 3
-			speed = math.sqrt(math.pow(m["ball"]["vx"], 2) + math.pow(m["ball"]["vy"], 2))
-			m["ball"]["vx"] = -speed * math.cos(bounceAngle)
-			m["ball"]["vy"] = speed * math.sin(bounceAngle)
+			relativeIntersect = (paddleCenter - ballangle) / player["deltaAngle"] / 2
+			bounceAngle = relativeIntersect * math.pi / 3
+			vx1 = -m["ball"]["speed"] * math.cos(bounceAngle)
+			vy1 = m["ball"]["speed"] * math.sin(bounceAngle)
+			m["ball"]["vx"] = vx1 * math.cos(ballangle) - vy1 * math.sin(ballangle)
+			m["ball"]["vy"] = vx1 * math.sin(ballangle) + vy1 * math.cos(ballangle)
 			m["lastTouch"] = player["name"]
 
 	# check if location of ball overlaps location of paddle
