@@ -3,20 +3,15 @@ import { SafeText } from '../utils/safetext.js';
 export class ProfilePage {
 	constructor() {
 		this.container = document.getElementById('dynamicPage');
-		this.chartLoaded = false;
 		this.userData = null;
 		this.default_path = 'static/img/deer.jpg';
 		this.userData = {};
 		this.matchHistory = [];
 		this.friends = [];
-		this.chart = null;  // Add property to store chart instance
 	}
 
 	async handle() {
 		await this.loadUserData();
-		if (!window.Chart) {
-			await this.loadChartJS();
-		}
 		this.render();
 		this.setupEventListeners();
 		this.initializeCharts();
@@ -48,16 +43,6 @@ export class ProfilePage {
 			}
 			console.error('Failed to load user data:', error);
 		}
-	}
-
-	async loadChartJS() {
-		return new Promise((resolve, reject) => {
-			const script = document.createElement('script');
-			script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
-			script.onload = resolve;
-			script.onerror = reject;
-			document.head.appendChild(script);
-		});
 	}
 
 	render() {
@@ -98,11 +83,7 @@ export class ProfilePage {
 						<h2 data-translate= "perf"></h2>
 						<div class="chart-container">
 							<canvas id="performanceChart"></canvas>
-						</div>
-						<div class="stats-summary" >
-        					<p class="loss-text" data-translate="losses"></p>		
-							<p class="win-text"  data-translate="wins"></p>        						
-    					</div>
+						</div>			
 					</div>
 
 					<div class="profile-section history-section">
@@ -792,36 +773,92 @@ export class ProfilePage {
 		});
 	}
 
-	async initializeCharts() {
-		// Destroy existing chart if it exists
-		if (this.chart) {
-			this.chart.destroy();
+	initializeCharts() {
+		const canvas = document.getElementById('performanceChart');
+		if (!canvas) return;
+
+		// Set canvas size
+		canvas.width = 300;
+		canvas.height = 300;
+
+		const ctx = canvas.getContext('2d');
+		const centerX = canvas.width / 2;
+		const centerY = canvas.height / 2 - 20;
+		const radius = Math.min(centerX, centerY) * 0.8;  // Outer circle radius
+		const innerRadius = radius * 0.7;  // Inner circle radius (70% cutout)
+
+		// Prepare data
+		const wins = this.userData.wins || 0;
+		const losses = this.userData.losses || 0;
+		const total = wins + losses;
+
+		// Define colors
+		const colors = {
+			wins: '#2ecc71',    // Green
+			losses: '#e74c3c'   // Red
+		};
+
+		// Draw pie chart
+		if (total > 0) {
+			// Draw wins segment
+			const winsAngle = (wins / total) * 2 * Math.PI;
+			this.drawDonutSegment(ctx, centerX, centerY, radius, innerRadius, 0, winsAngle, colors.wins);
+
+			// Draw losses segment
+			const lossesAngle = (losses / total) * 2 * Math.PI;
+			this.drawDonutSegment(ctx, centerX, centerY, radius, innerRadius, winsAngle, winsAngle + lossesAngle, colors.losses);
+		} else {
+			// Draw gray circle if no data
+			this.drawDonutSegment(ctx, centerX, centerY, radius, innerRadius, 0, 2 * Math.PI, '#cccccc');
 		}
 
-		const ctx = document.getElementById('performanceChart').getContext('2d');
-		this.chart = new Chart(ctx, {
-			type: 'doughnut',
-			data: {
-				datasets: [{
-					data: [this.userData.wins, this.userData.losses],
-					backgroundColor: [
-						'#2ecc71',
-						'#e74c3c'
-					],
-					borderWidth: 0
-				}]
+		// Draw legend
+		this.drawLegend(ctx, canvas.width, canvas.height, {
+			wins: {
+				label: translationsData["wins"],
+				value: wins,
+				color: colors.wins
 			},
-			options: {
-				responsive: true,
-				maintainAspectRatio: false,
-				cutout: '70%'
+			losses: {
+				label: translationsData["losses"],
+				value: losses,
+				color: colors.losses
 			}
 		});
-		const savedLang = localStorage.getItem("selectedLang") || "en";
-		await updateTexts(savedLang);
+		
 	}
 
-	
+	// Function to draw donut chart segment
+	drawDonutSegment(ctx, centerX, centerY, radius, innerRadius, startAngle, endAngle, color) {
+		ctx.beginPath();
+		ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+		ctx.arc(centerX, centerY, innerRadius, endAngle, startAngle, true);
+		ctx.closePath();
+		ctx.fillStyle = color;
+		ctx.fill();
+	}
+
+	// Function to draw legend
+	drawLegend(ctx, width, height, data) {
+		const legendY = height * 0.9;
+		const itemWidth = width / 3;
+		let startX = width / 3;
+
+		ctx.textAlign = 'left';
+		ctx.font = '14px Arial';
+
+		Object.values(data).forEach((item, index) => {
+			const x = startX + (itemWidth * index);
+
+			// Draw color square
+			ctx.fillStyle = item.color;
+			ctx.fillRect(x, legendY, 12, 12);
+
+			// Draw label and value
+			ctx.fillStyle = '#000000';
+			ctx.fillText(`${item.label} ${item.value}`, x + 20, legendY + 10);
+		});
+	}
 
 	async showAllFriendsModal() {
 		const modal = document.createElement('div');
@@ -1028,6 +1065,7 @@ export class ProfilePage {
 		return ;
 	}
 }
+
 
 
 

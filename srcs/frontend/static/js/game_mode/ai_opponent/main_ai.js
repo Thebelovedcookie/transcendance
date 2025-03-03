@@ -12,6 +12,7 @@ class GameAISocket {
 		canvas.width = canvas.height * (16/9);
 		context.clearRect(0, 0, canvas.width, canvas.height);
 
+		this.matchId = null;
 		this.pause = false;
 		this.hitAiLine = false;
 		this.socket = null;
@@ -169,7 +170,8 @@ class GameAISocket {
 		if (!this.isConnected) return;
 
 		const updates = {
-			type: "player.moved",
+			"type": "player.moved",
+			"matchId": this.matchId,
 			'player': player,
 			'direction': direction,
 		};
@@ -188,7 +190,7 @@ class GameAISocket {
 			this.socket.onopen = () => {
 				console.log("WebSocket connection established");
 				this.isConnected = true;
-				this.sendInfoStarting();
+				// this.sendInfoStarting();
 			};
 
 			this.socket.onmessage = (event) => {
@@ -245,7 +247,8 @@ class GameAISocket {
 		if (!this.isConnected) return;
 
 		const updates = {
-			type: "player.pause",
+			"type": "player.pause",
+			"matchId": this.matchId,
 		};
 		this.sendMessage(updates);
 	}
@@ -255,7 +258,8 @@ class GameAISocket {
 
 		this.pause = false;
 		const updates = {
-			type: "player.unpause",
+			"type": "player.unpause",
+			"matchId": this.matchId,
 		};
 		this.sendMessage(updates);
 	}
@@ -276,6 +280,7 @@ class GameAISocket {
 			type: "game.starting",
 			timestamp: Date.now(),
 			start: {
+				"matchId": this.matchId,
 				"windowHeight": canvas.height,
 				"windowWidth": canvas.width,
 				"typeOfMatch": this.typeOfMatch,
@@ -298,6 +303,10 @@ class GameAISocket {
 
 	handleMessage(data) {
 		switch (data.type) {
+			case "info":
+				this.matchId = data.matchId;
+				this.sendInfoStarting();
+				break;
 			case "game.state":
 				if (this.pause == false)
 				{

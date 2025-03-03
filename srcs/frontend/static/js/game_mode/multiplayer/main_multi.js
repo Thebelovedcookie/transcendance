@@ -11,6 +11,7 @@ class GameWebSocket {
 		canvas.width = canvas.height;
 		context.clearRect(0, 0, canvas.width, canvas.height);
 
+		this.matchId = null;
 		this.pause = false;
 		this.socket = null;
 		this.isConnected = false;
@@ -80,6 +81,7 @@ class GameWebSocket {
 
 		const updates = {
 			type: "player.moved",
+			"matchId": this.matchId,
 			'player': player,
 			'direction': direction,
 		};
@@ -98,7 +100,6 @@ class GameWebSocket {
 			this.socket.onopen = () => {
 				console.log("WebSocket connection established");
 				this.isConnected = true;
-				this.sendInfoStarting();
 			};
 
 			this.socket.onmessage = (event) => {
@@ -145,6 +146,7 @@ class GameWebSocket {
 
 		const updates = {
 			type: "player.pause",
+			"matchId": this.matchId,
 		};
 		this.sendMessage(updates);
 	}
@@ -162,6 +164,7 @@ class GameWebSocket {
 		this.pause = false;
 		const updates = {
 			type: "player.unpause",
+			"matchId": this.matchId,
 		};
 		this.sendMessage(updates);
 	}
@@ -182,6 +185,7 @@ class GameWebSocket {
 			type: "game.starting",
 			timestamp: Date.now(),
 			start: {
+				"matchId": this.matchId,
 				"windowHeight": canvas.height,
 				"windowWidth": canvas.width,
 			}
@@ -204,6 +208,10 @@ class GameWebSocket {
 
 	handleMessage(data) {
 		switch (data.type) {
+			case "info":
+				this.matchId = data.matchId;
+				this.sendInfoStarting();
+				break;
 			case "game.state":
 				if (this.pause == false)
 				{
