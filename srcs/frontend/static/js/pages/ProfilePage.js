@@ -83,7 +83,7 @@ export class ProfilePage {
 						<h2 data-translate= "perf"></h2>
 						<div class="chart-container">
 							<canvas id="performanceChart"></canvas>
-						</div>
+						</div>			
 					</div>
 
 					<div class="profile-section history-section">
@@ -135,14 +135,17 @@ export class ProfilePage {
 		const visibleMatches = allMatches.slice(0, MAX_VISIBLE_MATCHES);
 		const remainingCount = allMatches.length - MAX_VISIBLE_MATCHES;
 
+		
 		const matchesList = visibleMatches.map(match => `
 			<div class="match-card ${match.result.toLowerCase()}">
 				<div class="match-info">
-					<span class="match-opponent">vs ${SafeText.escape(match.opponent ? match.opponent.username : 'Deleted User')}</span>
+					<span class="match-opponent">vs ${SafeText.escape(match.opponent ? match.opponent.username : '<span data-translate="Deleted User"></span>')}</span>
 					<span class="match-score">${match.user_score} - ${match.opponent_score}</span>
 				</div>
 				<div class="match-details">
-					<span class="match-result">${match.result}</span>
+					<span class="match-result">
+					<span data-translate="${SafeText.escape(match.result.toLowerCase())}"></span>
+					</span>
 					<span class="match-date">${new Date(match.played_at).toLocaleDateString()}</span>
 				</div>
 			</div>
@@ -822,6 +825,7 @@ export class ProfilePage {
 				color: colors.losses
 			}
 		});
+		
 	}
 
 	// Function to draw donut chart segment
@@ -972,11 +976,13 @@ export class ProfilePage {
 		return this.userData.match_history.map(match => `
 			<div class="match-card ${match.result.toLowerCase()}">
 				<div class="match-info">
-					<span class="match-opponent">vs ${SafeText.escape(match.opponent ? match.opponent.username : 'Deleted User')}</span>
+					<span class="match-opponent">vs ${SafeText.escape(match.opponent ? match.opponent.username : '<span data-translate="Deleted User"></span>')}</span>
 					<span class="match-score">${SafeText.escape(match.user_score)} - ${SafeText.escape(match.opponent_score)}</span>
 				</div>
 				<div class="match-details">
-					<span class="match-result">${SafeText.escape(match.result)}</span>
+					<span class="match-result">
+					<span data-translate="${SafeText.escape(match.result.toLowerCase())}"></span>
+					</span>
 					<span class="match-date">${SafeText.escape(new Date(match.played_at).toLocaleDateString())}</span>
 				</div>
 			</div>
