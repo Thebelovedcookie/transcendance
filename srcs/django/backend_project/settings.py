@@ -23,7 +23,7 @@ BASE_URL = "https://localhost:8000"
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-r_qdte8i4r3$0okld7voz1g8k1_8aq93gj!t_hscbb(1#lbg@&'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -74,7 +74,7 @@ MIDDLEWARE = [
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-JWT_SECRET_KEY = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
 
 ROOT_URLCONF = 'backend_project.urls'
 
