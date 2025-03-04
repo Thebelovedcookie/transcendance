@@ -649,7 +649,7 @@ export class ProfilePage {
 					</div>
 					<div class="friend-details">
 						<h3>${SafeText.escape(friendInfo.username)}</h3>
-						<p class="status-text">${friendInfo.is_online ? '<span data-translate="online"></span>' : friendInfo.lastSeen}</p>
+						<p class="status-text"><span data-translate="Lastseen"></span>${friendInfo.is_online ? '<span data-translate="online"></span>' : ` ${new Date(friendInfo.lastSeen).toLocaleDateString()}`}</p>
 						<div class="stats-container">
 							<div class="stat-box">
 								<span class="stat-title" data-translate="wins"></span>
