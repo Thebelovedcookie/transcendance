@@ -9,7 +9,6 @@ export class VerificationPage {
 		let retryCount = 0;
 
 		while (retryCount < this.maxRetries) {
-			console.log("retryCount: ", retryCount);
 			this.email = sessionStorage.getItem('pendingVerificationEmail');
 
 			if (this.email) {

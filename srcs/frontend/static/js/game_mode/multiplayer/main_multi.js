@@ -94,11 +94,11 @@ class GameWebSocket {
 			const host = window.location.host;
 			const wsUrl = `${protocol}//${host}/ws/multi/`;
 
-			console.log("Attempting to connect:", wsUrl);
+			// console.log("Attempting to connect:", wsUrl);
 			this.socket = new WebSocket(wsUrl);
 
 			this.socket.onopen = () => {
-				console.log("WebSocket connection established");
+				// console.log("WebSocket connection established");
 				this.isConnected = true;
 			};
 
@@ -116,7 +116,7 @@ class GameWebSocket {
 			};
 
 			this.socket.onclose = (event) => {
-				console.log("WebSocket connection closed:", event.code, event.reason);
+				// console.log("WebSocket connection closed:", event.code, event.reason);
 				this.isConnected = false;
 				this.stopGameLoop();
 			};
@@ -178,7 +178,7 @@ class GameWebSocket {
 		context.fillRect(this.gameState.canvas.dim / 2 - 3 * this.gameState.canvas.size, this.gameState.canvas.dim / 2 - 5 * this.gameState.canvas.size, rectWidth, rectHeight);
 		context.fillRect(this.gameState.canvas.dim / 2 + 1.5 * this.gameState.canvas.size, this.gameState.canvas.dim / 2 - 5 * this.gameState.canvas.size, rectWidth, rectHeight);
 	}
-	
+
 	sendInfoStarting()
 	{
 		const data = {
@@ -226,10 +226,10 @@ class GameWebSocket {
 				console.error("Server error:", data.message);
 				break;
 			default:
-				console.log("Unhandled message type:", data.type);
+				// console.log("Unhandled message type:", data.type);
 		}
 	}
-	
+
 	getResult(data) {
 		if (data.winner == "Player 1")
 		{

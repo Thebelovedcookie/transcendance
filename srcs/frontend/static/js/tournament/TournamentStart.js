@@ -17,11 +17,11 @@ export class TournamentStart {
 			const host = window.location.host;
 			const wsUrl = `${protocol}//${host}/ws/tournament/`;
 
-			console.log("Attempting to connect:", wsUrl);
+			// console.log("Attempting to connect:", wsUrl);
 			this.socket = new WebSocket(wsUrl);
 
 			this.socket.onopen = () => {
-				console.log("WebSocket connection established");
+				// console.log("WebSocket connection established");
 				this.isConnected = true;
 				this.sendInfoStarting();
 			};
@@ -40,7 +40,7 @@ export class TournamentStart {
 			};
 
 			this.socket.onclose = (event) => {
-				console.log("WebSocket connection closed:", event.code, event.reason);
+				// console.log("WebSocket connection closed:", event.code, event.reason);
 				this.isConnected = false;
 				// setTimeout(() => this.connect(), 3000);
 			};
@@ -78,11 +78,10 @@ export class TournamentStart {
 				this.endTournement(data);
 				break;
 			case "error":
-				console.log(data.type);
 				console.error("Server error:", data.message);
 				break;
 			default:
-				console.log("Unhandled message type:", data.type);
+				// console.log("Unhandled message type:", data.type);
 		}
 	}
 

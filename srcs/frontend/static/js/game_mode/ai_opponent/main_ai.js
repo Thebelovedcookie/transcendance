@@ -184,11 +184,11 @@ class GameAISocket {
 			const host = window.location.host;
 			const wsUrl = `${protocol}//${host}/ws/ai/`;
 
-			console.log("Attempting to connect:", wsUrl);
+			// console.log("Attempting to connect:", wsUrl);
 			this.socket = new WebSocket(wsUrl);
 
 			this.socket.onopen = () => {
-				console.log("WebSocket connection established");
+				// console.log("WebSocket connection established");
 				this.isConnected = true;
 				// this.sendInfoStarting();
 			};
@@ -207,7 +207,7 @@ class GameAISocket {
 			};
 
 			this.socket.onclose = (event) => {
-				console.log("WebSocket connection closed:", event.code, event.reason);
+				// console.log("WebSocket connection closed:", event.code, event.reason);
 				this.isConnected = false;
 				this.stopGameLoop();
 			};
@@ -321,7 +321,7 @@ class GameAISocket {
 				console.error("Server error:", data.message);
 				break;
 			default:
-				console.log("Unhandled message type:", data.type);
+				// console.log("Unhandled message type:", data.type);
 		}
 	}
 
