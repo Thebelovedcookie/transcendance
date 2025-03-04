@@ -115,7 +115,7 @@ export function displayText(contextSolo, canvasSolo)
 	contextSolo.textAlign = "right";
 	contextSolo.textBaseline = "top";
 	contextSolo.fillStyle = "black";
-	contextSolo.fillText('Controls: ↑ (up) ↓ (down)', canvasSolo.width - canvasSolo.size * 2, canvasSolo.size);
+	contextSolo.fillText(translationsData["Controls: ↑ (up) ↓ (down)"], canvasSolo.width - canvasSolo.size * 2, canvasSolo.size);
 
 	contextSolo.textAlign = "left";
 	contextSolo.textBaseline = "top";
