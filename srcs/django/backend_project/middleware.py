@@ -51,7 +51,7 @@ class JWTAuthMiddleware(BaseMiddleware):
 			else:
 				scope['user'] = AnonymousUser()
 		except Exception as e:
-			logger.error(f"WebSocket auth error: {str(e)}")
+			logger.error(f"Auth error: {str(e)}")
 			scope['user'] = AnonymousUser()
 
 		return await super().__call__(scope, receive, send)

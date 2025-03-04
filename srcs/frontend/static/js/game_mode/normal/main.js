@@ -92,11 +92,11 @@ class GameWebSocket {
 			const host = window.location.host;
 			const wsUrl = `${protocol}//${host}/ws/game/`;
 
-			console.log("Attempting to connect:", wsUrl);
+			// console.log("Attempting to connect:", wsUrl);
 			this.socket = new WebSocket(wsUrl);
 
 			this.socket.onopen = () => {
-				console.log("WebSocket connection established");
+				// console.log("WebSocket connection established");
 				this.isConnected = true;
 				// this.sendInfoStarting();
 			};
@@ -115,7 +115,7 @@ class GameWebSocket {
 			};
 
 			this.socket.onclose = (event) => {
-				console.log("WebSocket connection closed:", event.code, event.reason);
+				// console.log("WebSocket connection closed:", event.code, event.reason);
 				this.isConnected = false;
 				this.stopGameLoop();
 			};
@@ -171,7 +171,7 @@ class GameWebSocket {
 		context.fillRect(canvas.width / 2 - 3 * this.gameState.ball.size, canvas.height / 2 - 5 * this.gameState.ball.size, rectWidth, rectHeight);
 		context.fillRect(canvas.width / 2 + 1.5 * this.gameState.ball.size, canvas.height / 2 - 5 * this.gameState.ball.size, rectWidth, rectHeight);
 	}
-	
+
 	stopGameLoop() {
 		if (this.gameLoopInterval) {
 			clearInterval(this.gameLoopInterval);
@@ -227,7 +227,7 @@ class GameWebSocket {
 				console.error("Server error:", data.message);
 				break;
 			default:
-				console.log("Unhandled message type:", data.type);
+				// console.log("Unhandled message type:", data.type);
 		}
 	}
 //get result a modifier

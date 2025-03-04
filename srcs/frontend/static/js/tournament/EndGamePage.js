@@ -2,7 +2,6 @@ import { SafeText } from '../utils/safetext.js';
 
 export class EndGamePage {
 	constructor(winner, loser, socket, infoMatch) {
-		console.log(winner, loser, socket, infoMatch);
 		this.container = document.getElementById('dynamicPage');
 		this.winner = winner;
 		this.loser = loser;

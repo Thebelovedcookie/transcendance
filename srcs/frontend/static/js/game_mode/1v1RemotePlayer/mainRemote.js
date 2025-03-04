@@ -59,7 +59,7 @@ class RemoteGameWebSocket {
 			this.sendMove("down");
 		}
 	}
- 
+
 	connect() {
 		try {
 			const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -67,11 +67,11 @@ class RemoteGameWebSocket {
 			const wsUrl = `${protocol}//${host}/ws/pong/`;
 
 			//creer un id aleatoire
-			console.log("Attempting to connect:", wsUrl);
+			// console.log("Attempting to connect:", wsUrl);
 			this.socket = new WebSocket(wsUrl);
 
 			this.socket.onopen = () => {
-				console.log("WebSocket connection established");
+				// console.log("WebSocket connection established");
 				this.isConnected = true;
 			};
 
@@ -89,7 +89,7 @@ class RemoteGameWebSocket {
 			};
 
 			this.socket.onclose = (event) => {
-				console.log("WebSocket connection closed:", event.code, event.reason);
+				// console.log("WebSocket connection closed:", event.code, event.reason);
 				this.isConnected = false;
 				this.stopGameLoop();
 			};
@@ -171,7 +171,6 @@ class RemoteGameWebSocket {
 				this.playerId = data.playerId;
 				break;
 			case "reconnection":
-				console.log(data);
 				this.getBackInTheGame(data);
 				this.startGameLoop();
 				break;
@@ -192,7 +191,7 @@ class RemoteGameWebSocket {
 				console.error("Server error:", data.message);
 				break;
 			default:
-				console.log("Unhandled message type:", data.type);
+				// console.log("Unhandled message type:", data.type);
 		}
 	}
 

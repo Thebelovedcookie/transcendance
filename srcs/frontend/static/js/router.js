@@ -11,7 +11,6 @@ import { NotFoundPage } from './pages/NotFoundPage.js';
 import { LoginPage } from './pages/LoginPage.js';
 import { RegisterPage } from './pages/RegisterPage.js';
 import { ProfilePage } from './pages/ProfilePage.js';
-import { SettingPage } from './pages/SettingPage.js';
 import { LogoutPage } from './pages/LogoutPage.js';
 import { AiPage } from './pages/AiPage.js';
 import { Header } from './pages/Header.js';
@@ -107,7 +106,6 @@ class Router {
 		this.routes.set('/login', new LoginPage());
 		this.routes.set('/register', new RegisterPage());
 		this.routes.set('/profile', new ProfilePage());
-		this.routes.set('/settings', new SettingPage());
 		this.routes.set('/logout', new LogoutPage());
 		this.routes.set('/pong/solo/ai', new AiPage());
 		this.routes.set('/pong/multi', new MultiPage());

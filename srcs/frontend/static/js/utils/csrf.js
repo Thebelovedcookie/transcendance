@@ -19,7 +19,6 @@ export class CSRFManager {
 
 	// Refresh CSRF token
 	async refreshToken() {
-		console.log('Refreshing CSRF token');
 		try {
 			const response = await fetch('/api/csrf', {
 				credentials: 'same-origin',
@@ -36,7 +35,6 @@ export class CSRFManager {
 	}
 
 	async initializeCsrfToken() {
-		console.log('Initializing CSRF token');
 		try {
 			const response = await fetch('/api/csrf', {
 				credentials: 'same-origin'
