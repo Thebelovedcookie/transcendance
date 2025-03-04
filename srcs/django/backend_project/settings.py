@@ -35,10 +35,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-# ALLOWED_HOSTS = ['*']
-
 AUTH_USER_MODEL = 'user_management_app.CustomUser'
-
 
 # Application definition
 
@@ -50,7 +47,7 @@ INSTALLED_APPS = [
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
 	'channels',
-	'corsheaders',
+	# 'corsheaders',
 	'user_management_app',
 	'local_multi_game_app',
 	'local_normal_game_app',
@@ -62,7 +59,7 @@ INSTALLED_APPS = [
 ]
 # SO: ajout de LocaleMiddleware pour la langue
 MIDDLEWARE = [
-	'corsheaders.middleware.CorsMiddleware',
+	# 'corsheaders.middleware.CorsMiddleware',
 	'django.middleware.security.SecurityMiddleware',
 	# 'django.middleware.locale.LocaleMiddleware',
 	# 'django.contrib.sessions.middleware.SessionMiddleware',
@@ -97,14 +94,14 @@ TEMPLATES = [
 ]
 
 #test
-CORS_ALLOWED_ORIGINS = [
-	"https://localhost",
-	"https://django",
-	"http://localhost:8000",
-	"http://django:8000",
-]
+# CORS_ALLOWED_ORIGINS = [
+# 	"https://localhost",
+# 	"https://django",
+# 	"http://localhost:8000",
+# 	"http://django:8000",
+# ]
 
-CORS_ALLOW_CREDENTIALS = True
+# CORS_ALLOW_CREDENTIALS = True
 
 CHANNEL_LAYERS = {
 	'default': {
