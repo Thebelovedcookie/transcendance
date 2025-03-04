@@ -83,7 +83,7 @@ export class ProfilePage {
 						<h2 data-translate= "perf"></h2>
 						<div class="chart-container">
 							<canvas id="performanceChart"></canvas>
-						</div>			
+						</div>
 					</div>
 
 					<div class="profile-section history-section">
@@ -135,7 +135,7 @@ export class ProfilePage {
 		const visibleMatches = allMatches.slice(0, MAX_VISIBLE_MATCHES);
 		const remainingCount = allMatches.length - MAX_VISIBLE_MATCHES;
 
-		
+
 		const matchesList = visibleMatches.map(match => `
 			<div class="match-card ${match.result.toLowerCase()}">
 				<div class="match-info">
@@ -825,7 +825,7 @@ export class ProfilePage {
 				color: colors.losses
 			}
 		});
-		
+
 	}
 
 	// Function to draw donut chart segment

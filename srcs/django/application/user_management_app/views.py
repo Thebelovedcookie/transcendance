@@ -491,7 +491,7 @@ def search_user(request):
 				'id' : user.id,
 				'username': user.username,
 				'profile_image': user.profile_image.url if user.profile_image else None,
-				'is_online': False,
+				'is_online': OnlineStatus.objects.get(user_id=user.id).is_online if OnlineStatus.objects.filter(user_id=user.id).exists() else False,
 				'is_friend': request.user.friends.filter(id=user.id).exists()
 			}
 			for user in users
