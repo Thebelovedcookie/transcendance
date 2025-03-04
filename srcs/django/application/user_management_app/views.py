@@ -2,16 +2,11 @@ from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from . models import CustomUser, EmailVerification
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
 import json
 from pong_history_app import views as pong_history_app
 from online_status_app.models import OnlineStatus
-# experiemnting from here
-from PIL import Image
-from django.core.files.storage import FileSystemStorage
 from django.utils.translation import gettext as _
 from django.conf import settings
-from datetime import datetime, timedelta
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.mail import send_mail
@@ -85,6 +80,7 @@ def login_user(request):
 		'message': 'Invalid email or password'
 	}, status=401)
 
+@require_login
 def logout_user(request):
 	if request.method == 'POST':
 		logout(request)
@@ -98,6 +94,7 @@ def logout_user(request):
 			'message': 'invalid request method'
 		}, status=405)
 
+@require_login
 def delete_account(request):
 	if request.method != 'POST':
 		return JsonResponse({
@@ -337,7 +334,7 @@ def verify_email(request):
 			'message': _('An error occurred during verification')
 		}, status=500)
 
-@login_required
+@require_login
 def update_profile(request):
 	if request.method != 'POST':
 		return JsonResponse({
@@ -460,6 +457,7 @@ def get_user(request):
 			}
 		})
 
+@require_login
 def search_user(request):
 	try:
 		data = json.loads(request.body)
@@ -513,6 +511,7 @@ def search_user(request):
 			'message': str(e)
 		}, status=500)
 
+@require_login
 def add_friend(request):
 	try:
 		data = json.loads(request.body)
@@ -537,6 +536,7 @@ def add_friend(request):
 			'message': str(e)
 		}, status=500)
 
+@require_login
 def remove_friend(request):
 	try:
 		data = json.loads(request.body)

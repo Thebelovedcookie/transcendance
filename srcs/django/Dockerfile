@@ -39,12 +39,12 @@ RUN cd /project && python3.11 manage.py startapp local_multi_game_app \
 	&& python3.11 manage.py startapp user_management_app \
 	&& python3.11 manage.py startapp pong_history_app \
 	&& python3.11 manage.py startapp remote_normal_game_app \
-	&& python3.11 manage.py startapp online_status_app 
+	&& python3.11 manage.py startapp online_status_app
 
 EXPOSE 8000
 
 RUN apt update && apt install -y postgresql-client
-RUN pip install psycopg[binary] channels[daphne] django-cors-headers Pillow pyjwt django-channels-jwt-auth-middleware
+RUN pip install psycopg[binary] channels[daphne] Pillow pyjwt django-channels-jwt-auth-middleware
 
 ENV DJANGO_SETTINGS_MODULE=backend_project.settings
 
@@ -61,7 +61,7 @@ COPY ./application/online_status_app /project/online_status_app/
 COPY /tools/setups_backend.sh /setups_backend.sh
 RUN chmod +x /setups_backend.sh
 
-# fichiers de traduction des langues 
+# fichiers de traduction des langues
 
 
 ENTRYPOINT [ "/setups_backend.sh" ]
