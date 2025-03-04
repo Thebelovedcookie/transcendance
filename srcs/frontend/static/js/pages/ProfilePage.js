@@ -127,7 +127,7 @@ export class ProfilePage {
 
 	renderMatchHistory() {
 		if (!this.userData.match_history || this.userData.match_history.length === 0) {
-			return '<div class="match-history-empty">No match history found</div>';
+			return '<div class="match-history-empty"><span data-translate="Nohistory"></span></div>';
 		}
 
 		const MAX_VISIBLE_MATCHES = 3;
@@ -208,7 +208,7 @@ export class ProfilePage {
 		const viewAllButton = remainingCount > 0 ? `
 			<button class="view-all-friends-btn">
 				<i class="fas fa-users"></i>
-					<span data-translate ="viewAll"> </span>
+					<span data-translate ="viewAllFriends"> </span>
 			</button>
 		` : '';
 
@@ -568,6 +568,8 @@ export class ProfilePage {
 								</button>
 							</div>
 						`).join('');
+						const savedLang = localStorage.getItem("selectedLang") || "en";
+						await updateTexts(savedLang);
 					}
 					const savedLang = localStorage.getItem("selectedLang") || "en";
 					await updateTexts(savedLang);
@@ -599,7 +601,7 @@ export class ProfilePage {
 
 								if (result.status === 'success') {
 									btn.disabled = true;
-									btn.textContent = 'Friends';
+									btn.textContent = translationsData["friends"];
 									await this.loadUserData();
 									const friendsList = document.getElementById('friends-list');
 									if (friendsList) {
