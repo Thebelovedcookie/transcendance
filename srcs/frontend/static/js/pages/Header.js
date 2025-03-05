@@ -12,10 +12,10 @@ export class Header {
 			const username = authState.username;
 
 			this.container.innerHTML = `
-				<nav class="navbar navbar-expand-lg navbar-light bg-secondary">
+				<nav class="navbar navbar-expand-lg navbar-light bg-body-secondary">
 					<div class="container-fluid">
 						<a class="navbar-brand" href="/" data-path="/">
-							<img src="/static/img/logo.png" alt="Logo" width="80" height="40">
+							<img src="/static/img/logo.svg" alt="Logo" width="150" height="50">
 						</a>
 						<div class="d-flex align-items-center">
 						  <!-- Sélecteur de langue -->
@@ -26,7 +26,7 @@ export class Header {
 								<option value="ja">日本語</option>
 							</select>
 							${isLoggedIn ?
-								`<div class="text-light me-3">
+								`<div class="me-3">
 									<span  data-translate="Welcome1"></span>
 									${SafeText.escape(username)}
 								</div>
