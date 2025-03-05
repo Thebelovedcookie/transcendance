@@ -123,6 +123,11 @@ export class LoginPage {
 			const data = await response.json();
 
 			if (!response.ok) {
+				passwordError.textContent = translationsData["ErrorLogin"];
+				passwordError.style.display = 'block';
+				if (response.status == 403) {
+					window.router.refreshToken();
+				}
 				return false;
 			}
 			const message = data.message;
@@ -140,7 +145,6 @@ export class LoginPage {
 			return false;
 
 		} catch (error) {
-			console.error('Error details:', error);
 			passwordError.textContent = translationsData["ErrorLogin"];
 			passwordError.style.display = 'block';
 			if (response.status == 403) {

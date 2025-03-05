@@ -95,9 +95,12 @@ export class RegisterPage {
 					window.router.refreshToken();
 					confirmPasswordError.textContent = translationsData["error-register1"];
 					confirmPasswordError.style.display = 'block';
-				} else if (response.status == 400) {
+				} else if (response.status == 409) {
 					emailError.textContent = translationsData["error-register2"];
 					emailError.style.display = 'block';
+				} else if (response.status == 400) {
+					confirmPasswordError.textContent = translationsData["error-register3"];
+					confirmPasswordError.style.display = 'block';
 				}
 				return false;
 			}
@@ -142,13 +145,17 @@ export class RegisterPage {
 
 		// Validate username
 		if (!username.value.trim()) {
-			usernameError.textContent = translationsData["usererror3"];	
+			usernameError.textContent = translationsData["usererror3"];
 			usernameError.style.display = 'block';
 			isValid = false;
-		} else if (username.value.length >= 150) {
-			usernameError.textContent = translationsData["usererror1"];	
+		} else if (username.value.length > 20) {
+			usernameError.textContent = translationsData["usererror1"];
 			usernameError.style.display = 'block';
 			username.classList.add('is-invalid');
+			isValid = false;
+		} else if (username.value.match(/[!@#$%^&*()_+\-=\[\]{};:"\|,.<>/?]/)) {
+			usernameError.textContent = translationsData["usererror2"];
+			usernameError.style.display = 'block';
 			isValid = false;
 		}
 
@@ -179,6 +186,7 @@ export class RegisterPage {
 
 		// Validate confirm password
 		if (!confirmPassword.value.trim()) {
+			confirmPasswordError.textContent = translationsData["errorpwd"];
 			confirmPasswordError.style.display = 'block';
 			isValid = false;
 		} else if (password.value !== confirmPassword.value) {
