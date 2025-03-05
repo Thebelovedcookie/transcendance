@@ -179,7 +179,7 @@ def register_user(request):
 		return JsonResponse({
 			'status': 'error',
 			'message': 'Email already registered'
-		}, status=400)
+		}, status=409)
 
 	is_active = False
 	user = CustomUser.objects.create_user(
