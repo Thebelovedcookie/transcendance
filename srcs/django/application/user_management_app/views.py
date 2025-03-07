@@ -363,7 +363,7 @@ def update_profile(request):
 					'message': 'Image size must be less than 5MB'
 				}, status=400)
 
-			allowed_types = ['image/jpeg', 'image/png', 'image/gif']
+			allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml', 'image/bmp']
 			if uploaded_image.content_type not in allowed_types:
 				return JsonResponse({
 					'status': 'error',
