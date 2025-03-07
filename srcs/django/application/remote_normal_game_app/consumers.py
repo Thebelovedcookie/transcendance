@@ -274,8 +274,8 @@ class PongConsumer(AsyncWebsocketConsumer):
 			bounceAngle = relativeIntersectY * 0.75
 
 			speed = math.sqrt(m["ball"]["vx"] * m["ball"]["vx"] + m["ball"]["vy"] * m["ball"]["vy"])
-			m["ball"]["vx"] = -speed * math.cos(bounceAngle)
-			m["ball"]["vy"] = speed * math.sin(bounceAngle)
+			m["ball"]["vx"] = -speed * math.cos(bounceAngle) * m["ball"]["accel"]
+			m["ball"]["vy"] = speed * math.sin(bounceAngle) * m["ball"]["accel"]
 			m["ball"]["x"] = m["playerTwo"]["x"] - m["ball"]["size"]
 
 		elif (m["ball"]["y"] + m["ball"]["vy"] >= m["playerOne"]["y"]
@@ -457,6 +457,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 				"size": size,
 				"color": "black",
 				"speed": 1,
+				"accel": 1.05,
 				"vx": 1,
 				"vy": 2 / 5
 				}

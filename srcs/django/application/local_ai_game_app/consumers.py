@@ -150,6 +150,7 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 				"size": size,
 				"color": "black",
 				"speed": 9,
+				"accel": 1.05,
 				"vx": 0,
 				"vy": 0
 				}
@@ -222,8 +223,8 @@ class GameAiConsumer(AsyncWebsocketConsumer):
 			relativeIntersectY = (paddleCenter - ballCenter) / (player["height"] / 2)
 			bounceAngle = relativeIntersectY * 0.75
 			speed = math.sqrt(m["ball"]["vx"] * m["ball"]["vx"] + m["ball"]["vy"] * m["ball"]["vy"])
-			m["ball"]["vx"] = factor * speed * math.cos(bounceAngle)
-			m["ball"]["vy"] = speed * math.sin(bounceAngle)
+			m["ball"]["vx"] = factor * speed * math.cos(bounceAngle) * m["ball"]["accel"]
+			m["ball"]["vy"] = speed * math.sin(bounceAngle) * m["ball"]["accel"]
 			m["ball"]["x"] = player["x"] + factor * m["ball"]["size"]
 
 	# place ball in center of canvas and give it a random initial velocity

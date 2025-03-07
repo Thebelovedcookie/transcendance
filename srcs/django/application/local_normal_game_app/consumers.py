@@ -155,6 +155,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 				"height": size,
 				"color": "black",
 				"speed": 8,
+				"accel": 1.05,
 				"vx": 0,
 				"vy": 0
 				}
@@ -248,8 +249,8 @@ class GameConsumer(AsyncWebsocketConsumer):
 			relativeIntersectY = (paddleCenter - ballCenter) / (player["height"] / 2)
 			bounceAngle = relativeIntersectY * 0.75
 			speed = math.sqrt(m["ball"]["vx"] * m["ball"]["vx"] + m["ball"]["vy"] * m["ball"]["vy"])
-			m["ball"]["vx"] = factor * speed * math.cos(bounceAngle)
-			m["ball"]["vy"] = speed * math.sin(bounceAngle)
+			m["ball"]["vx"] = factor * speed * math.cos(bounceAngle) * m["ball"]["accel"]
+			m["ball"]["vy"] = speed * math.sin(bounceAngle) * m["ball"]["accel"]
 			m["ball"]["x"] = player["x"] + factor * m["ball"]["size"]
 
 	# check if location of ball overlaps location of paddle
