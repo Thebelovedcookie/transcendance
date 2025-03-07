@@ -590,7 +590,7 @@ main {
 	position: relative;
 }
 
-.profile-avatar {
+.profile-container .profile-avatar {
 	width: 120px;
 	height: 120px;
 	border-radius: 50%;
@@ -598,7 +598,12 @@ main {
 	border: 3px solid #fff;
 	box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
-
+.profile-avatar {
+	border-radius: 50%;
+	object-fit: cover;
+	border: 3px solid #fff;
+	box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
 .online-status {
 	position: absolute;
 	bottom: 5px;
@@ -2327,10 +2332,10 @@ body.dark-mode {
 }
 
 .stats-summary {
-	margin-top: 10px; 
-	text-align: center; 
-	font-size: 0.8em; 
-	font-weight: bold;  
+	margin-top: 10px;
+	text-align: center;
+	font-size: 0.8em;
+	font-weight: bold;
 	/* border: 1px solid red; */
     display: flex;
     justify-content: space-between; /* Met un grand espace entre les deux textes */
@@ -2339,10 +2344,10 @@ body.dark-mode {
 
 .loss-text {
     margin: 0 10px;
-	color: #e74c3c; 
+	color: #e74c3c;
 }
 .win-text{
-    margin: 0 10px; 
+    margin: 0 10px;
 	color: #2ecc71;
 }
 

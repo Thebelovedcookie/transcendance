@@ -189,7 +189,8 @@
 		"searchError": "Failed to search users. Please try again.",
 		"addFriendError": "Failed to add friend. Please try again.",
 		"removeFriendError": "Failed to remove friend. Please try again.",
-		"deleteAccountError": "Failed to delete account. Please try again."
+		"deleteAccountError": "Failed to delete account. Please try again.",
+		"imageTypeError": "Invalid image format. Allowed formats: JPEG, PNG, GIF, WebP, SVG, BMP"
 	},
 
 	"fr": {
@@ -377,7 +378,8 @@
 		"searchError": "Échec de la recherche d'utilisateurs. Veuillez réessayer.",
 		"addFriendError": "Échec de l'ajout d'ami. Veuillez réessayer.",
 		"removeFriendError": "Échec de la suppression d'ami. Veuillez réessayer.",
-		"deleteAccountError": "Échec de la suppression du compte. Veuillez réessayer."
+		"deleteAccountError": "Échec de la suppression du compte. Veuillez réessayer.",
+		"imageTypeError": "Format d'image invalide. Formats autorisés : JPEG, PNG, GIF, WebP, SVG, BMP"
 	},
 
 	"ja": {
@@ -511,10 +513,10 @@
 		"wins": "勝利",
 		"loss":"敗北",
 		"win":"勝利",
-		"close": "閉じる",
-		"cancel": "キャンセル",
-		"SaveChanges": "変更を保存",
-		"Lastseen": "最終ログイン",
+		"close":"閉じる",
+		"cancel":"キャンセル",
+		"SaveChanges":"変更を保存",
+		"Lastseen":"最終ログイン",
 		"Username": "ユーザー名",
 		"Email": "メールアドレス",
 		"Mypage": "マイページ",
@@ -549,6 +551,7 @@
 		"Player1 and Player2": "プレイヤー1とプレイヤー2",
 		"Player1 and Player3": "プレイヤー1とプレイヤー3",
 		"Player2 and Player3": "プレイヤー2とプレイヤー3",
+
 		"nameLengthError": "プレイヤー名は1文字以上20文字以下にしてください",
 		"specialCharsError": "プレイヤー名に特殊文字は使用できません",
 		"searchLengthError": "検索語は20文字以内にしてください",
@@ -559,7 +562,8 @@
 		"searchError": "ユーザー検索に失敗しました。もう一度お試しください。",
 		"addFriendError": "フレンド追加に失敗しました。もう一度お試しください。",
 		"removeFriendError": "フレンド削除に失敗しました。もう一度お試しください。",
-		"deleteAccountError": "アカウントの削除に失敗しました。もう一度お試しください。"
+		"deleteAccountError": "アカウントの削除に失敗しました。もう一度お試しください。",
+		"imageTypeError": "画像形式が無効です。許可される形式：JPEG、PNG、GIF、WebP、SVG、BMP"
 	},
 
 	"es": {
@@ -745,6 +749,7 @@
 		"updateProfileError": "Error al actualizar el perfil",
 		"addFriendError": "Error al agregar amigo",
 		"removeFriendError": "Error al eliminar amigo",
-		"deleteAccountError": "Error al eliminar cuenta"
+		"deleteAccountError": "Error al eliminar cuenta",
+		"imageTypeError": "Formato de imagen no válido. Formatos permitidos: JPEG, PNG, GIF, WebP, SVG, BMP"
 	}
 }

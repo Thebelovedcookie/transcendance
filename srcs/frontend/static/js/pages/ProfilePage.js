@@ -327,6 +327,11 @@ export class ProfilePage {
 			if (image.size > maxSize) {
 				errors.push(translationsData["imageSizeError"]);
 			}
+
+			const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml', 'image/bmp'];
+			if (!allowedTypes.includes(image.type)) {
+				errors.push(translationsData["imageTypeError"]);
+			}
 		}
 		return errors;
 	}
