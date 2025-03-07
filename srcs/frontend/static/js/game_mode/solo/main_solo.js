@@ -36,6 +36,7 @@ function init_canvasSolo(){
 		height: canvasSolo.size,
 		color: "#808080",
 		speed: 8,
+		accel: 1.05,
 		vx: 0,
 		vy: 0,
 	})
@@ -58,6 +59,7 @@ class Element{
 		this.height = options.height;
 		this.color = options.color;
 		this.speed = options.speed || 2;
+		this.accel = 1.05;
 		this.gravity = options.gravity || 0;
 		this.vx = options.vx || 0;
 		this.vy = options.vy || 0;
@@ -151,8 +153,8 @@ function ballSoloWallCollision(){
 		const bounceAngle = relativeIntersectY * 0.75;
 
 		const speed = Math.sqrt(ballSolo.speed * ballSolo.speed + ballSolo.vy * ballSolo.vy);
-		ballSolo.speed = -speed * Math.cos(bounceAngle);
-		ballSolo.vy = speed * Math.sin(bounceAngle);
+		ballSolo.speed = -speed * Math.cos(bounceAngle) * ballSolo.accel;
+		ballSolo.vy = speed * Math.sin(bounceAngle) * ballSolo.accel;
 
 		ballSolo.x = playerOneSolo.x - ballSolo.width;
 	}

@@ -229,7 +229,8 @@ class RemoteGameWebSocket {
 				y: data.ball.y,
 				size: data.ball.size,
 				color: data.ball.color,
-				speed: data.ball.speed
+				speed: data.ball.speed,
+				accel: data.ball.accel
 			},
 			score: {
 				scoreMax: data.scores.scoreMax
@@ -287,7 +288,8 @@ class RemoteGameWebSocket {
 				y: data.message.ball.y,
 				size: data.message.ball.size,
 				color: data.message.ball.color,
-				speed: data.message.ball.speed
+				speed: data.message.ball.speed,
+				accel: data.message.ball.accel
 			},
 			score: {
 				scoreMax: data.message.scores.scoreMax
@@ -351,7 +353,8 @@ class RemoteGameWebSocket {
 				y: this.gameState.ball.y * canvas.height/100,
 				size: this.gameState.ball.size * canvas.height/100,
 				color: this.gameState.ball.color,
-				speed: this.gameState.ball.speed
+				speed: this.gameState.ball.speed,
+				accel: this.gameState.ball.accel
 			}
 		}
 	}
