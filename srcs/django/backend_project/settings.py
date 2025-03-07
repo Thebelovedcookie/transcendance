@@ -99,6 +99,7 @@ TEMPLATES = [
 # 	"https://django",
 # 	"http://localhost:8000",
 # 	"http://django:8000",
+#     "https://10.25.1.3:8000"
 # ]
 
 # CORS_ALLOW_CREDENTIALS = True
@@ -207,6 +208,9 @@ CSRF_TRUSTED_ORIGINS = [
 	'https://localhost',
 	'https://localhost:8001',
 	'https://127.0.0.1',
+    'https://10.25.1.3:8001',
+    'https://10.25.3.3:8001',
+    'https://10.25.3.2:8001'
 ]
 
 # email settings for dev(console)
