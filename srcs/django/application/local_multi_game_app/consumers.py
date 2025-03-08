@@ -252,8 +252,9 @@ class GameMultiConsumer(AsyncWebsocketConsumer):
 			paddleCenter = player["endAngle"] - player["deltaAngle"] / 2
 			relativeIntersect = (paddleCenter - ballangle) / player["deltaAngle"] / 2
 			bounceAngle = relativeIntersect * math.pi / 3
-			vx1 = -m["ball"]["speed"] * math.cos(bounceAngle) * m["ball"]["accel"]
-			vy1 = m["ball"]["speed"] * math.sin(bounceAngle) * m["ball"]["accel"]
+			speed = math.sqrt(m["ball"]["vx"] * m["ball"]["vx"] + m["ball"]["vy"] * m["ball"]["vy"])
+			vx1 = -speed * math.cos(bounceAngle) * m["ball"]["accel"]
+			vy1 = speed * math.sin(bounceAngle) * m["ball"]["accel"]
 			m["ball"]["vx"] = vx1 * math.cos(ballangle) - vy1 * math.sin(ballangle)
 			m["ball"]["vy"] = vx1 * math.sin(ballangle) + vy1 * math.cos(ballangle)
 			m["lastTouch"] = player["name"]
