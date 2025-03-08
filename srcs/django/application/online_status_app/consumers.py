@@ -19,9 +19,14 @@ class UserStatusConsumer(AsyncWebsocketConsumer):
 
 	@database_sync_to_async
 	def update_user_status(self, is_online):
-		user = self.scope["user"]
-		online_status, created = OnlineStatus.objects.get_or_create(
-			user=user,
-			defaults={'is_online': False, 'last_seen': timezone.now()}
-		)
-		online_status.update_status(is_online)
+		try:
+			if not self.scope["user"].is_authenticated:
+				return
+			user = self.scope["user"]
+			online_status, created = OnlineStatus.objects.get_or_create(
+				user=user,
+				defaults={'is_online': False, 'last_seen': timezone.now()}
+			)
+			online_status.update_status(is_online)
+		except Exception as e:
+			print(f"Error updating user status: {e}")

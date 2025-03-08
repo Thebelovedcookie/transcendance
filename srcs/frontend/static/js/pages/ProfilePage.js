@@ -301,7 +301,7 @@ export class ProfilePage {
 		}
 	}
 
-	validateProfileData(username, email, image) {
+	validateProfileData(username, image) {
 		const errors = [];
 
 		// Username validation: length check
@@ -313,12 +313,6 @@ export class ProfilePage {
 		const specialCharsRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]+/;
 		if (specialCharsRegex.test(username)) {
 			errors.push(translationsData["specialCharsError"]);
-		}
-
-		// Email validation
-		const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-		if (!emailRegex.test(email)) {
-			errors.push(translationsData["error-email"]);
 		}
 
 		// Image validation
@@ -358,7 +352,8 @@ export class ProfilePage {
 					</div>
 					<div class="form-group">
 						<label data-translate="Email"></label>
-						<input type="email" value="${SafeText.escape(this.userData.email)}" class="form-input">
+						<input type="email" value="${SafeText.escape(this.userData.email)}" readonly disabled class="form-input">
+						<small class="email-note" data-translate="emailChangeNote">To change email address, please contact support.</small>
 					</div>
 					<div class="modal-actions">
 						<button type="button" class="cancel-btn" data-translate="cancel"></button>
@@ -407,9 +402,8 @@ export class ProfilePage {
 			e.preventDefault();
 
 			const username = modal.querySelector('input[type="text"]').value.trim();
-			const email = modal.querySelector('input[type="email"]').value.trim();
 			const image = modal.querySelector('#avatarInput').files[0];
-			const errors = this.validateProfileData(username, email, image);
+			const errors = this.validateProfileData(username, image);
 
 			if (errors.length > 0) {
 				// Show validation errors
@@ -435,8 +429,6 @@ export class ProfilePage {
 			// If validation passes, proceed with form submission
 			const formData = new FormData();
 			formData.append("username", username);
-			formData.append("email", email);
-
 			const avatarInput = modal.querySelector('#avatarInput');
 			if (avatarInput.files[0]) {
 				formData.append("image", avatarInput.files[0]);
@@ -1059,7 +1051,7 @@ export class ProfilePage {
 				const result = await response.json();
 				if (result.status === 'success') {
 					modal.remove();
-					window.location.href = '/logout';
+					window.location.href = '/';
 				}
 			} catch (error) {
 				console.error('Failed to delete account:', error);
@@ -1072,6 +1064,8 @@ export class ProfilePage {
 		return ;
 	}
 }
+
+
 
 
 

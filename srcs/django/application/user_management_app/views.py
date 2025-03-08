@@ -344,11 +344,10 @@ def update_profile(request):
 
 	try:
 		username = request.POST.get('username')
-		email = request.POST.get('email')
 		uploaded_image = request.FILES.get('image')
 
 		# Validate input
-		validation_errors = validate_user_input(username, email)
+		validation_errors = validate_user_input(username)
 		if validation_errors:
 			return JsonResponse({
 				'status': 'error',
@@ -382,7 +381,6 @@ def update_profile(request):
 
 		# save new username and email
 		u.username = username
-		u.email = email
 		u.save()
 
 		return JsonResponse({
