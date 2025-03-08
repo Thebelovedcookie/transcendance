@@ -190,7 +190,8 @@
 		"addFriendError": "Failed to add friend. Please try again.",
 		"removeFriendError": "Failed to remove friend. Please try again.",
 		"deleteAccountError": "Failed to delete account. Please try again.",
-		"imageTypeError": "Invalid image format. Allowed formats: JPEG, PNG, GIF, WebP, SVG, BMP"
+		"imageTypeError": "Invalid image format. Allowed formats: JPEG, PNG, GIF, WebP, SVG, BMP",
+		"emailChangeNote": "To change email address, please contact support."
 	},
 
 	"fr": {
@@ -379,7 +380,8 @@
 		"addFriendError": "Échec de l'ajout d'ami. Veuillez réessayer.",
 		"removeFriendError": "Échec de la suppression d'ami. Veuillez réessayer.",
 		"deleteAccountError": "Échec de la suppression du compte. Veuillez réessayer.",
-		"imageTypeError": "Format d'image invalide. Formats autorisés : JPEG, PNG, GIF, WebP, SVG, BMP"
+		"imageTypeError": "Format d'image invalide. Formats autorisés : JPEG, PNG, GIF, WebP, SVG, BMP",
+		"emailChangeNote": "Pour changer l'adresse email, veuillez contacter le support."
 	},
 
 	"ja": {
@@ -563,7 +565,8 @@
 		"addFriendError": "フレンド追加に失敗しました。もう一度お試しください。",
 		"removeFriendError": "フレンド削除に失敗しました。もう一度お試しください。",
 		"deleteAccountError": "アカウントの削除に失敗しました。もう一度お試しください。",
-		"imageTypeError": "画像形式が無効です。許可される形式：JPEG、PNG、GIF、WebP、SVG、BMP"
+		"imageTypeError": "画像形式が無効です。許可される形式：JPEG、PNG、GIF、WebP、SVG、BMP",
+		"emailChangeNote": "メールアドレスを変更するにはサポートにお問い合わせください。"
 	},
 
 	"es": {
@@ -750,6 +753,7 @@
 		"addFriendError": "Error al agregar amigo",
 		"removeFriendError": "Error al eliminar amigo",
 		"deleteAccountError": "Error al eliminar cuenta",
-		"imageTypeError": "Formato de imagen no válido. Formatos permitidos: JPEG, PNG, GIF, WebP, SVG, BMP"
+		"imageTypeError": "Formato de imagen no válido. Formatos permitidos: JPEG, PNG, GIF, WebP, SVG, BMP",
+		"emailChangeNote": "Para cambiar la dirección de correo electrónico, por favor contacte al soporte."
 	}
 }
