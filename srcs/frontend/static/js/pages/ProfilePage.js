@@ -459,6 +459,8 @@ export class ProfilePage {
 					this.render();
 					const savedLang = localStorage.getItem("selectedLang") || "en";
 					await updateTexts(savedLang);
+					await window.router.updateAuthState();
+					window.router.header.render();
 					setTimeout(() => modal.remove(), 300);
 				}
 			} catch (error) {
