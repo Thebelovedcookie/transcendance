@@ -4,7 +4,7 @@ export class NextGamePage {
 	constructor(themeReceived, type, socketTournament, infoMatch) {
 		this.theme          = themeReceived;
 		this.container      = document.getElementById('dynamicPage');
-		this.type          = type;
+		this.type			= type;
 		this.socketTournament = socketTournament;
 		this.infoMatch     = infoMatch;
 		this.countdown     = 10;
