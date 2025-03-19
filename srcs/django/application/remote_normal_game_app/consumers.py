@@ -263,6 +263,8 @@ class PongConsumer(AsyncWebsocketConsumer):
 			await self.ballWallCollision(m)
 
 	async def ballWallCollision(self, m):
+		if (not m):
+			return
 		if (m["ball"]["y"] + m["ball"]["vy"] <= m["playerTwo"]["y"] + m["playerTwo"]["height"]
 			and m["ball"]["x"] + m["ball"]["size"] + m["ball"]["vx"] >= m["playerTwo"]["x"]
 			and m["ball"]["y"] + m["ball"]["vy"] > m["playerTwo"]["y"]):
@@ -304,6 +306,8 @@ class PongConsumer(AsyncWebsocketConsumer):
 			await self.checkScore(m)
 
 	async def checkScore(self, m):
+		if (not m):
+			return
 		if (m["playerOne"]["score"] == 10):
 			m["status"] = False
 			await self.sendMatchResult(m, m["playerOne"], m["playerTwo"])
@@ -355,6 +359,8 @@ class PongConsumer(AsyncWebsocketConsumer):
 			logger.error(f"Failed to record match history: {str(e)}")
 
 	async def cleanArray(self, m):
+		if (not m):
+			return
 		p1 = next((p for p in self.infoPlayer["players"] if p["player_id"] == m["playerOne"]["id"]), None)
 		if p1 in self.infoPlayer["players"]:
 			self.infoPlayer["players"].remove(p1)
@@ -368,6 +374,8 @@ class PongConsumer(AsyncWebsocketConsumer):
 	#################### SEND VICTORY ##########################
 
 	async def sendMatchResult(self, m, winner, loser):
+		if (not m):
+			return
 		response = {
 			"matchId": m["matchId"],
 			"winner": winner,
@@ -467,6 +475,8 @@ class PongConsumer(AsyncWebsocketConsumer):
 	
 	# place ball in center of canvas and give it a random initial velocity
 	def resetBall(self, m):
+		if (not m):
+			return
 		m["ball"]["x"] = m["canvas"]["canvas_width"] / 2
 		m["ball"]["y"] = m["canvas"]["canvas_height"]  / 2
 
