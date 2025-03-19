@@ -3,7 +3,7 @@ import { SafeText } from '../utils/safetext.js';
 export class Header {
 	constructor() {
 		this.container = document.getElementById('header-container');
-		this.default_path = 'static/img/deer.jpg';
+		this.default_path = '/static/img/deer.jpg';
 	}
 
 	async render() {
@@ -11,7 +11,7 @@ export class Header {
 			const authState = window.router.getAuthState();
 			const isLoggedIn = authState.isAuthenticated;
 			const username = authState.username;
-			let userImage = 'static/img/deer.jpg';
+			let userImage = '/static/img/deer.jpg';
 
 			// Get user profile image if logged in
 			if (isLoggedIn) {
