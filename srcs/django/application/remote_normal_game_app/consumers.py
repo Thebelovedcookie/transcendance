@@ -263,73 +263,75 @@ class PongConsumer(AsyncWebsocketConsumer):
 			await self.ballWallCollision(m)
 
 	async def ballWallCollision(self, m):
-		if (not m):
+		try :
+			if (m["ball"]["y"] + m["ball"]["vy"] <= m["playerTwo"]["y"] + m["playerTwo"]["height"]
+				and m["ball"]["x"] + m["ball"]["size"] + m["ball"]["vx"] >= m["playerTwo"]["x"]
+				and m["ball"]["y"] + m["ball"]["vy"] > m["playerTwo"]["y"]):
+
+				paddleCenter = m["playerTwo"]["y"] + m["playerTwo"]["height"] / 2
+				ballCenter = m["ball"]["y"] + m["ball"]["size"] / 2
+				relativeIntersectY = (paddleCenter - ballCenter) / (m["playerTwo"]["height"] / 2)
+
+				bounceAngle = relativeIntersectY * 0.75
+
+				speed = math.sqrt(m["ball"]["vx"] * m["ball"]["vx"] + m["ball"]["vy"] * m["ball"]["vy"])
+				m["ball"]["vx"] = -speed * math.cos(bounceAngle) * m["ball"]["accel"]
+				m["ball"]["vy"] = speed * math.sin(bounceAngle) * m["ball"]["accel"]
+				m["ball"]["x"] = m["playerTwo"]["x"] - m["ball"]["size"]
+
+			elif (m["ball"]["y"] + m["ball"]["vy"] >= m["playerOne"]["y"]
+				and m["ball"]["y"] + m["ball"]["vy"] <= m["playerOne"]["y"] + m["playerOne"]["height"]
+				and m["ball"]["x"] + m["ball"]["vx"] <= m["playerOne"]["x"] + m["playerOne"]["width"]):
+
+				paddleCenter = m["playerOne"]["y"] + m["playerOne"]["height"] / 2
+				ballCenter = m["ball"]["y"] + m["ball"]["size"] / 2
+				relativeIntersectY = (paddleCenter - ballCenter) / (m["playerOne"]["height"] / 2)
+
+				bounceAngle = relativeIntersectY * 0.75
+
+				speed = math.sqrt(m["ball"]["vx"] * m["ball"]["vx"] + m["ball"]["vy"] * m["ball"]["vy"])
+				m["ball"]["vx"] = speed * math.cos(bounceAngle)
+				m["ball"]["vy"] = speed * math.sin(bounceAngle)
+				m["ball"]["x"] = m["playerOne"]["x"] + m["ball"]["size"]
+
+			elif (m["ball"]["x"] + m["ball"]["vx"] < m["playerOne"]["x"]):
+				m["playerTwo"]["score"] += 1
+				self.resetBall(m)
+				await self.checkScore(m)
+
+			elif (m["ball"]["x"] + m["ball"]["vx"] > m["playerTwo"]["x"] + m["playerTwo"]["width"]):
+				m["playerOne"]["score"] += 1
+				self.resetBall(m)
+				await self.checkScore(m)
+		except:
 			return
-		if (m["ball"]["y"] + m["ball"]["vy"] <= m["playerTwo"]["y"] + m["playerTwo"]["height"]
-			and m["ball"]["x"] + m["ball"]["size"] + m["ball"]["vx"] >= m["playerTwo"]["x"]
-			and m["ball"]["y"] + m["ball"]["vy"] > m["playerTwo"]["y"]):
-
-			paddleCenter = m["playerTwo"]["y"] + m["playerTwo"]["height"] / 2
-			ballCenter = m["ball"]["y"] + m["ball"]["size"] / 2
-			relativeIntersectY = (paddleCenter - ballCenter) / (m["playerTwo"]["height"] / 2)
-
-			bounceAngle = relativeIntersectY * 0.75
-
-			speed = math.sqrt(m["ball"]["vx"] * m["ball"]["vx"] + m["ball"]["vy"] * m["ball"]["vy"])
-			m["ball"]["vx"] = -speed * math.cos(bounceAngle) * m["ball"]["accel"]
-			m["ball"]["vy"] = speed * math.sin(bounceAngle) * m["ball"]["accel"]
-			m["ball"]["x"] = m["playerTwo"]["x"] - m["ball"]["size"]
-
-		elif (m["ball"]["y"] + m["ball"]["vy"] >= m["playerOne"]["y"]
-			and m["ball"]["y"] + m["ball"]["vy"] <= m["playerOne"]["y"] + m["playerOne"]["height"]
-			and m["ball"]["x"] + m["ball"]["vx"] <= m["playerOne"]["x"] + m["playerOne"]["width"]):
-
-			paddleCenter = m["playerOne"]["y"] + m["playerOne"]["height"] / 2
-			ballCenter = m["ball"]["y"] + m["ball"]["size"] / 2
-			relativeIntersectY = (paddleCenter - ballCenter) / (m["playerOne"]["height"] / 2)
-
-			bounceAngle = relativeIntersectY * 0.75
-
-			speed = math.sqrt(m["ball"]["vx"] * m["ball"]["vx"] + m["ball"]["vy"] * m["ball"]["vy"])
-			m["ball"]["vx"] = speed * math.cos(bounceAngle)
-			m["ball"]["vy"] = speed * math.sin(bounceAngle)
-			m["ball"]["x"] = m["playerOne"]["x"] + m["ball"]["size"]
-
-		elif (m["ball"]["x"] + m["ball"]["vx"] < m["playerOne"]["x"]):
-			m["playerTwo"]["score"] += 1
-			self.resetBall(m)
-			await self.checkScore(m)
-
-		elif (m["ball"]["x"] + m["ball"]["vx"] > m["playerTwo"]["x"] + m["playerTwo"]["width"]):
-			m["playerOne"]["score"] += 1
-			self.resetBall(m)
-			await self.checkScore(m)
 
 	async def checkScore(self, m):
-		if (not m):
+		try:
+			if (m["playerOne"]["score"] == 10):
+				m["status"] = False
+				await self.sendMatchResult(m, m["playerOne"], m["playerTwo"])
+				await self.cleanArray(m)
+				# Record match history directly
+				await self.record_match_history(
+					user_id=m["playerOne"]["id"],
+					opponent_id=m["playerTwo"]["id"],
+					user_score=m["playerOne"]["score"],
+					opponent_score=m["playerTwo"]["score"]
+				)
+			elif (m["playerTwo"]["score"] == 10):
+				m["status"] = False
+				await self.sendMatchResult(m, m["playerTwo"], m["playerOne"])
+				await self.cleanArray(m)
+				# Record match history directly
+				await self.record_match_history(
+					user_id=m["playerOne"]["id"],
+					opponent_id=m["playerTwo"]["id"],
+					user_score=m["playerOne"]["score"],
+					opponent_score=m["playerTwo"]["score"]
+				)
+		except:
 			return
-		if (m["playerOne"]["score"] == 10):
-			m["status"] = False
-			await self.sendMatchResult(m, m["playerOne"], m["playerTwo"])
-			await self.cleanArray(m)
-			# Record match history directly
-			await self.record_match_history(
-				user_id=m["playerOne"]["id"],
-				opponent_id=m["playerTwo"]["id"],
-				user_score=m["playerOne"]["score"],
-				opponent_score=m["playerTwo"]["score"]
-			)
-		elif (m["playerTwo"]["score"] == 10):
-			m["status"] = False
-			await self.sendMatchResult(m, m["playerTwo"], m["playerOne"])
-			await self.cleanArray(m)
-			# Record match history directly
-			await self.record_match_history(
-				user_id=m["playerOne"]["id"],
-				opponent_id=m["playerTwo"]["id"],
-				user_score=m["playerOne"]["score"],
-				opponent_score=m["playerTwo"]["score"]
-			)
 
 	async def record_match_history(self, user_id, opponent_id, user_score, opponent_score):
 		@database_sync_to_async
@@ -359,34 +361,36 @@ class PongConsumer(AsyncWebsocketConsumer):
 			logger.error(f"Failed to record match history: {str(e)}")
 
 	async def cleanArray(self, m):
-		if (not m):
-			return
-		p1 = next((p for p in self.infoPlayer["players"] if p["player_id"] == m["playerOne"]["id"]), None)
-		if p1 in self.infoPlayer["players"]:
-			self.infoPlayer["players"].remove(p1)
+		try:
+			p1 = next((p for p in self.infoPlayer["players"] if p["player_id"] == m["playerOne"]["id"]), None)
+			if p1 in self.infoPlayer["players"]:
+				self.infoPlayer["players"].remove(p1)
 
-		p2 = next((p for p in self.infoPlayer["players"] if p["player_id"] == m["playerTwo"]["id"]), None)
-		if p2 in self.infoPlayer["players"]:
-			self.infoPlayer["players"].remove(p2)
-		if m in self.infoMatch["match"]:
-			self.infoMatch["match"].remove(m)
+			p2 = next((p for p in self.infoPlayer["players"] if p["player_id"] == m["playerTwo"]["id"]), None)
+			if p2 in self.infoPlayer["players"]:
+				self.infoPlayer["players"].remove(p2)
+			if m in self.infoMatch["match"]:
+				self.infoMatch["match"].remove(m)
+		except:
+			return
 
 	#################### SEND VICTORY ##########################
 
 	async def sendMatchResult(self, m, winner, loser):
-		if (not m):
+		try:
+			response = {
+				"matchId": m["matchId"],
+				"winner": winner,
+				"loser": loser, 
+			}
+			await self.channel_layer.group_send(
+			self.game_group_name,
+			{
+				"type": "game_result",
+				"message": response
+			})
+		except:
 			return
-		response = {
-			"matchId": m["matchId"],
-			"winner": winner,
-			"loser": loser, 
-		}
-		await self.channel_layer.group_send(
-		self.game_group_name,
-		{
-			"type": "game_result",
-			"message": response
-		})
 
 	async def game_result(self, event):
 		try:
@@ -475,21 +479,21 @@ class PongConsumer(AsyncWebsocketConsumer):
 	
 	# place ball in center of canvas and give it a random initial velocity
 	def resetBall(self, m):
-		if (not m):
+		try:
+			m["ball"]["x"] = m["canvas"]["canvas_width"] / 2
+			m["ball"]["y"] = m["canvas"]["canvas_height"]  / 2
+
+			angle = random.random() * math.pi / 3
+			ran = random.random()
+			direction = 1
+			if ran > 0.5:
+				direction = -1
+			ran = random.random()
+			phase = math.pi
+			if ran > 0.5:
+				phase = 0
+			angle = direction * angle + phase
+			m["ball"]["vx"] = m["ball"]["speed"] * math.cos(angle)
+			m["ball"]["vy"] = m["ball"]["speed"] * math.sin(angle)
+		except:
 			return
-		m["ball"]["x"] = m["canvas"]["canvas_width"] / 2
-		m["ball"]["y"] = m["canvas"]["canvas_height"]  / 2
-
-		angle = random.random() * math.pi / 3
-		ran = random.random()
-		direction = 1
-		if ran > 0.5:
-			direction = -1
-		ran = random.random()
-		phase = math.pi
-		if ran > 0.5:
-			phase = 0
-		angle = direction * angle + phase
-		m["ball"]["vx"] = m["ball"]["speed"] * math.cos(angle)
-		m["ball"]["vy"] = m["ball"]["speed"] * math.sin(angle)
-
